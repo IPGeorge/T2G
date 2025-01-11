@@ -1,4 +1,4 @@
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 using System;
 using UnityEngine;
@@ -204,4 +204,4 @@ namespace T2G.UnityAdapter
     }
 }
 
-//#endif
+#endif

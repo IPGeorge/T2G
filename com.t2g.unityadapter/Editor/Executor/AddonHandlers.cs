@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +23,7 @@ namespace T2G.UnityAdapter
             var camera = gameObject.AddComponent<Camera>();
             gameObject.AddComponent<AudioListener>();
             camera.orthographic = false;
+            gameObject.tag = "MainCamera";
             for (int i = 0; i < properties.Count - 1; i += 2)
             {
                 if (properties[i].CompareTo("-FOV") == 0 && float.TryParse(properties[i + 1], out var fov))
@@ -294,3 +297,5 @@ namespace T2G.UnityAdapter
         }
     }
 }
+
+#endif

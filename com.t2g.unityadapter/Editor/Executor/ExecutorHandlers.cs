@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -170,7 +172,6 @@ namespace T2G.UnityAdapter
                     var position = Executor.GetPropertyValue("-POSITION", ref argList);
                     var rotation = Executor.GetPropertyValue("-ROTATION", ref argList);
                     var scale = Executor.GetPropertyValue("-SCALE", ref argList);
-
                     if (!string.IsNullOrEmpty(position))
                     {
                         float[] float3 = Executor.ParseFloat3(position);
@@ -205,7 +206,6 @@ namespace T2G.UnityAdapter
                 }
             }
         }
-
         public override void HandleExecution(Executor.Instruction instruction)
         {
             var args = instruction.Arguments;
@@ -385,3 +385,5 @@ namespace T2G.UnityAdapter
         }
     }
 }
+
+#endif

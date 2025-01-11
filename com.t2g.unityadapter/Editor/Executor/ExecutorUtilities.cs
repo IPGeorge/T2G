@@ -1,8 +1,9 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEditor.SceneManagement;
 
 namespace T2G.UnityAdapter
 {
@@ -386,3 +387,4 @@ namespace T2G.UnityAdapter
         }
     }
 }
+#endif

@@ -161,10 +161,10 @@ public class SimAssistant : MonoBehaviour
         bool retVal = true;
         string[] args = new string[1] { ((int)timeout).ToString() };
         ConsoleController.Instance.WaitForConnect = true;
-        CommunicatorClient.Instance.StartClient(0.0f, true);
         float timer = 0.0f;
         while (!CommunicatorClient.Instance.IsConnected && timer < timeout)
         {
+            CommunicatorClient.Instance.StartClient(0.5f, true);
             await Task.Delay(1000);
             timer += 1.0f;
         }

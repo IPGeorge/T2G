@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#if UNITY_EDITOR
+
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -7,45 +8,9 @@ namespace T2G.UnityAdapter
 {
     public class ContentLibrary
     {
-        static readonly string k_ImportedPackagesKey = "ImportedPackagesKey";
-
-        static HashSet<string> _Imported = new HashSet<string>();
-
-        [InitializeOnLoadMethod]
-        static void LoadImported()
-        {
-            string importedString = EditorPrefs.GetString(k_ImportedPackagesKey, string.Empty);
-            if(!string.IsNullOrEmpty(importedString))
-            {
-                _Imported = new HashSet<string>(importedString.Split(","));
-            }
-        }
-
-        static void RegisterToImported(string assetName, bool save = true)
-        {
-            _Imported.Add(assetName);
-            if(save)
-            {
-                string importedString = string.Empty;
-
-                int cnt = 0;
-                foreach (var name in _Imported)
-                {
-                    importedString += (cnt < _Imported.Count - 1) ? (name + ",") : name; 
-                }
-                EditorPrefs.SetString(k_ImportedPackagesKey, importedString);
-            }
-        }
-
         public static bool ImportScript(string scriptName, string dependencies)
         {
             bool retVal = true;
-
-            if(_Imported.Contains(scriptName))
-            {
-                return retVal;
-            }
-
             string scriptsFolderName = "Scripts";
             var sourcePath = Path.Combine(Settings.RecoursePath, scriptsFolderName, scriptName);
             var destDir = Path.Combine(Application.dataPath, scriptsFolderName);
@@ -72,10 +37,8 @@ namespace T2G.UnityAdapter
                         if (File.Exists(sourcePath))
                         {
                             File.Copy(sourcePath, destPath);
-                            RegisterToImported(dependency, false);
                         }
                     }
-                    RegisterToImported(scriptName);
                     AssetDatabase.Refresh();
                 }
             }
@@ -93,18 +56,13 @@ namespace T2G.UnityAdapter
             {
                 Settings.Load();
             }
-
-            if(_Imported.Contains(prefabName))
-            {
-                return true;
-            }
-
             string packagePath = Path.Combine(Settings.RecoursePath, "Prefabs", prefabName, $"{prefabName}.unitypackage");
             AssetDatabase.importPackageCompleted += CompletedHanddler;
             AssetDatabase.ImportPackage(packagePath, false);
-            RegisterToImported(prefabName);
             AssetDatabase.Refresh();
             return true;
         }
     }
 }
+
+#endif

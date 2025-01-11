@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,3 +45,5 @@ namespace T2G.UnityAdapter
         public abstract void AddAddon(GameObject gameObject, List<string> properties);
     }
 }
+
+#endif
