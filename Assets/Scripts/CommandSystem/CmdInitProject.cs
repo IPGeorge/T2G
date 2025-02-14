@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class CmdInitProject : Command
 {
     public static readonly string CommandKey = "InitProject";
@@ -21,12 +25,12 @@ public class CmdInitProject : Command
     public override bool Execute(params string[] args)
     {
         bool result = false;
-        if (!PlayerPrefs.HasKey(Defs.k_UnityEditorPath))
+
+        string unityEditorPath = GetUnityEditorPath();
+        if(string.IsNullOrEmpty(unityEditorPath))
         {
-            OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Error, "Unity Editor path is not set!");
             return result;
         }
-        string unityEditorPath = PlayerPrefs.GetString(Defs.k_UnityEditorPath);
 
         if (args.Length < 1)
         {
@@ -61,19 +65,16 @@ public class CmdInitProject : Command
             string json = File.ReadAllText(manifestFilePath);
             Dependencies dependencies = JsonConvert.DeserializeObject<Dependencies>(json);
 
-            if (PlayerPrefs.HasKey(Defs.k_ResourcePath))
+            string packagePath = GetResourcePath();
+            if(string.IsNullOrEmpty(packagePath))
             {
-                string packagePath =  PlayerPrefs.GetString(Defs.k_ResourcePath);
-                packagePath = "file:" + Path.Combine(packagePath, k_T2g_UnityAdapter);
-                if (!dependencies.DependencyMap.ContainsKey(k_T2g_UnityAdapter))
-                {
-                    dependencies.DependencyMap.Add(k_T2g_UnityAdapter, packagePath);
-                }
-            }
-            else
-            {
-                OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.Error, $"Failed! T2G.UnityAdapter is missing.");
                 return result;
+            }
+
+            packagePath = "file:" + Path.Combine(packagePath, k_T2g_UnityAdapter);
+            if (!dependencies.DependencyMap.ContainsKey(k_T2g_UnityAdapter))
+            {
+                dependencies.DependencyMap.Add(k_T2g_UnityAdapter, packagePath);
             }
 
             if (!dependencies.DependencyMap.ContainsKey(k_unity_ugui))

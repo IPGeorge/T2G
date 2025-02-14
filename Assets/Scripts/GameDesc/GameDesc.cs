@@ -12,7 +12,7 @@ public class SampleGameDescLibrary
     {
         "Load Sample ...",
         "Swat Hero",
-        "Marine Swat "
+        "Marine Hero "
     };
 
     public static bool GetSampleGameDesc(int sampleIndex, ref GameDesc gameDesc)
@@ -46,7 +46,7 @@ public class SampleGameDescLibrary
 #region Project settings
         gameDesc.Project = new GameProject();
         gameDesc.Project.Path = "C:/MyGames";
-        gameDesc.Project.Name = "MarineShooter";
+        gameDesc.Project.Name = "SwatHero";
         gameDesc.Project.Engine = "Unity";
 #endregion Project settings
 
@@ -56,7 +56,7 @@ public class SampleGameDescLibrary
 #region GameWorld 1
         gameDesc.GameWorlds[0] = new GameWorld();
         gameDesc.GameWorlds[0].Name = "IlandBattleField";
-        gameDesc.GameWorlds[0].Objects = new WorldObject[7];
+        gameDesc.GameWorlds[0].Objects = new WorldObject[8];
 
         //Camera
         gameDesc.GameWorlds[0].Objects[0] = new WorldObject();
@@ -86,28 +86,32 @@ public class SampleGameDescLibrary
         ground.PrimitiveType = "plane";
         ground.SizeScale = 30.0f;
         gameDesc.GameWorlds[0].Objects[2].Addons[0] = ground;
+        gameDesc.GameWorlds[0].Objects[2].Rotation = new float[3] { 0.0f, 0.0f, 0.0f };
         //Play character
         gameDesc.GameWorlds[0].Objects[3] = new WorldObject();
         gameDesc.GameWorlds[0].Objects[3].Name = "Player";
         gameDesc.GameWorlds[0].Objects[3].Prefab = "PlayerSwat";
-        //gameDesc.GameWorlds[0].Objects[3].Prefab = "PlayerSoldierToon";
         gameDesc.GameWorlds[0].Objects[3].Position = new float[3] { 0.0f, 0.0f, 10.0f };
-        gameDesc.GameWorlds[0].Objects[3].Rotation = new float[3] { 0.0f, 0.0f, 0.0f };
         //Guns to pick up
         gameDesc.GameWorlds[0].Objects[4] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[4].Name = "Gun_AK";
-        gameDesc.GameWorlds[0].Objects[4].Prefab = "Gun_AK";
-        gameDesc.GameWorlds[0].Objects[4].Position = new float[3] { -5.0f, 1.0f, 20.0f };
+        gameDesc.GameWorlds[0].Objects[4].Name = "Gun_MP5";
+        gameDesc.GameWorlds[0].Objects[4].Prefab = "Gun_MP5";
+        gameDesc.GameWorlds[0].Objects[4].Position = new float[3] { 0.0f, 0.0f, 10.0f };
         gameDesc.GameWorlds[0].Objects[4].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
         gameDesc.GameWorlds[0].Objects[5] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[5].Name = "Gun_G36";
-        gameDesc.GameWorlds[0].Objects[5].Prefab = "Gun_G36";
-        gameDesc.GameWorlds[0].Objects[5].Position = new float[3] { 5.0f, 1.0f, 20.0f };
+        gameDesc.GameWorlds[0].Objects[5].Name = "Gun_AK";
+        gameDesc.GameWorlds[0].Objects[5].Prefab = "Gun_AK";
+        gameDesc.GameWorlds[0].Objects[5].Position = new float[3] { -5.0f, 1.0f, 20.0f };
         gameDesc.GameWorlds[0].Objects[5].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
-        //UI
         gameDesc.GameWorlds[0].Objects[6] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[6].Name = "SimpleUI";
-        gameDesc.GameWorlds[0].Objects[6].Prefab = "SimpleUI";
+        gameDesc.GameWorlds[0].Objects[6].Name = "Gun_G36";
+        gameDesc.GameWorlds[0].Objects[6].Prefab = "Gun_G36";
+        gameDesc.GameWorlds[0].Objects[6].Position = new float[3] { 5.0f, 1.0f, 20.0f };
+        gameDesc.GameWorlds[0].Objects[6].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
+        //UI
+        gameDesc.GameWorlds[0].Objects[7] = new WorldObject();
+        gameDesc.GameWorlds[0].Objects[7].Name = "SimpleUI";
+        gameDesc.GameWorlds[0].Objects[7].Prefab = "SimpleUI";
 
 #endregion Gameworld 1
 #endregion Game worlds
@@ -117,8 +121,8 @@ public class SampleGameDescLibrary
 
     static bool GetSampleGameDesc2(ref GameDesc gameDesc)
     {
-        gameDesc.Name = "Marine Swat";
-        gameDesc.Title = "Marine Swat";
+        gameDesc.Name = "Marine Hero";
+        gameDesc.Title = "Marine Hero";
         gameDesc.Genre = "Third Person Shooter";
         gameDesc.ArtStyle = "Realistic";
         gameDesc.Developer = "George";
@@ -129,7 +133,7 @@ public class SampleGameDescLibrary
         #region Project settings
         gameDesc.Project = new GameProject();
         gameDesc.Project.Path = "C:/MyGames";
-        gameDesc.Project.Name = "MarineShooter";
+        gameDesc.Project.Name = "MarineHero";
         gameDesc.Project.Engine = "Unity";
         #endregion Project settings
 
@@ -139,7 +143,7 @@ public class SampleGameDescLibrary
         #region GameWorld 1
         gameDesc.GameWorlds[0] = new GameWorld();
         gameDesc.GameWorlds[0].Name = "IlandBattleField";
-        gameDesc.GameWorlds[0].Objects = new WorldObject[9];
+        gameDesc.GameWorlds[0].Objects = new WorldObject[10];
 
         //Camera
         gameDesc.GameWorlds[0].Objects[0] = new WorldObject();
@@ -163,50 +167,52 @@ public class SampleGameDescLibrary
         gameDesc.GameWorlds[0].Objects[1].Addons[0] = sunLight;
         //iland
         gameDesc.GameWorlds[0].Objects[2] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[2].Name = "Ground";
-        gameDesc.GameWorlds[0].Objects[2].Addons = new Addon[1];
-        Primitive ground = new Primitive();
-        ground.PrimitiveType = "plane";
-        ground.SizeScale = 30.0f;
-        gameDesc.GameWorlds[0].Objects[2].Addons[0] = ground;
+        gameDesc.GameWorlds[0].Objects[2].Name = "Terrain";
+        gameDesc.GameWorlds[0].Objects[2].Prefab = "Terrain";
+        gameDesc.GameWorlds[0].Objects[2].Position = new float[3] { 0.0f, 0.0f, 0.0f };
         //Play character
         gameDesc.GameWorlds[0].Objects[3] = new WorldObject();
         gameDesc.GameWorlds[0].Objects[3].Name = "Player";
         gameDesc.GameWorlds[0].Objects[3].Prefab = "PlayerSoldierToon";
-        gameDesc.GameWorlds[0].Objects[3].Position = new float[3] { 0.0f, 0.0f, 10.0f };
+        gameDesc.GameWorlds[0].Objects[3].Position = new float[3] { 0.0f, 5.3f, 10.0f };
         gameDesc.GameWorlds[0].Objects[3].Rotation = new float[3] { 0.0f, 0.0f, 0.0f };
         //Guns to pick up
         gameDesc.GameWorlds[0].Objects[4] = new WorldObject();
         gameDesc.GameWorlds[0].Objects[4].Name = "Gun_AK";
         gameDesc.GameWorlds[0].Objects[4].Prefab = "Gun_AK";
-        gameDesc.GameWorlds[0].Objects[4].Position = new float[3] { -5.0f, 1.0f, 20.0f };
+        gameDesc.GameWorlds[0].Objects[4].Position = new float[3] { -5.0f, 6.0f, 20.0f };
         gameDesc.GameWorlds[0].Objects[4].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
         gameDesc.GameWorlds[0].Objects[5] = new WorldObject();
         gameDesc.GameWorlds[0].Objects[5].Name = "Gun_G36";
         gameDesc.GameWorlds[0].Objects[5].Prefab = "Gun_G36";
-        gameDesc.GameWorlds[0].Objects[5].Position = new float[3] { 5.0f, 1.0f, 20.0f };
+        gameDesc.GameWorlds[0].Objects[5].Position = new float[3] { 5.0f, 6.0f, 20.0f };
         gameDesc.GameWorlds[0].Objects[5].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
-        //Ocean
         gameDesc.GameWorlds[0].Objects[6] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[6].Name = "Ocean";
-        gameDesc.GameWorlds[0].Objects[6].Prefab = "SimpleOcean";
-        gameDesc.GameWorlds[0].Objects[6].Position = new float[3] { 0.0f, 0.0f, 0.0f };
-
+        gameDesc.GameWorlds[0].Objects[6].Name = "Gun_MP5";
+        gameDesc.GameWorlds[0].Objects[6].Prefab = "Gun_MP5";
+        gameDesc.GameWorlds[0].Objects[6].Position = new float[3] { 0.0f, 6.0f, 25.0f };
+        gameDesc.GameWorlds[0].Objects[6].Rotation = new float[3] { 180.0f, 0.0f, 0.0f };
+        //Ocean
         gameDesc.GameWorlds[0].Objects[7] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[7].Name = "SkyDome";
-        gameDesc.GameWorlds[0].Objects[7].Prefab = "TimeOfDay";
+        gameDesc.GameWorlds[0].Objects[7].Name = "Ocean";
+        gameDesc.GameWorlds[0].Objects[7].Prefab = "SimpleOcean";
         gameDesc.GameWorlds[0].Objects[7].Position = new float[3] { 0.0f, 0.0f, 0.0f };
-        gameDesc.GameWorlds[0].Objects[7].Controller = "TimeOfDayController";
-        gameDesc.GameWorlds[0].Objects[7].SetControllerValues = new string[] { 
+
+        gameDesc.GameWorlds[0].Objects[8] = new WorldObject();
+        gameDesc.GameWorlds[0].Objects[8].Name = "SkyDome";
+        gameDesc.GameWorlds[0].Objects[8].Prefab = "TimeOfDay";
+        gameDesc.GameWorlds[0].Objects[8].Position = new float[3] { 0.0f, 0.0f, 0.0f };
+        gameDesc.GameWorlds[0].Objects[8].Controller = "TimeOfDayController";
+        gameDesc.GameWorlds[0].Objects[8].SetControllerValues = new string[] { 
             "Latitude", "30",
             "Month", "6",
             "Clouds", "3",
             "Fog", "false"
         };
         //UI
-        gameDesc.GameWorlds[0].Objects[8] = new WorldObject();
-        gameDesc.GameWorlds[0].Objects[8].Name = "SimpleUI";
-        gameDesc.GameWorlds[0].Objects[8].Prefab = "SimpleUI";
+        gameDesc.GameWorlds[0].Objects[9] = new WorldObject();
+        gameDesc.GameWorlds[0].Objects[9].Name = "SimpleUI";
+        gameDesc.GameWorlds[0].Objects[9].Prefab = "SimpleUI";
 
         //Quest
 

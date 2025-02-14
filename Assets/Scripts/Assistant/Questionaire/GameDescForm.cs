@@ -64,7 +64,7 @@ public class GameDescForm : MonoBehaviour
         if(viewIndex == 2)
         {
             _InputCommands.text = string.Empty;
-            var instructions = Interpreter.Interpret(_InputJson.text);
+            var instructions = Interpreter.InterpretGameDesc(_InputJson.text);
             foreach (var cmd in instructions)
             {
                 _InputCommands.text += cmd + "\n";

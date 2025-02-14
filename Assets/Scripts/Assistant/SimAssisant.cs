@@ -17,8 +17,7 @@ public class SimAssistant : MonoBehaviour
         "create a new game",
         "make a new game",
         "generate game",
-        "Start generating",
-        "Add "
+        "Start generating"
     };
 
     string[] _responses = {
@@ -50,6 +49,11 @@ public class SimAssistant : MonoBehaviour
 
         _responseActionMap.Add(_responses[2], CollectGameProjectInformation);
         _responseActionMap.Add(_responses[3], GenerateGameFromGameDesc);
+    }
+
+    public void OnDestopPanelResized(float desktopHeight)
+    {
+        _AssistantDialogsRectTransform.offsetMin = new Vector2(0.0f, desktopHeight);
     }
 
     public void ProcessPrompt(string prompt, Action<string> callBack)
@@ -91,6 +95,11 @@ public class SimAssistant : MonoBehaviour
                     }
                 }
             }
+        }
+        else
+        {
+            var responseTask = PromptToInstruct(prompt);
+            responseMessage = responseTask.Result;
         }
         callBack?.Invoke(responseMessage);
     }
@@ -136,7 +145,6 @@ public class SimAssistant : MonoBehaviour
             await Task.Delay(100);
         }
     }
-
 
     async Task OpenProject(GameDesc gameDesc)
     {
@@ -206,7 +214,7 @@ public class SimAssistant : MonoBehaviour
             console.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Project was opened and connected!");
         }
 
-        string[] instructions = Interpreter.Interpret(gameDescJson);
+        string[] instructions = Interpreter.InterpretGameDesc(gameDescJson);
 
         int errorCode = 0;
         for (int i = 0; i < instructions.Length; ++i)
@@ -294,8 +302,34 @@ public class SimAssistant : MonoBehaviour
         return 0;
     }
 
-    public void OnDestopPanelResized(float desktopHeight)
+    async Task<string> PromptToInstruct(string prompt)
     {
-        _AssistantDialogsRectTransform.offsetMin = new Vector2(0.0f, desktopHeight);
+        int errorCode = 0;
+        string[] instructions = Interpreter.InterpretPrompt(prompt);
+        
+        if(instructions == null || instructions.Length == 0)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < instructions.Length; ++i)
+        {
+            errorCode = await SendInstruction(instructions[i]);
+            if (errorCode > 0)
+            {
+                break;
+            }
+        }
+
+        if (errorCode > 0)
+        {
+            ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant,
+                $"Prompt execution was interrupted. ErrorCode: {errorCode}");
+            return "Failed!";
+        }
+        else
+        {
+            return "Done!";
+        }
     }
 }

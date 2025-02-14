@@ -11,19 +11,17 @@ public class CmdCreateProject : Command
     private EventHandler _eventHandler;
     public override bool Execute(params string[] args)
     {
-        if (!PlayerPrefs.HasKey(Defs.k_UnityEditorPath))
+        string unityEditorPath = GetUnityEditorPath();
+        if(string.IsNullOrEmpty(unityEditorPath))
         {
-            OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Error, "Unity Editor path is not set!");
             return false;
         }
-        string unityEditorPath = PlayerPrefs.GetString(Defs.k_UnityEditorPath);
 
-        if (!PlayerPrefs.HasKey(Defs.k_ResourcePath))
+        string resourcePath = GetResourcePath();
+        if(string.IsNullOrEmpty(resourcePath))
         {
-            OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Error, "Resource path is not set!");
             return false;
         }
-        string resourcePath = PlayerPrefs.GetString(Defs.k_ResourcePath);
 
         if(args.Length < 1)
         {

@@ -12,7 +12,18 @@ public partial class Interpreter
     public static string CurrentWorldName => _currentWorldName;
     public static string CurrentObjectName => _currentObjectName;
 
-    public static string[] Interpret(string gameDescJson)
+    /* Function InterpretPrompt 
+     * Description: This function simulates the process of converting the prompt
+     *              to one or a set of instructions for modifying and improving the game. 
+     *              This process should eventually be handdled by an AI model.
+     */
+    public static string[] InterpretPrompt(string prompt)
+    {
+        return InterpretPromptRBP(prompt);
+        //return InterpretPromptNLP(prompt);
+    }
+
+    public static string[] InterpretGameDesc(string gameDescJson)
     {
         _instructions.Clear();
         if (gameDescJson != null)

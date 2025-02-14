@@ -92,7 +92,14 @@ public class ConsoleController : MonoBehaviour
 
     void Start()
     {
-         _rectTransform = (RectTransform)transform;
+        var ins = Interpreter.InterpretPrompt("add enemy");
+        ins = Interpreter.InterpretPrompt("add 1 enemy");
+        ins = Interpreter.InterpretPrompt("add 2 enemies");
+        ins = Interpreter.InterpretPrompt("add an enemies");
+        ins = Interpreter.InterpretPrompt("Please add 2 enemies");
+
+
+        _rectTransform = (RectTransform)transform;
 
         _consoleSizeIndex = PlayerPrefs.GetInt(k_ConsoleSizeIndex, 1);
         ResizeConsole();
