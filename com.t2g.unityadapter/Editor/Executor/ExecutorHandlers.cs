@@ -270,14 +270,24 @@ namespace T2G.UnityAdapter
                 }
                 EditorPrefs.SetString(Defs.k_Pending_NewPrefabObject, prefabName);
                 EditorPrefs.SetString(Defs.k_Pending_Arguments, argsString);
-                ContentLibrary.ImportPackage(prefabName, ImportPackageCompletedHanddler);
-
-                string controller = Executor.GetPropertyValue(Defs.k_GameDesc_PrefabControllerKey, ref args);
-                if (!string.IsNullOrEmpty(controller))
+                int result = ContentLibrary.ImportPrefab(prefabName, ImportPackageCompletedHanddler);
+                if (result == 0)
                 {
-                    string setValues = Executor.GetPropertyValue(Defs.k_GameDesc_PrefabSetValuesKey, ref args);
-                    EditorPrefs.SetString(Defs.k_Pending_Controller, controller);
-                    EditorPrefs.SetString(Defs.k_Pending_ControllerSetValues, setValues);
+                    string controller = Executor.GetPropertyValue(Defs.k_GameDesc_PrefabControllerKey, ref args);
+                    if (!string.IsNullOrEmpty(controller))
+                    {
+                        string setValues = Executor.GetPropertyValue(Defs.k_GameDesc_PrefabSetValuesKey, ref args);
+                        EditorPrefs.SetString(Defs.k_Pending_Controller, controller);
+                        EditorPrefs.SetString(Defs.k_Pending_ControllerSetValues, setValues);
+                    }
+                }
+                else if(result > 0)
+                {
+                    ProcessPendingInsrtuction();
+                }
+                else
+                {
+                    Executor.RespondCompletion(false, $"Couldn't find and import the package for {prefabName} prefab.");
                 }
             }
         }
@@ -339,12 +349,17 @@ namespace T2G.UnityAdapter
 
             var args = instruction.Arguments;
             var packageName = args[0].Trim('"');
-            string packagePath = Path.Combine(Settings.RecoursePath, "Packages", packageName);
-            AssetDatabase.importPackageCompleted += ImportPackageCompletedHanddler;
-            AssetDatabase.importPackageFailed += ImportPackageFailedHanddler;
+
             EditorPrefs.SetString(Defs.k_Pending_ImportPackage, packageName);
-            AssetDatabase.ImportPackage(packagePath, false);
-            AssetDatabase.Refresh();
+            if(ContentLibrary.ImportPackage(packageName, ImportPackageCompletedHanddler))
+            {
+                ProcessPendingInsrtuction();
+            }
+            else
+            {
+                Executor.RespondCompletion(false, $"Couldn't import ${packageName} package.");
+            }
+
         }
 
         [InitializeOnLoadMethod]
@@ -372,17 +387,11 @@ namespace T2G.UnityAdapter
             Executor.RespondCompletion(true, $"Imported {packageName} package with reset!");
         }
 
-        static void ImportPackageCompletedHanddler(string packageName)
+        public static void ImportPackageCompletedHanddler(string packageName)
         {
-            EditorPrefs.SetString(Defs.k_Pending_ImportPackage, string.Empty);
-            Executor.RespondCompletion(true, $"Imported {packageName} package!");
+            ProcessPendingInsrtuction();
         }
 
-        static void ImportPackageFailedHanddler(string packageName, string errorMessage)
-        {
-            EditorPrefs.SetString(Defs.k_Pending_ImportPackage, string.Empty);
-            Executor.RespondCompletion(false, $"Failed to import {packageName} package!");
-        }
     }
 }
 

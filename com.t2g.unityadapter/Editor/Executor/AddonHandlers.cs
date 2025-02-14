@@ -287,9 +287,14 @@ namespace T2G.UnityAdapter
                             args += ", " + argList[i];
                         }
                         EditorPrefs.SetString(Defs.k_Pending_Arguments, args);
-                        if (!ContentLibrary.ImportScript(scriptName, dependencies))
+                        int result = ContentLibrary.ImportScript(scriptName, dependencies);
+                        if (result < 0)
                         {
                             Executor.RespondCompletion(false);
+                        }
+                        else if(result > 0)
+                        {
+                            ProcessPendingInsrtuction();
                         }
                     }
                 }
