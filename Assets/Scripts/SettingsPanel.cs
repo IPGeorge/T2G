@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using T2G.UnityAdapter;
+using T2G;
 
 public class SettingsPanel : MonoBehaviour
 {
@@ -14,19 +14,19 @@ public class SettingsPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        Settings.Load();
-        _UnityEditorPath.text = Settings.UnityEditorPath;
-        _AssetsPath.text = Settings.RecoursePath;
-        _UserName.text = Settings.User;
-        _AssistantName.text = Settings.Assistant;
+        SettingsT2G.Load();
+        _UnityEditorPath.text = SettingsT2G.UnityEditorPath;
+        _AssetsPath.text = SettingsT2G.RecoursePath;
+        _UserName.text = SettingsT2G.User;
+        _AssistantName.text = SettingsT2G.Assistant;
     }
 
     public void OnSave()
     {
-        Settings.UnityEditorPath = _UnityEditorPath.text;
-        Settings.RecoursePath = _AssetsPath.text;
-        Settings.User = _UserName.text;
-        Settings.Assistant = _AssistantName.text;
-        Settings.Save();
+        SettingsT2G.UnityEditorPath = _UnityEditorPath.text;
+        SettingsT2G.RecoursePath = _AssetsPath.text;
+        SettingsT2G.User = _UserName.text;
+        SettingsT2G.Assistant = _AssistantName.text;
+        SettingsT2G.Save();
     }
 }

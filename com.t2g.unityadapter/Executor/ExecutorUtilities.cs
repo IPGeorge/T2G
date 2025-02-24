@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor.SceneManagement;
+using T2G.Communicator;
 
-namespace T2G.UnityAdapter
+namespace T2G.Executor
 {
     public partial class Executor
     {

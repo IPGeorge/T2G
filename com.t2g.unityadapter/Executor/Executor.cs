@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace T2G.UnityAdapter
+namespace T2G.Executor
 {
     public partial class Executor
     {

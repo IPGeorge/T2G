@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-using T2G.UnityAdapter;
+using T2G.Communicator;
+
 
 public class SimAssistant : MonoBehaviour
 {

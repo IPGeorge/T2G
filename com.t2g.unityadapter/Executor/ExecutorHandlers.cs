@@ -10,8 +10,10 @@ using UnityEditor;
 using UnityEditor.Build.Profile;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using T2G.Communicator;
+using T2G;
 
-namespace T2G.UnityAdapter
+namespace T2G.Executor
 {
     public partial class Executor
     {
@@ -342,16 +344,16 @@ namespace T2G.UnityAdapter
     {
         public override void HandleExecution(Executor.Instruction instruction)
         {
-            if(!Settings.Loaded)
+            if(!SettingsT2G.Loaded)
             {
-                Settings.Load();
+                SettingsT2G.Load();
             }
 
             var args = instruction.Arguments;
             var packageName = args[0].Trim('"');
 
             EditorPrefs.SetString(Defs.k_Pending_ImportPackage, packageName);
-            if(ContentLibrary.ImportPackage(packageName, ImportPackageCompletedHanddler))
+            if (ContentLibrary.ImportPackage(packageName, ImportPackageCompletedHanddler))
             {
                 ProcessPendingInsrtuction();
             }

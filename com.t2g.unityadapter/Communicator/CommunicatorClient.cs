@@ -5,7 +5,7 @@ using Unity.Jobs;
 using Unity.Collections;
 
 
-namespace T2G.UnityAdapter
+namespace T2G.Communicator
 {
     public class CommunicatorClient : Communicator
     {

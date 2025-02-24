@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using T2G.UnityAdapter;
+using T2G.Communicator;
 using System.Threading.Tasks;
 
 public class CmdConnect : Command

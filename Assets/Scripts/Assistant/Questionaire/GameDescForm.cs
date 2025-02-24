@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using SFB;
-using T2G.UnityAdapter;
+using T2G;
 using System.IO;
 using UnityEngine.UI;
 
@@ -78,7 +78,7 @@ public class GameDescForm : MonoBehaviour
         {
             _gameDesc = new GameDesc();
             _gameDesc.Name = "New Game";
-            _gameDesc.Developer = Settings.User;
+            _gameDesc.Developer = SettingsT2G.User;
             _gameDesc.Project.Path = PlayerPrefs.GetString(Defs.k_ProjectPathname, string.Empty);
             _gameDesc.Project.Name = Path.GetFileName(_gameDesc.Project.Path);
             OnSave();

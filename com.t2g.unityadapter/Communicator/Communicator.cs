@@ -5,9 +5,9 @@ using Unity.Networking.Transport;
 using UnityEngine;
 using SimpleJSON;
 
-namespace T2G.UnityAdapter
+namespace T2G.Communicator
 {
-    public enum eMessageType : byte     //TODO: used to improve the communication's message serialization and deserialization 
+    public enum eMessageType : byte
     {
         //Primitive types
         Int,
@@ -42,76 +42,6 @@ namespace T2G.UnityAdapter
     {
         public eMessageType Type;
         public FixedString4096Bytes Message;
-    }
-
-    [Serializable]
-    public class Settings
-    {
-        public static bool Loaded { get; private set; } = false;
-        public static string UnityEditorPath;
-        public static string RecoursePath;
-        public static string User;
-        public static string Assistant;
-
-        public static string ToJson(bool reload = true)
-        {
-            if (reload)
-            {
-                Load();
-            }
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.Add("UnityEditorPath", UnityEditorPath);
-            jsonObj.Add("RecoursePath", RecoursePath);
-            jsonObj.Add("User", User);
-            jsonObj.Add("Assistant", Assistant);
-            return jsonObj.ToString();
-        }
-
-        public static void FromJson(string jsonData, bool save = true)
-        {
-            JSONObject jsonObj = (JSONObject)JSON.Parse(jsonData);
-            UnityEditorPath = jsonObj["UnityEditorPath"];
-            RecoursePath = jsonObj["RecoursePath"];
-            User = jsonObj["User"];
-            Assistant = jsonObj["Assistant"];
-            if (save)
-            {
-                Save();
-            }
-            Loaded = true;
-        }
-
-        public static void Load()
-        {
-#if UNITY_EDITOR
-            UnityEditorPath = UnityEditor.EditorPrefs.GetString(Defs.k_UnityEditorPath, string.Empty);
-            RecoursePath = UnityEditor.EditorPrefs.GetString(Defs.k_ResourcePath, string.Empty);
-            User = UnityEditor.EditorPrefs.GetString(Defs.k_UserName, "You");
-            Assistant = UnityEditor.EditorPrefs.GetString(Defs.k_AssistantName, "Assistant");
-            Loaded = true;
-#else
-            UnityEditorPath = PlayerPrefs.GetString(Defs.k_UnityEditorPath, string.Empty);
-            RecoursePath = PlayerPrefs.GetString(Defs.k_ResourcePath, string.Empty);
-            User = PlayerPrefs.GetString(Defs.k_UserName, "You");
-            Assistant = PlayerPrefs.GetString(Defs.k_AssistantName, "Assistant");
-            Loaded = true;
-#endif
-        }
-
-        public static void Save()
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorPrefs.SetString(Defs.k_UnityEditorPath, UnityEditorPath);
-            UnityEditor.EditorPrefs.SetString(Defs.k_ResourcePath, RecoursePath);
-            UnityEditor.EditorPrefs.SetString(Defs.k_UserName, User);
-            UnityEditor.EditorPrefs.SetString(Defs.k_AssistantName, Assistant);
-#else
-            PlayerPrefs.SetString(Defs.k_UnityEditorPath, UnityEditorPath);
-            PlayerPrefs.SetString(Defs.k_ResourcePath, RecoursePath);
-            PlayerPrefs.SetString(Defs.k_UserName, User);
-            PlayerPrefs.SetString(Defs.k_AssistantName, Assistant);
-#endif
-        }
     }
 
     public class Communicator

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using T2G;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -16,12 +17,12 @@ public abstract class Command
     public string GetUnityEditorPath()
     {
 #if UNITY_EDITOR
-        if (!EditorPrefs.HasKey(Defs.k_UnityEditorPath))
+        if (!EditorPrefs.HasKey(SettingsT2G.k_UnityEditorPath))
         {
             OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Error, "Unity Editor path is not set!");
             return null;
         }
-        return EditorPrefs.GetString(Defs.k_UnityEditorPath);
+        return EditorPrefs.GetString(SettingsT2G.k_UnityEditorPath);
 
 #else
         if (!PlayerPrefs.HasKey(Defs.k_UnityEditorPath))
@@ -35,9 +36,9 @@ public abstract class Command
     public string GetResourcePath()
     {
 #if UNITY_EDITOR
-        if (EditorPrefs.HasKey(Defs.k_ResourcePath))
+        if (EditorPrefs.HasKey(SettingsT2G.k_ResourcePath))
         {
-            return EditorPrefs.GetString(Defs.k_ResourcePath);
+            return EditorPrefs.GetString(SettingsT2G.k_ResourcePath);
         }
 #else
         if (PlayerPrefs.HasKey(Defs.k_ResourcePath))

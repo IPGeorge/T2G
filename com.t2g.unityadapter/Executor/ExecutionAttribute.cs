@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace T2G.UnityAdapter
+namespace T2G.Executor
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ExecutionAttribute : Attribute

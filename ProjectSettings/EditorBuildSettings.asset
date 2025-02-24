@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/T2G.unity
     guid: fd16df8ba9baf5c4fa5889e4ecac8f25
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/IlandBattleField.unity
     guid: 2b26111641fe6a44d82c7344d9e4a35c
   m_configObjects:

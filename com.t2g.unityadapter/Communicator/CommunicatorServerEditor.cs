@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEditor;
 
-namespace T2G.UnityAdapter
+namespace T2G.Communicator
 {
     [InitializeOnLoad]
     public class LauchEditorStartUp

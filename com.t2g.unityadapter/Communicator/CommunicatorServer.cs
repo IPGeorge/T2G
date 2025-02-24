@@ -6,8 +6,9 @@ using Unity.Networking.Transport;
 using Unity.Collections;
 using SimpleJSON;
 using UnityEngine;
+using T2G;
 
-namespace T2G.UnityAdapter
+namespace T2G.Communicator
 {
     public class CommunicatorServer : Communicator
     {
@@ -140,7 +141,7 @@ namespace T2G.UnityAdapter
             {
                 string msg = messageData.Message.ToString();
                 OnReceivedMessage?.Invoke(msg);
-                Executor.Instance.Execute(msg);
+                Executor.Executor.Instance.Execute(msg);
             }
         }
 
@@ -190,8 +191,8 @@ namespace T2G.UnityAdapter
                         {
                             case eMessageType.SettingsData:
                                 {
-                                    Settings.FromJson(receivedMessage.Message.ToString(), false);
-                                    CommunicatorServer.Instance.OnLogMessage?.Invoke("Received Resource Path: " + Settings.RecoursePath);
+                                    SettingsT2G.FromJson(receivedMessage.Message.ToString(), false);
+                                    CommunicatorServer.Instance.OnLogMessage?.Invoke("Received Resource Path: " + SettingsT2G.RecoursePath);
                                 }
                                 break;
                             default:

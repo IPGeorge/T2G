@@ -4,25 +4,30 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using System;
 
+
+/* 
+ * operations:
+//The object in front of view is current default selected 
+//What is the object name?
+//Set -options (wear glasses)
+//set daytime - weather
+//set object scale (sx, sy, sz)
+//place|move object at|to (x, y, z)
+//move object further/closer for 10 units
+//Move actor to left/right for 10 units 
+//Rotate actor (drx, dry, drz)
+//play
+//stop
+*/
+
+
 public partial class Interpreter
 {
     private static List<(string, Func<Match, string[]> handler)> _rules = null;
 
     static void InitializeRules()
     {
-        //operations:
-        //The object in front of view is current default selected 
-        //What is the object name?
-        //
-        //Set -options (wear glasses)
-        //set daytime - weather
-        //set object scale (sx, sy, sz)
-        //place|move object at|to (x, y, z)
-        //move object further/closer for 10 units
-        //Move actor to left/right for 10 units 
-        //Rotate actor (drx, dry, drz)
-        //play
-        //stop
+
 
         _rules = new List<(string, Func<Match, string[]>)>
         {
@@ -30,7 +35,7 @@ public partial class Interpreter
                 //(?i): case insensitive
                 //^\s*: starts with 0 to multiple spaces
                 //(please\s+)?: optional with the world "please" and certain number of spaces
-                //(add|place|create)\s+: one of "add", ""place", or "create" followed with one a certain number of spaces
+                //(add|place|create)\s+: one of "add", ""place", or "create" followed with one or certain number of spaces
                 //(?<x>(a|an|\d+))?: match group index alias name "x". it can be "a", "an", or a number (one or more digits).
                 //                   This section is aoptional
                 //\s*: no or some spaces

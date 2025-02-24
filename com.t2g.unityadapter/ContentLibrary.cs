@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
+
 namespace T2G.UnityAdapter
 {
     public class ContentLibrary
@@ -15,7 +16,7 @@ namespace T2G.UnityAdapter
         {
             int retVal = -1;
             string scriptsFolderName = "Scripts";
-            var sourcePath = Path.Combine(Settings.RecoursePath, scriptsFolderName, scriptName);
+            var sourcePath = Path.Combine(SettingsT2G.RecoursePath, scriptsFolderName, scriptName);
             var destDir = Path.Combine(Application.dataPath, scriptsFolderName);
             var destPath = Path.Combine(destDir, scriptName);
             if (File.Exists(destPath))
@@ -33,7 +34,7 @@ namespace T2G.UnityAdapter
                 var dependencyArray = dependencies.Split(',');
                 foreach (var dependency in dependencyArray)
                 {
-                    sourcePath = Path.Combine(Settings.RecoursePath, scriptsFolderName, dependency);
+                    sourcePath = Path.Combine(SettingsT2G.RecoursePath, scriptsFolderName, dependency);
                     destPath = Path.Combine(Application.dataPath, scriptsFolderName, dependency);
                     if (!File.Exists(destPath) && File.Exists(sourcePath))
                     {
@@ -49,12 +50,12 @@ namespace T2G.UnityAdapter
 
         public static int ImportPrefab(string prefabName, AssetDatabase.ImportPackageCallback CompletedHanddler)
         {
-            if (!Settings.Loaded)
+            if (!SettingsT2G.Loaded)
             {
-                Settings.Load();
+                SettingsT2G.Load();
             }
             string prefabsFolderName = "Prefabs";
-            string packagePath = Path.Combine(Settings.RecoursePath, prefabsFolderName, prefabName, $"{prefabName}.unitypackage");
+            string packagePath = Path.Combine(SettingsT2G.RecoursePath, prefabsFolderName, prefabName, $"{prefabName}.unitypackage");
             string assetPrefabPathFolder = Path.Combine(Application.dataPath, prefabsFolderName);
             string assetPrefabPath = Path.Combine(assetPrefabPathFolder, prefabName, $"{prefabName}.prefab");
             if(File.Exists(assetPrefabPath))
@@ -80,11 +81,11 @@ namespace T2G.UnityAdapter
 
         public static bool ImportPackage(string packageName, AssetDatabase.ImportPackageCallback CompletedHanddler)
         {
-            if (!Settings.Loaded)
+            if (!SettingsT2G.Loaded)
             {
-                Settings.Load();
+                SettingsT2G.Load();
             }
-            string packagePath = Path.Combine(Settings.RecoursePath, "Packages", packageName, $"{packageName}.unitypackage");
+            string packagePath = Path.Combine(SettingsT2G.RecoursePath, "Packages", packageName, $"{packageName}.unitypackage");
             if (File.Exists(packagePath))
             {
                 AssetDatabase.importPackageCompleted += CompletedHanddler;

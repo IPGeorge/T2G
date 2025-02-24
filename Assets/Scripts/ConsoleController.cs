@@ -5,8 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using T2G.UnityAdapter;
-using UnityEditor;
+using T2G.Communicator;
+using T2G;
 
 public class ConsoleController : MonoBehaviour
 {
@@ -41,7 +41,7 @@ public class ConsoleController : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _ProjectPathName;
 
-    private readonly int[] _consoleSizes = { 60, 300, 600, 900 };
+    private readonly int[] _consoleSizes = { 60, 300, 600, 1000 };
     private int _consoleSizeIndex;
 
     List<string> _inputHistory = new List<string>();
@@ -82,7 +82,7 @@ public class ConsoleController : MonoBehaviour
     {
         _instance = this;
 
-        Settings.Load();
+        SettingsT2G.Load();
 
         CommunicatorClient communicatorClient = CommunicatorClient.Instance;
         communicatorClient.OnFailedToConnectToServer += HandleOnFailedConnectToServer;
@@ -221,14 +221,14 @@ public class ConsoleController : MonoBehaviour
         switch (sender)
         {
             case eSender.User:
-                senderPrompt = Settings.User;
+                senderPrompt = SettingsT2G.User;
                 if (string.IsNullOrEmpty(senderPrompt))
                 {
                     senderPrompt = "You";
                 }
                 break;
             case eSender.Assistant:
-                senderPrompt = Settings.Assistant;
+                senderPrompt = SettingsT2G.Assistant;
                 if (string.IsNullOrEmpty(senderPrompt))
                 {
                     senderPrompt = "Assistant";
@@ -289,8 +289,8 @@ public class ConsoleController : MonoBehaviour
         {
             SimAssistant.Instance.ProcessPrompt(inputStr, (responseMessage) =>
             {
-                responseMessage = responseMessage.Replace("{user}", Settings.User);
-                responseMessage = responseMessage.Replace("{assistant}", Settings.Assistant);
+                responseMessage = responseMessage.Replace("{user}", SettingsT2G.User);
+                responseMessage = responseMessage.Replace("{assistant}", SettingsT2G.Assistant);
                 WriteConsoleMessage(eSender.Assistant, responseMessage);
             });
         }
@@ -388,7 +388,7 @@ public class ConsoleController : MonoBehaviour
         MessageStruct msgData = new MessageStruct
         {
             Type = eMessageType.SettingsData,
-            Message = Settings.ToJson(false)  
+            Message = SettingsT2G.ToJson(false)  
         };
         CommunicatorClient.Instance.SendMessage(msgData);   //Send settings to the project
     }

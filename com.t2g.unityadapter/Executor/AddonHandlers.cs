@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Threading.Tasks;
+using T2G.Communicator;
 
-namespace T2G.UnityAdapter
+namespace T2G.Executor
 {
 
     [AddAddon("Perspective Camera")]
