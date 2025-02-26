@@ -19,14 +19,15 @@ namespace T2G.Communicator
 
         public Action OnConnectedToServer;
         public Action OnFailedToConnectToServer;
-        public Action BeforeDiscinnectFromServer;
+        public Action BeforeDisconnectFromServer;
         public Action OnDisconnectedFromServer;
         public bool Silent { get; private set; } = false;
 
-        float _connectTimer = 0.0f;
-        readonly float k_connectTimeout = 3.0f;
+        float _connectionTimer = 0.0f;
+        float _connectionTimeout = 3.0f;
 
         public eClientState ClientState { get; private set; } = eClientState.Disconnected;
+
         public override bool IsConnected
         {
             get
@@ -48,7 +49,9 @@ namespace T2G.Communicator
             }
         }
 
-        public void StartClient(float timeout = 0.0f, bool silent = false)
+        public override bool IsActive => (_networkDriver.IsCreated && IsConnected);
+
+        public void StartClient(bool silent = false)
         {
             if (ClientState != eClientState.Disconnected)
             {
@@ -69,19 +72,19 @@ namespace T2G.Communicator
             {
                 endPoint = NetworkEndpoint.LoopbackIpv4.WithPort(Port);
             }
-            _connectTimer = (timeout <= 0.0f) ? k_connectTimeout : timeout;
+            _connectionTimer = _connectionTimeout;
             _connections[0] = _networkDriver.Connect(endPoint);
             ClientState = eClientState.Connecting;
         }
 
-        public void Disconnect()
+        public override void Disconnect()
         {
             _jobHandle.Complete();
             if (ClientState == eClientState.Connected || ClientState == eClientState.Connecting)
             {
                 if (!Silent)
                 {
-                    BeforeDiscinnectFromServer?.Invoke();
+                    BeforeDisconnectFromServer?.Invoke();
                 }
                 _connections[0].Disconnect(_networkDriver);
                 _networkDriver.ScheduleUpdate().Complete();
@@ -112,9 +115,9 @@ namespace T2G.Communicator
             
             if (ClientState == eClientState.Connecting)
             {
-                _connectTimer -= Time.deltaTime;
+                _connectionTimer -= Time.deltaTime;
 
-                if (_connectTimer <= 0.0f)
+                if (_connectionTimer <= 0.0f)
                 {
                     ClientState = eClientState.Disconnected;
                     Dispose();

@@ -18,7 +18,7 @@ namespace T2G.Executor
             {
                 response += $" {message}";
             }
-            CommunicatorServer.Instance.SendMessage(response);
+            CommunicatorServer.Instance.SendMessage(eMessageType.PlainText, response);
         }
 
         public static float[] ParseFloat2(string float3String)

@@ -3,122 +3,125 @@ using System.Collections.Generic;
 using System.Text;
 using SimpleJSON;
 
-public partial class Interpreter 
+namespace T2G
 {
-    static List<string> _instructions = new List<string>();
-    static string _currentWorldName;
-    static string _currentObjectName;
-
-    public static string CurrentWorldName => _currentWorldName;
-    public static string CurrentObjectName => _currentObjectName;
-
-    /* Function InterpretPrompt 
-     * Description: This function simulates the process of converting the prompt
-     *              to one or a set of instructions for modifying and improving the game. 
-     *              This process should eventually be handdled by an AI model.
-     */
-    public static string[] InterpretPrompt(string prompt)
+    public partial class Interpreter
     {
-        return InterpretPromptRBP(prompt);
-        //return InterpretPromptNLP(prompt);
-    }
+        static List<string> _instructions = new List<string>();
+        static string _currentWorldName;
+        static string _currentObjectName;
 
-    public static string[] InterpretGameDesc(string gameDescJson)
-    {
-        _instructions.Clear();
-        if (gameDescJson != null)
+        public static string CurrentWorldName => _currentWorldName;
+        public static string CurrentObjectName => _currentObjectName;
+
+        /* Function InterpretPrompt 
+         * Description: This function simulates the process of converting the prompt
+         *              to one or a set of instructions for modifying and improving the game. 
+         *              This process should eventually be handdled by an AI model.
+         */
+        public static string[] InterpretPrompt(string prompt)
         {
-            JSONNode gameDescObj = JSON.Parse(gameDescJson);
-            Interpret(gameDescObj);
-        }
-        _instructions.Add(Defs.k_EndOfGameGeneration);
-        return _instructions.ToArray();
-    }
-
-    static void Interpret(JSONNode jsonNode)
-    {
-        if (jsonNode.IsNull)
-        {
-            return;
+            return InterpretPromptRBP(prompt);
+            //return InterpretPromptNLP(prompt);
         }
 
-        if (jsonNode.IsObject)
+        public static string[] InterpretGameDesc(string gameDescJson)
         {
-            if(jsonNode.HasKey(Defs.k_GameDesc_CategoryKeyName))
+            _instructions.Clear();
+            if (gameDescJson != null)
             {
-                InterpretByCategoryName(jsonNode.AsObject);
+                JSONNode gameDescObj = JSON.Parse(gameDescJson);
+                Interpret(gameDescObj);
             }
+            _instructions.Add(Defs.k_EndOfGameGeneration);
+            return _instructions.ToArray();
         }
-        if (jsonNode.IsArray)
+
+        static void Interpret(JSONNode jsonNode)
         {
-            var arr = jsonNode.AsArray;
-            for(int i = 0; i < arr.Count; ++i)
+            if (jsonNode.IsNull)
             {
-                Interpret(arr[i]);
+                return;
             }
-        }
-        else if(jsonNode.IsBoolean)
-        {
-            //Do nothing
-        }
-        else if(jsonNode.IsNumber)
-        {
-            //Do nothing
-        }
-        else if(jsonNode.IsString)
-        {
-            //Do nothing
-        }
-    }
 
-    static bool InterpretByCategoryName(JSONObject jsonObj)
-    {
-        var categoryName = jsonObj.GetValueOrDefault(Defs.k_GameDesc_CategoryKeyName, string.Empty);
-        if(!categoryName.IsString)
-        {
-            return false;
-        }
-        string category = categoryName.Value;
-
-        if (category.CompareTo(Defs.k_GameWorldCategory) == 0)
-        {
-            if(INS_CreateGameWorld(jsonObj, ref _currentWorldName))
+            if (jsonNode.IsObject)
             {
-                var key = jsonObj.Keys.GetEnumerator();
-                while (key.MoveNext())
+                if (jsonNode.HasKey(Defs.k_GameDesc_CategoryKeyName))
                 {
-                    Interpret(jsonObj.GetValueOrDefault(key.Current, null));
+                    InterpretByCategoryName(jsonNode.AsObject);
                 }
             }
-        }
-        else if (category.CompareTo(Defs.k_WorldObjectCategory) == 0)
-        {
-            if(INS_CreateObject(jsonObj, ref _currentObjectName))
+            if (jsonNode.IsArray)
             {
-                var key = jsonObj.Keys.GetEnumerator();
-                while (key.MoveNext())
+                var arr = jsonNode.AsArray;
+                for (int i = 0; i < arr.Count; ++i)
                 {
-                    Interpret(jsonObj.GetValueOrDefault(key.Current, null));
+                    Interpret(arr[i]);
                 }
             }
-        }
-        else if (category.CompareTo(Defs.k_ObjectAddonCategory) == 0)
-        {
-            INS_AddAddon(jsonObj, _currentWorldName, _currentObjectName);
-        }
-        else if (category.CompareTo(Defs.k_GameDescCategory) == 0)
-        {
-            var packages = jsonObj.GetValueOrDefault(Defs.k_GameDesc_PackagesKey, null).AsArray;
-            for(int i = 0; i < packages.Count; ++i)
+            else if (jsonNode.IsBoolean)
             {
-                string packageName = packages[i].ToString();
-                _instructions.Add($"IMPORT_PACKAGE {packageName}");
+                //Do nothing
+            }
+            else if (jsonNode.IsNumber)
+            {
+                //Do nothing
+            }
+            else if (jsonNode.IsString)
+            {
+                //Do nothing
+            }
+        }
+
+        static bool InterpretByCategoryName(JSONObject jsonObj)
+        {
+            var categoryName = jsonObj.GetValueOrDefault(Defs.k_GameDesc_CategoryKeyName, string.Empty);
+            if (!categoryName.IsString)
+            {
+                return false;
+            }
+            string category = categoryName.Value;
+
+            if (category.CompareTo(Defs.k_GameWorldCategory) == 0)
+            {
+                if (INS_CreateGameWorld(jsonObj, ref _currentWorldName))
+                {
+                    var key = jsonObj.Keys.GetEnumerator();
+                    while (key.MoveNext())
+                    {
+                        Interpret(jsonObj.GetValueOrDefault(key.Current, null));
+                    }
+                }
+            }
+            else if (category.CompareTo(Defs.k_WorldObjectCategory) == 0)
+            {
+                if (INS_CreateObject(jsonObj, ref _currentObjectName))
+                {
+                    var key = jsonObj.Keys.GetEnumerator();
+                    while (key.MoveNext())
+                    {
+                        Interpret(jsonObj.GetValueOrDefault(key.Current, null));
+                    }
+                }
+            }
+            else if (category.CompareTo(Defs.k_ObjectAddonCategory) == 0)
+            {
+                INS_AddAddon(jsonObj, _currentWorldName, _currentObjectName);
+            }
+            else if (category.CompareTo(Defs.k_GameDescCategory) == 0)
+            {
+                var packages = jsonObj.GetValueOrDefault(Defs.k_GameDesc_PackagesKey, null).AsArray;
+                for (int i = 0; i < packages.Count; ++i)
+                {
+                    string packageName = packages[i].ToString();
+                    _instructions.Add($"IMPORT_PACKAGE {packageName}");
+                }
+
+                JSONNode gameWorlds = jsonObj.GetValueOrDefault(Defs.k_GameDesc_GameWorldsKey, null);
+                Interpret(gameWorlds);
             }
 
-            JSONNode gameWorlds = jsonObj.GetValueOrDefault(Defs.k_GameDesc_GameWorldsKey, null);
-            Interpret(gameWorlds);
+            return true;
         }
-
-        return true;
     }
 }

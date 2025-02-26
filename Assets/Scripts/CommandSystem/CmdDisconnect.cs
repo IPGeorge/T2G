@@ -5,35 +5,38 @@ using UnityEngine;
 using T2G.Communicator;
 using System.Threading.Tasks;
 
-public class CmdDisconnect : Command
+namespace T2G
 {
-    public static readonly string CommandKey = "Disconnect";
-
-    public override bool Execute(params string[] args)
+    public class CmdDisconnect : Command
     {
-        CommunicatorClient.Instance.Disconnect();
-        Task.Run(async () => { await WaitForDisconnection(); });
-        return true;
-    }
+        public static readonly string CommandKey = "Disconnect";
 
-
-    async Task WaitForDisconnection()
-    {
-        while (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Disconnecting)
+        public override bool Execute(params string[] args)
         {
-            await Task.Delay(100);
+            CommunicatorClient.Instance.Disconnect();
+            Task.Run(async () => { await WaitForDisconnection(); });
+            return true;
         }
-        OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Disconnected!");
-    }
 
-    public override string GetKey()
-    {
-        return CommandKey.ToLower();
-    }
 
-    public override string[] GetArguments()
-    {
-        string[] args = { };
-        return args;
+        async Task WaitForDisconnection()
+        {
+            while (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Disconnecting)
+            {
+                await Task.Delay(100);
+            }
+            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Disconnected!");
+        }
+
+        public override string GetKey()
+        {
+            return CommandKey.ToLower();
+        }
+
+        public override string[] GetArguments()
+        {
+            string[] args = { };
+            return args;
+        }
     }
 }

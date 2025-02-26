@@ -5,47 +5,50 @@ using UnityEngine;
 using T2G.Communicator;
 using System.Threading.Tasks;
 
-public class CmdConnect : Command
+namespace T2G
 {
-    public static readonly string CommandKey = "Connect";
-
-    public override bool Execute(params string[] args)
+    public class CmdConnect : Command
     {
-        float timeoutScale = 1.0f;
-        if (args.Length > 0)
-        {
-            float.TryParse(args[0], out timeoutScale);
-        }
-        CommunicatorClient.Instance.StartClient();
-         Task.Run(async () => { await WaitForConnection(timeoutScale); });
-        return true;
-    }
+        public static readonly string CommandKey = "Connect";
 
-    async Task WaitForConnection(float timeout)
-    {
-        while (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Connecting)
+        public override bool Execute(params string[] args)
         {
-            await Task.Delay((int)(timeout));
+            float timeoutScale = 1.0f;
+            if (args.Length > 0)
+            {
+                float.TryParse(args[0], out timeoutScale);
+            }
+            CommunicatorClient.Instance.StartClient();
+            Task.Run(async () => { await WaitForConnection(timeoutScale); });
+            return true;
         }
 
-        if (CommunicatorClient.Instance.IsConnected)
+        async Task WaitForConnection(float timeout)
         {
-            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Connected!");
+            while (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Connecting)
+            {
+                await Task.Delay((int)(timeout));
+            }
+
+            if (CommunicatorClient.Instance.IsConnected)
+            {
+                OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Connected!");
+            }
+            else
+            {
+                OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.System, "Timeout!");
+            }
         }
-        else
+
+        public override string GetKey()
         {
-            OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.System, "Timeout!");
+            return CommandKey.ToLower();
         }
-    }
 
-    public override string GetKey()
-    {
-        return CommandKey.ToLower();
-    }
-
-    public override string[] GetArguments()
-    {
-        string[] args = { };
-        return args;
+        public override string[] GetArguments()
+        {
+            string[] args = { };
+            return args;
+        }
     }
 }

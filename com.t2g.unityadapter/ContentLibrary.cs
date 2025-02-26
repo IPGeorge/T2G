@@ -4,8 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-
-namespace T2G.UnityAdapter
+namespace T2G
 {
     public class ContentLibrary
     {

@@ -3,7 +3,7 @@ using SimpleJSON;
 using System.Collections.Generic;
 using System;
 using System.IO;
-using T2G.UnityAdapter;
+using T2G;
 
 public class SampleGameDescLibrary
 {

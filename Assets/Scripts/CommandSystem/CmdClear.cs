@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class CmdClear : Command
+namespace T2G
 {
-    public static readonly string CommandKey = "Clear";
-    public override bool Execute(params string[] args)
+    public class CmdClear : Command
     {
-        ConsoleController.Instance.Clear();
-        return true;
-    }
+        public static readonly string CommandKey = "Clear";
+        public override bool Execute(params string[] args)
+        {
+            ConsoleController.Instance.Clear();
+            return true;
+        }
 
-    public override string GetKey()
-    {
-        return CommandKey.ToLower();
-    }
+        public override string GetKey()
+        {
+            return CommandKey.ToLower();
+        }
 
-    public override string[] GetArguments()
-    {
-         return null;
-    }
+        public override string[] GetArguments()
+        {
+            return null;
+        }
 
+    }
 }

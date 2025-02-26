@@ -9,33 +9,9 @@ namespace T2G.Communicator
 {
     public enum eMessageType : byte
     {
-        //Primitive types
-        Int,
-        Byte,
-        Bytes,
-        Float,
-        Double,
-        Long,
-        Short,
-        UInt,
-        ULong,
-        UShort,
-        PackedInt,
-        PackedFloat,
-        PackedDouble,
-        PackedLong,
-        PackedUInt,
-        PackedULong,
-        String32,
-        String64,
-        String128,
-        String512,
-        String4096,
-        RawBits,
-        //System reserved types
-        SettingsData,
-        //Complex data structures
-        //...
+        PlainText,                //A simple text message
+        T2GSettings,              //the SettingsT2G json data
+        Instruction               //An instruction
     }
 
     public struct MessageStruct
@@ -74,7 +50,6 @@ namespace T2G.Communicator
         protected NetworkDriver _networkDriver;
         protected NativeArray<NetworkConnection> _connections;
         protected JobHandle _jobHandle;
-
 
         protected NativeArray<MessageStruct> _sendMessagePool;
         protected int _sendPoolHead = 0;
@@ -124,6 +99,22 @@ namespace T2G.Communicator
             _sendPoolHead = _sendPoolTail = _receivePoolHead = _receivePoolTail = 0;
         }
 
+        public virtual void Disconnect()
+        {
+            if(_networkDriver.IsCreated)
+            {
+
+            }
+
+            foreach (var connection in _connections)
+            {
+                if(connection.IsCreated)
+                {
+                    connection.Disconnect(_networkDriver);
+                }
+            }
+        }
+
         protected virtual void Dispose()
         {
             if (!IsActive)
@@ -132,7 +123,6 @@ namespace T2G.Communicator
             }
 
             _jobHandle.Complete();
-
             _connections.Dispose();
             _sendMessagePool.Dispose();
             _receiveMessagePool.Dispose();
@@ -141,26 +131,17 @@ namespace T2G.Communicator
             _networkDriver.Dispose();
         }
 
-        public bool IsActive => (_networkDriver.IsCreated && _networkDriver.Listening);
+        public virtual bool IsActive => (_networkDriver.IsCreated);
 
         public bool IsSendPoolEmpty => (_sendPoolHead == _sendPoolTail);
         public bool IsReceivePoolEmpty => (_receivePoolHead == _receivePoolTail);
         public bool IsReceivingPoolFull => (
             (_receivePoolTail > 0 && _receivePoolHead == _receivePoolTail - 1)
             || (_receivePoolTail == 0 && _receivePoolHead == _receiveMessagePool.Length - 1));
-        public virtual bool IsConnected
-        {
-            get
-            {
-                return (_networkDriver.IsCreated &&
-                        _connections != null && 
-                        _connections.IsCreated && 
-                        _connections.Length > 0 && 
-                        _connections[0].IsCreated);
-            }
-        }
 
-        public bool SendMessage(MessageStruct messageData)
+        public virtual bool IsConnected => false;
+
+        bool SendMessage(MessageStruct messageData)
         {
             if (_sendPoolTail == 0 && _sendPoolHead == _sendMessagePool.Length - 1 ||
                 _sendPoolTail > 0 && _sendPoolHead == _sendPoolTail - 1)
@@ -177,7 +158,7 @@ namespace T2G.Communicator
             return true;
         }
 
-        public bool SendMessage(string message)
+        public bool SendMessage(eMessageType type, string message)
         {
             if(string.IsNullOrEmpty(message))
             {
@@ -186,7 +167,7 @@ namespace T2G.Communicator
 
             MessageStruct msg = new MessageStruct
             {
-                Type = eMessageType.String4096,
+                Type = type,
                 Message = message
             };
             SendMessage(msg); 
@@ -195,7 +176,7 @@ namespace T2G.Communicator
         }
 
 
-        public bool GetReceivedMessage(out MessageStruct messageData)
+        public bool PopReceivedMessage(out MessageStruct messageData)
         {
             if (IsReceivePoolEmpty)
             {
@@ -209,6 +190,21 @@ namespace T2G.Communicator
                 _receivePoolTail = 0;
             }
             return true;
+        }
+
+        protected bool PoolReceivedMessage(eMessageType type, string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return false;
+            }
+
+            MessageStruct msg = new MessageStruct
+            {
+                Type = type,
+                Message = message
+            };
+            return PoolReceivedMessage(msg);
         }
 
         protected bool PoolReceivedMessage(MessageStruct messageData)
@@ -241,24 +237,31 @@ namespace T2G.Communicator
             return true;
         }
 
-        protected virtual void SendPooledMessege()
+        protected bool PopSendMessage(out MessageStruct messageToSend)
         {
             if (_sendPoolHead != _sendPoolTail)
             {
-                var sendMessage = _sendMessagePool[_sendPoolTail++];
-                if(_sendPoolTail >= SendMessagePoolSize)
+                messageToSend = _sendMessagePool[_sendPoolTail++];
+                if (_sendPoolTail >= SendMessagePoolSize)
                 {
                     _sendPoolTail = 0;
                 }
+                return true;
+            }
 
-                if (sendMessage.Message.Length <= MaxMessageLength)
-                {
-                    _networkDriver.BeginSend(_networkpipeline, _connections[0], out var writer);
-                    writer.WriteInt((int)(sendMessage.Type));
-                    writer.WriteFixedString4096(sendMessage.Message);
-                    _networkDriver.EndSend(writer);
-                    OnSentMessage?.Invoke(sendMessage.Message.ToString());
-                }
+            messageToSend = default(MessageStruct);
+            return false;
+        }
+
+        protected virtual void SendPooledMessege()
+        {
+            if (PopSendMessage(out var sendMessage) && sendMessage.Message.Length <= MaxMessageLength)
+            {
+                _networkDriver.BeginSend(_networkpipeline, _connections[0], out var writer);
+                writer.WriteInt((int)(sendMessage.Type));
+                writer.WriteFixedString4096(sendMessage.Message);
+                _networkDriver.EndSend(writer);
+                OnSentMessage?.Invoke(sendMessage.Message.ToString());
             }
         }
 
@@ -266,29 +269,19 @@ namespace T2G.Communicator
             ref NativeArray<NetworkConnection> Connections, 
             ref NetworkDriver Driver)
         {
-            if (_sendPoolHead != _sendPoolTail)
+            if (PopSendMessage(out var sendMessage) && sendMessage.Message.Length <= MaxMessageLength)
             {
-                var sendMessage = SendPool[_sendPoolTail++];
-                if (_sendPoolTail >= SendMessagePoolSize)
-                {
-                    _sendPoolTail = 0;
-                }
-
-                if (sendMessage.Message.Length <= MaxMessageLength)
-                {
-                    Driver.BeginSend(_networkpipeline, Connections[0], out var writer);
-                    writer.WriteInt((int)(sendMessage.Type));
-                    writer.WriteFixedString4096(sendMessage.Message);
-                    Driver.EndSend(writer);
-                    OnSentMessage?.Invoke(sendMessage.Message.ToString());
-                }
+                Driver.BeginSend(_networkpipeline, Connections[0], out var writer);
+                writer.WriteInt((int)(sendMessage.Type));
+                writer.WriteFixedString4096(sendMessage.Message);
+                Driver.EndSend(writer);
+                OnSentMessage?.Invoke(sendMessage.Message.ToString());
             }
         }
 
         protected virtual void ProcessPooledReceivedMessage()
         {
-            MessageStruct messageData;
-            if(GetReceivedMessage(out messageData))
+            if(PopReceivedMessage(out var messageData))
             {
                 OnReceivedMessage?.Invoke(messageData.Message.ToString());
             }

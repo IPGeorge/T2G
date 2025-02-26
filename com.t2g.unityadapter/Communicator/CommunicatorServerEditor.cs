@@ -122,23 +122,6 @@ namespace T2G.Communicator
 #endif
         }
 
-        private void Update()
-        {
-            RepaintText();
-        }
-
-        void RepaintText()
-        {
-            if (_repaintText)
-            {
-                if (_CommunicatorWindow == null)
-                {
-                    _CommunicatorWindow = GetWindow<CommunicatorServerEditor>();
-                }
-                _CommunicatorWindow?.Repaint();
-            }
-        }
-
         static void AddConsoleText(string textToAdd)
         {
             _text += textToAdd;
@@ -195,6 +178,23 @@ namespace T2G.Communicator
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             _text = EditorGUILayout.TextArea(_text, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();
+        }
+
+        private void Update()
+        {
+            RepaintText();
+        }
+
+        void RepaintText()
+        {
+            if (_repaintText)
+            {
+                if (_CommunicatorWindow == null)
+                {
+                    _CommunicatorWindow = GetWindow<CommunicatorServerEditor>();
+                }
+                _CommunicatorWindow?.Repaint();
+            }
         }
 
         public static CommunicatorServer GetServer()

@@ -1,18 +1,21 @@
 using SimpleJSON;
 
-public partial class Interpreter
+namespace T2G
 {
-    public static bool INS_CreateGameWorld(JSONObject gameWorld, ref string worldName)
+    public partial class Interpreter
     {
-        worldName = gameWorld.GetValueOrDefault(Defs.k_GameDesc_NameKey, string.Empty).ToString();
-        var isBootstrap = gameWorld.GetValueOrDefault("IsBootstrap", false).AsBool;
-        var gravity = gameWorld.GetValueOrDefault("Gravity", -9.8f).AsFloat;
-        if (IsNotEmptyString(worldName))
+        public static bool INS_CreateGameWorld(JSONObject gameWorld, ref string worldName)
         {
-            _instructions.Add($"CREATE_WORLD {worldName} -BOOTSTRAP {isBootstrap} -GRAVITY {gravity}");
-            worldName = worldName.Trim('"');
-            return true;
+            worldName = gameWorld.GetValueOrDefault(Defs.k_GameDesc_NameKey, string.Empty).ToString();
+            var isBootstrap = gameWorld.GetValueOrDefault("IsBootstrap", false).AsBool;
+            var gravity = gameWorld.GetValueOrDefault("Gravity", -9.8f).AsFloat;
+            if (IsNotEmptyString(worldName))
+            {
+                _instructions.Add($"CREATE_WORLD {worldName} -BOOTSTRAP {isBootstrap} -GRAVITY {gravity}");
+                worldName = worldName.Trim('"');
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 }
