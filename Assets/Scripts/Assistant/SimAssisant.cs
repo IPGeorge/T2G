@@ -217,7 +217,7 @@ namespace T2G
                 console.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Project was opened and connected!");
             }
 
-            string[] instructions = Interpreter.InterpretGameDesc(gameDescJson);
+            string[] instructions = await Interpreter.Instance.InterpretGameDesc(gameDescJson);
 
             int errorCode = 0;
             for (int i = 0; i < instructions.Length; ++i)
@@ -308,7 +308,7 @@ namespace T2G
         async Task<string> PromptToInstruct(string prompt)
         {
             int errorCode = 0;
-            string[] instructions = Interpreter.InterpretPrompt(prompt);
+            string[] instructions = new string[1]; //= await Interpreter.Instance.InterpretPrompt(prompt);
 
             if (instructions == null || instructions.Length == 0)
             {

@@ -7,7 +7,7 @@ namespace T2G
     {
         public static bool INS_CreateObject(JSONObject jsonObj, ref string objectName)
         {
-            string world = Interpreter.CurrentWorldName;
+            string world = Interpreter.Instance.CurrentWorldName;
             objectName = jsonObj.GetValueOrDefault(Defs.k_GameDesc_NameKey, "NoNameObject").ToString();
             var position = jsonObj.GetValueOrDefault(Defs.k_GameDesc_PositionKey, string.Empty).ToString();
             var rotation = jsonObj.GetValueOrDefault(Defs.k_GameDesc_RotationKey, string.Empty).ToString();

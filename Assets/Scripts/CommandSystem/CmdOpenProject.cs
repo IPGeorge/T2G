@@ -8,7 +8,7 @@ namespace T2G
 {
     public class CmdOpenProject : Command
     {
-        public static readonly string CommandKey = "OpenProject";
+        public static readonly string CommandKey = "open_project";
 
         private string _projectPathName;
         private Process _process;

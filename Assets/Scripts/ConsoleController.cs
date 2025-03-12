@@ -91,14 +91,18 @@ namespace T2G
             communicatorClient.OnReceivedMessage += HandleOnReceivedMessage;
         }
 
+        void Test()
+        {
+            //var ins = Interpreter.Instance.InterpretPrompt("create a game project c:\\mygames\\myshooter");
+            //ins = Interpreter.Instance.InterpretPrompt("init project c:\\mygames\\myshooter");
+            //ins = Interpreter.Instance.InterpretPrompt("open project c:\\mygames\\myshooter");
+            //ins = Interpreter.Instance.InterpretPrompt("");
+            //ins = Interpreter.Instance.InterpretPrompt("");
+        }
+
         void Start()
         {
-            var ins = Interpreter.InterpretPrompt("add enemy");
-            ins = Interpreter.InterpretPrompt("add 1 enemy");
-            ins = Interpreter.InterpretPrompt("add 2 enemies");
-            ins = Interpreter.InterpretPrompt("add an enemies");
-            ins = Interpreter.InterpretPrompt("Please add 2 enemies");
-
+            Test();
 
             _rectTransform = (RectTransform)transform;
 
@@ -251,24 +255,31 @@ namespace T2G
 
         public void OnInputEnds(string inputString)
         {
-            string inputStr = _InputMessage.text;
+            string inputText = _InputMessage.text;
             if (string.IsNullOrWhiteSpace(inputString))
             {
                 return;
             }
             else
             {
-                inputStr = inputString;
+                inputText = inputString;
             }
 
             //Input history
-            WriteConsoleMessage(eSender.User, inputStr);
-            _inputHistory.Add(inputStr);
+            WriteConsoleMessage(eSender.User, inputText);
+            _inputHistory.Add(inputText);
             _inputHistoryIndex = _inputHistory.Count;
             if (_inputHistory.Count > _maxInputHistorySize)
             {
                 _inputHistory.RemoveRange(0, _maxInputHistorySize / 10);
             }
+
+            Assistant.Instance.ProcessInput(inputText, (response)=> 
+            {
+                WriteConsoleMessage(eSender.Assistant, response);
+            });
+
+/*old
 
             //Execute if it is a command 
             if (CommandSystem.Instance.IsCommand(inputStr))             //Process command
@@ -295,6 +306,7 @@ namespace T2G
                     WriteConsoleMessage(eSender.Assistant, responseMessage);
                 });
             }
+*/
 
             //Clear input
             _InputMessage.text = string.Empty;

@@ -53,7 +53,7 @@ namespace T2G
             SetViewPanel(0);
         }
 
-        public void SetViewPanel(int viewIndex)
+        public async void SetViewPanel(int viewIndex)
         {
             _ProfileView.SetActive(viewIndex == 0);
             _JsonView.SetActive(viewIndex == 1);
@@ -66,7 +66,7 @@ namespace T2G
             if (viewIndex == 2)
             {
                 _InputCommands.text = string.Empty;
-                var instructions = Interpreter.InterpretGameDesc(_InputJson.text);
+                var instructions = await Interpreter.Instance.InterpretGameDesc(_InputJson.text);
                 foreach (var cmd in instructions)
                 {
                     _InputCommands.text += cmd + "\n";

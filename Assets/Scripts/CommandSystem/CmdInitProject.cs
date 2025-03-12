@@ -11,7 +11,7 @@ namespace T2G
 {
     public class CmdInitProject : Command
     {
-        public static readonly string CommandKey = "InitProject";
+        public static readonly string CommandKey = "init_project";
         static readonly string k_T2g_UnityAdapter = "com.t2g.unityadapter";
         static readonly string k_unity_ugui = "com.unity.ugui";
         static readonly string k_unity_ugui_version = "2.0.0";

@@ -7,7 +7,7 @@ namespace T2G
 {
     public class CmdCreateProject : Command
     {
-        public static readonly string CommandKey = "CreateProject";
+        public static readonly string CommandKey = "create_project";
 
         private string _projectPathName;
         private Process _process;

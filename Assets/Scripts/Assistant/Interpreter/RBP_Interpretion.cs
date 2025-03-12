@@ -39,7 +39,7 @@ namespace T2G
                 //(please\s+)?: optional with the world "please" and certain number of spaces
                 //(add|place|create)\s+: one of "add", ""place", or "create" followed with one or certain number of spaces
                 //(?<x>(a|an|\d+))?: match group index alias name "x". it can be "a", "an", or a number (one or more digits).
-                //                   This section is aoptional
+                //                   This section is optional
                 //\s*: no or some spaces
                 //(enemy|enemies)$\s*: end with "enemy" or "enemies" followed by no or some spaces is accepted.. 
             (@"(?i)^\s*(please\s+)?(set|change)\s+(move speed)\s+(?<x>\d+)\s*", GenInstructions_SetMoveSpeed),  //units
