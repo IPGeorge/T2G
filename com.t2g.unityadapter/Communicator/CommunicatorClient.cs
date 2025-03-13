@@ -88,6 +88,7 @@ namespace T2G.Communicator
                 }
                 _connections[0].Disconnect(_networkDriver);
                 _networkDriver.ScheduleUpdate().Complete();
+                OnDisconnectedFromServer?.Invoke();
                 ClientState = eClientState.Disconnected;
             }
         }

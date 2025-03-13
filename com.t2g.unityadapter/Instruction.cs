@@ -9,30 +9,31 @@ namespace T2G
         public enum EExecutionType
         {
             Void,
-            LocalCommand,          //executed locally
-            ParseGameDesc,             //Parse GameDesc data intro instructions
-            EngineInstruction          //Send to the engine for execution
+            LocalCmd,            //executed locally
+            EditingOp,           //Send to the engine for execution
+            GameDesc             //GameDesc data into instructions to create a project
         }
         public EExecutionType ExecutionType = EExecutionType.Void;
-        public bool DependentCommand = false;
+        public bool RequiresPreviousSuccess = false;    //Indicates if it depends on previous success.
 
         public enum EInstructionState
         {
             Empty,
             Raw,
-            Resolved
+            Resolved,
+            ResolveWithMissingResource
         }
         public EInstructionState State = EInstructionState.Empty;
 
+        public string KeyWord = string.Empty;
         public enum EParameterType
         {
-            StringValue,
-            Parameters,
+            Empty,
+            SingleParameter,
+            MultipleParameters,
             JsonData
         }
-
-        public string Key = string.Empty;
-        public EParameterType ParamType = EParameterType.StringValue;
+        public EParameterType ParamType = EParameterType.SingleParameter;
         public string parameter = string.Empty;       //JSON data
     }
 }

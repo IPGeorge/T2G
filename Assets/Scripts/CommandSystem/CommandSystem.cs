@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
-using Newtonsoft.Json;
-using System.Collections;
+using System.Threading.Tasks;
 
 namespace T2G
 {
@@ -14,10 +11,6 @@ namespace T2G
         public static CommandSystem Instance => _instance;
 
         private Dictionary<string, Type> _commandsRegistry = new Dictionary<string, Type>();
-
-        class CommandRecord { public Command Command; public string[] Args; };
-
-        Queue<CommandRecord> _executionQueue = new Queue<CommandRecord>();
 
         void RegisterCommands()
         {
@@ -32,16 +25,6 @@ namespace T2G
         private void Awake()
         {
             _instance = this;
-        }
-
-        private void OnEnable()
-        {
-            StartCoroutine(ExecuteQueuedCommand());
-        }
-
-        private void OnDisable()
-        {
-            StopAllCoroutines();
         }
 
         void Start()
@@ -62,49 +45,29 @@ namespace T2G
             return _commandsRegistry.ContainsKey(cmd);
         }
 
-        public bool ExecuteCommand(Action<bool, ConsoleController.eSender, string> OnExecutionCompleted,
-            string commandKey, params string[] args)
+        public async Awaitable<bool> ExecuteCommand(string commandKey, params string[] args)
         {
             commandKey = commandKey.ToLower();
             if (!_commandsRegistry.ContainsKey(commandKey))
             {
                 return false;
             }
-
+            bool waitingForCompletion = true;
             var command = (Command)Activator.CreateInstance(_commandsRegistry[commandKey]);
-            command.OnExecutionCompleted = OnExecutionCompleted;
-            _executionQueue.Enqueue(new CommandRecord() { Command = command, Args = args });
-            return true;
-        }
-
-        IEnumerator ExecuteQueuedCommand()
-        {
-            bool isBusy = false;
-            while (gameObject.activeSelf)
+            command.OnExecutionCompleted = (result, sender, message) => 
             {
-                if (!isBusy && _executionQueue.Count > 0)
+                waitingForCompletion = false;
+            };
+            command.Execute(args);
+
+            await Task.Run(async () => 
+            { 
+                while(waitingForCompletion)
                 {
-                    isBusy = true;
-                    var cmdRec = _executionQueue.Dequeue();
-                    cmdRec.Command.OnExecutionCompleted += (succeeded, sender, message) => {
-                        isBusy = false;
-                    };
-                    cmdRec.Command.Execute(cmdRec.Args);
+                    await Task.Delay(100);
                 }
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-
-        public bool ExecuteCommandImmediately(Action<bool, ConsoleController.eSender, string> OnExecutionCompleted,
-        string commandKey, params string[] args)
-        {
-            if (_commandsRegistry.ContainsKey(commandKey))
-            {
-                var command = (Command)Activator.CreateInstance(_commandsRegistry[commandKey]);
-                command.OnExecutionCompleted = OnExecutionCompleted;
-                return command.Execute(args);
-            }
-            return false;
+            });
+            return true;
         }
     }
 }

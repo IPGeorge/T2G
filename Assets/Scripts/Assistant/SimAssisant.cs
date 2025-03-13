@@ -114,57 +114,20 @@ namespace T2G
 
         async Task CreateProjectFromGameDesc(GameDesc gameDesc)
         {
-            bool completed = false;
             string[] args = new string[1] { gameDesc.GetProjectPathName() };
-            CommandSystem.Instance.ExecuteCommand(
-                (succeeded, sender, message) =>
-                {
-                    completed = true;
-                }
-                , "CreateProject"
-                , args
-                );
-
-            while (!completed)
-            {
-                await Task.Delay(100);
-            }
+            await CommandSystem.Instance.ExecuteCommand("CreateProject", args);
         }
 
         async Task InitProject(GameDesc gameDesc)
         {
-            bool completed = false;
             string[] args = new string[1] { gameDesc.GetProjectPathName() };
-            CommandSystem.Instance.ExecuteCommand(
-                (succeeded, sender, message) =>
-                {
-                    completed = true;
-                }
-                , "InitProject"
-                , args
-                );
-            while (!completed)
-            {
-                await Task.Delay(100);
-            }
+            await CommandSystem.Instance.ExecuteCommand("InitProject", args);
         }
 
         async Task OpenProject(GameDesc gameDesc)
         {
-            bool completed = false;
             string[] args = new string[1] { gameDesc.GetProjectPathName() };
-            CommandSystem.Instance.ExecuteCommand(
-                (succeeded, sender, message) =>
-                {
-                    completed = true;
-                }
-                , "OpenProject"
-                , args
-                );
-            while (!completed)
-            {
-                await Task.Delay(100);
-            }
+            await CommandSystem.Instance.ExecuteCommand("OpenProject", args);
         }
 
         async Task<bool> Connect(float timeout = 300.0f)

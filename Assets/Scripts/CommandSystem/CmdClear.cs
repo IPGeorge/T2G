@@ -4,7 +4,7 @@ namespace T2G
 {
     public class CmdClear : Command
     {
-        public static readonly string CommandKey = "Clear";
+        public static readonly string CommandKey = "clear";
         public override bool Execute(params string[] args)
         {
             ConsoleController.Instance.Clear();

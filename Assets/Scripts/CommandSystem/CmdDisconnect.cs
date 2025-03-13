@@ -9,7 +9,7 @@ namespace T2G
 {
     public class CmdDisconnect : Command
     {
-        public static readonly string CommandKey = "Disconnect";
+        public static readonly string CommandKey = "disconnect";
 
         public override bool Execute(params string[] args)
         {

@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace T2G
 {
-    [Translator("init_project")]
-    public class InitProject_Translator : Translator
+    [Translator("open_project")]
+    public class OpenProject_Translator : Translator
     {
         public override bool Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
@@ -12,13 +12,13 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.KeyWord = CmdInitProject.CommandKey;
+            instruction.KeyWord = CmdOpenProject.CommandKey;
             instruction.ParamType = Instruction.EParameterType.SingleParameter;
             instruction.parameter = GetParamFromArguments(arguments, "path");
             if (instruction.parameter == null)
             {
                 instruction.parameter = PlayerPrefs.GetString(Defs.k_GameProjectPath, string.Empty);
-                if(string.IsNullOrEmpty(instruction.parameter))
+                if (string.IsNullOrEmpty(instruction.parameter))
                 {
                     return false;
                 }

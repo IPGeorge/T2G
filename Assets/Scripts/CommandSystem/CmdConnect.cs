@@ -9,7 +9,7 @@ namespace T2G
 {
     public class CmdConnect : Command
     {
-        public static readonly string CommandKey = "Connect";
+        public static readonly string CommandKey = "connect";
 
         public override bool Execute(params string[] args)
         {

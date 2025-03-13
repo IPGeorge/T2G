@@ -89,6 +89,7 @@ namespace T2G
             communicatorClient.OnFailedToConnectToServer += HandleOnFailedConnectToServer;
             communicatorClient.OnConnectedToServer += HandleOnConnectedToServer;
             communicatorClient.OnReceivedMessage += HandleOnReceivedMessage;
+            communicatorClient.OnDisconnectedFromServer += HandleOnDisconnectedFromServer;
         }
 
         void Test()
@@ -122,6 +123,7 @@ namespace T2G
             communicatorClient.OnReceivedMessage -= HandleOnReceivedMessage;
             communicatorClient.OnFailedToConnectToServer -= HandleOnFailedConnectToServer;
             communicatorClient.OnConnectedToServer -= HandleOnConnectedToServer;
+            communicatorClient.OnDisconnectedFromServer -= HandleOnDisconnectedFromServer;
             communicatorClient.Disconnect();
 
             _CommandOptions.onValueChanged.RemoveAllListeners();
@@ -399,6 +401,11 @@ namespace T2G
             WriteConsoleMessage(eSender.System, "Connected to the project!");
             var settingsJson = SettingsT2G.ToJson(false);
             CommunicatorClient.Instance.SendMessage(eMessageType.T2GSettings, settingsJson);
+        }
+
+        public void HandleOnDisconnectedFromServer()
+        {
+            WriteConsoleMessage(eSender.System, "Disconnected from the project!");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace T2G
                 return false;
             }
 
-            if (args.Length < 1)
+            if (args.Length < 1 || string.IsNullOrEmpty(args[0]))
             {
                 string defaultPath = ConsoleController.Instance.ProjectPathName;
 

@@ -22,7 +22,10 @@ namespace T2G
                 //  [^\s]+ --> Matches the rest of the path(until a space appears).
                 //\.? --> Makes the trailing period optional.
             (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?\.?", "init_project"),
-            (@"open\s+(?:game\s+)?project(?:\s+(?<path>[a-zA-Z]:[\\/][^\s]+) (?<prjName>\S+))?", "open_project"),
+            (@"open\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?\.?", "open_project"),
+            (@"^(connect)$(?:\s+\w)?", "connect"),
+            (@"^(disconnect)$(?:\s+\w)?", "disconnect"),
+            (@"(clear|clear all)", "clear"),
             ("", "create_object"),
             ("", "delete_object"),
             ("", "set_object_position"),
