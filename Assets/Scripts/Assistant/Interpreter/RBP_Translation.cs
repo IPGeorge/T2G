@@ -12,7 +12,7 @@ namespace T2G
     {
         (string pattern, string key)[] _rules = {
             (@"^(test|test instruction)$", "test"),
-            (@"(create|create a|create a new|create new)\s+(\w\s+)*game(?:\s+project)?(?:\s+(?:under|at))?\s+(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)?)\.?", "create_project"),
+            (@"(create|create a|create a new|create new)\s+(\w\s+)*(\s+game|project|game project)(?:\s+(?:under|at))?\s+(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)?)\.?", "create_project"),
                 //create\s+(\w\s+)*game(?: project)? --> Matches "create a game" or "create game" and optionally "project".
                 //  (?: project)? --> The (?: ... ) is a non-capturing group, making "project" optional.
                 //(?:under|at) --> Matches either "under" or "at".

@@ -34,7 +34,8 @@ namespace T2G.Executor
     }
 
     
-    public class TextExecution : Execution
+    [Execution("test")]
+    public class TestExecution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {

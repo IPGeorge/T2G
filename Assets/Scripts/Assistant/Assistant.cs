@@ -84,7 +84,7 @@ namespace T2G
             switch(instruction.ExecutionType)
             {
                 case Instruction.EExecutionType.LocalCmd:
-                    result = await CommandSystem.Instance.ExecuteCommand(instruction.KeyWord, instruction.parameter);
+                    result = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.parameter);
                     break;
                 case Instruction.EExecutionType.EditingOp:
                     if(instruction.State == Instruction.EInstructionState.Raw)
@@ -121,7 +121,7 @@ namespace T2G
         async Awaitable<(bool result, string message)> SendToProjectForExecution(Instruction instruction)
         {
             string json = JsonUtility.ToJson(instruction);
-            CommunicatorClient.Instance.SendMessage(eMessageType.Instruction, json);
+            await CommunicatorClient.Instance.SendMessageAsync(eMessageType.Instruction, json);
 
             string messageStr = string.Empty;
             float waitTimeOut = 180.0f;      //hard-coded the waiting timeout seconds

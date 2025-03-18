@@ -10,7 +10,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.KeyWord = CmdCreateProject.CommandKey;
+            instruction.Keyword = CmdCreateProject.CommandKey;
             instruction.ParamType = Instruction.EParameterType.SingleParameter;
             instruction.parameter = GetParamFromArguments(arguments, "path");
             instructions.Add(instruction);

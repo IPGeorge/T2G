@@ -8,6 +8,8 @@ using T2G.Communicator;
 using UnityEngine;
 using SimpleJSON;
 using UnityEditor;
+using Unity.EditorCoroutines.Editor;
+using System.Collections;
 
 namespace T2G.Executor
 {
@@ -27,6 +29,10 @@ namespace T2G.Executor
         }
 
         Dictionary<string, Execution> _executionPool = new Dictionary<string, Execution>();
+        Queue<Instruction> _instructionQueue = new Queue<Instruction>();
+        bool _isActive = false;
+        bool _isBusy = false;
+        bool _prevExecutionSucceeded = true;
 
         public Executor()
         {
@@ -39,6 +45,12 @@ namespace T2G.Executor
                 var execution = Activator.CreateInstance(executionClass) as Execution;
                 _executionPool.Add(attribute.Keyword, execution);
             }
+            EditorCoroutineUtility.StartCoroutine(this.ExecuteQueuedInstructionCoroutine(), this);
+        }
+
+        ~Executor()
+        {
+            _isActive = false;
         }
 
         [InitializeOnLoadMethod]
@@ -49,24 +61,32 @@ namespace T2G.Executor
             {
                 bool succeeded = EditorPrefs.GetBool(Defs.k_InstructionExecutionResponseMessage);
                 string message = EditorPrefs.GetString(Defs.k_InstructionExecutionResponseSucceeded);
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.Add("succeeded", succeeded);
-                jsonObj.Add("message", message);
-                CommunicatorServer.Instance.SendMessage(eMessageType.Response, jsonObj.ToString());
+                SendInstructionExecutionResponse(succeeded, message);
+            }
+        }
+
+        public void EnqueueInstruction(Instruction instruction)
+        {
+            if (instruction != null &&
+                instruction.ExecutionType == Instruction.EExecutionType.EditingOp)
+            {
+                _instructionQueue.Enqueue(instruction);
+            }
+            else
+            {
+                SendInstructionExecutionResponse(false, "Invalid instruction!");
             }
         }
 
         public async Awaitable<bool> Execute(Instruction instruction)
         {
-            if (instruction != null && _executionPool.ContainsKey(instruction.KeyWord))
+            if (instruction != null && _executionPool.ContainsKey(instruction.Keyword))
             {
-                var result = await _executionPool[instruction.KeyWord].Execute(instruction);
+                var result = await _executionPool[instruction.Keyword].Execute(instruction);
 
-                //The following code will be executed when InitializeOnload doesn't happen
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.Add("succeeded", result.succeeded);
-                jsonObj.Add("message", result.message);
-                CommunicatorServer.Instance.SendMessage(eMessageType.Response, jsonObj.ToString());
+                //The following line will be executed when InitializeOnload doesn't happen
+                SendInstructionExecutionResponse(result.succeeded, result.message);
+
                 return result.succeeded;
             }
             else
@@ -74,6 +94,44 @@ namespace T2G.Executor
                 CommunicatorServer.Instance.SendMessage(eMessageType.Response, "");
                 return false;
             }
+        }
+
+        async void ExecuteInstructionASync(Instruction instruction)
+        {
+            _isBusy = true;
+            _prevExecutionSucceeded = await Execute(instruction);
+            _isBusy = false;
+        }
+
+        IEnumerator ExecuteQueuedInstructionCoroutine()
+        {
+            _isActive = true;
+            while(_isActive)
+            {
+                if (!_isBusy && _instructionQueue.Count > 0)
+                {
+                    var instruction = _instructionQueue.Dequeue();
+                    if (!_prevExecutionSucceeded && instruction.RequiresPreviousSuccess)
+                    {
+                        SendInstructionExecutionResponse(_prevExecutionSucceeded,
+                            "Skipped because the previous execution failed!");
+                    }
+                    else
+                    {
+                        ExecuteInstructionASync(instruction);
+                    }
+                }
+
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        static void SendInstructionExecutionResponse(bool succeeded, string message)
+        {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.Add("succeeded", succeeded);
+            jsonObj.Add("message", message);
+            CommunicatorServer.Instance.SendMessage(eMessageType.Response, jsonObj.ToString());
         }
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 using Unity.Networking.Transport;
 using Unity.Jobs;
 using Unity.Collections;
-
+using System.Threading.Tasks;
 
 namespace T2G.Communicator
 {
@@ -77,6 +77,16 @@ namespace T2G.Communicator
             ClientState = eClientState.Connecting;
         }
 
+        public async Awaitable StartClientAsync(bool silent = false)
+        {
+            StartClient(silent);
+
+            while (ClientState == eClientState.Connecting)
+            {
+                await Task.Delay(100);
+            }
+        }
+
         public override void Disconnect()
         {
             _jobHandle.Complete();
@@ -93,15 +103,14 @@ namespace T2G.Communicator
             }
         }
 
-        public override bool SendMessage(eMessageType type, string message)
+        public async Awaitable<bool> SendMessageAsync(eMessageType type, string message)
         {
             if(!IsConnected)
             {
-                StartClient(true);
+                await StartClientAsync(true);
             }
             return base.SendMessage(type, message);
         }
-
 
         protected override void SendPooledMessege()
         {

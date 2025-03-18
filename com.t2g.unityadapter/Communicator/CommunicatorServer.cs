@@ -352,7 +352,19 @@ namespace T2G.Communicator
                                 }
                                 break;
                             case eMessageType.Instruction:
-
+                                {
+                                    JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
+                                    string keyword = jsonObj["Keyword"];
+                                    CommunicatorServer.Instance.OnLogMessage?.Invoke("Instruction: " + keyword);
+                                    Instruction instruction = new Instruction();
+                                    instruction.Keyword = keyword;
+                                    instruction.ParamType = (Instruction.EParameterType)jsonObj["ParamType"].AsInt;
+                                    instruction.parameter = jsonObj["Parameter"];
+                                    instruction.RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
+                                    instruction.ExecutionType = (Instruction.EExecutionType)jsonObj["Parameter"].AsInt;
+                                    instruction.State = (Instruction.EInstructionState)jsonObj["State"].AsInt;
+                                    Executor.Executor.Instance.EnqueueInstruction(instruction);
+                                }
                                 break;
                             case eMessageType.Message:
                             case eMessageType.Response:

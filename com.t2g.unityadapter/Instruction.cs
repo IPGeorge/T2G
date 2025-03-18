@@ -26,7 +26,7 @@ namespace T2G
         }
         public EInstructionState State = EInstructionState.Empty;
 
-        public string KeyWord = string.Empty;
+        public string Keyword = string.Empty;
         public enum EParameterType
         {
             Empty,

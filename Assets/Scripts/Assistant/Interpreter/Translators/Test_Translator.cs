@@ -19,7 +19,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.KeyWord = attribute.InstructionKey;
+            instruction.Keyword = attribute.InstructionKey;
             instruction.ParamType = Instruction.EParameterType.Empty;
             instruction.parameter = string.Empty;
             instructions.Add(instruction);
