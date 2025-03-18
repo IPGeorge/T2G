@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 using T2G.Communicator;
+using SimpleJSON;
 
 namespace T2G.Executor
 {
@@ -13,12 +14,20 @@ namespace T2G.Executor
         public static void RespondCompletion(bool succeeded, string message = null)
             //Succeeded=[true: code=0(completed), code=1(postponed)]; [false: failed]
         {
-            string response = succeeded ? "Done!" : "Failed!";
-            if(!string.IsNullOrEmpty(message))
+            string response;
+            if (!string.IsNullOrEmpty(message))
             {
-                response += $" {message}";
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.Add("succeeded", succeeded);
+                jsonObj.Add("message", message);
+                response = jsonObj.ToString();
+                CommunicatorServer.Instance.SendMessage(eMessageType.Response, response);
             }
-            CommunicatorServer.Instance.SendMessage(eMessageType.PlainText, response);
+            else
+            {
+                response = succeeded ? "Done!" : "Failed!";
+                CommunicatorServer.Instance.SendMessage(eMessageType.Message, response);
+            }
         }
 
         public static float[] ParseFloat2(string float3String)

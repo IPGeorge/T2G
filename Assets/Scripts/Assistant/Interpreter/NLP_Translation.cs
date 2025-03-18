@@ -11,11 +11,11 @@ namespace T2G
             return false;
         }
 
-        public override bool Translate(string prompt, out Instruction[] instructions)
-        {
-            _instructionList.Clear();
-            instructions = _instructionList.ToArray();
-            return (_instructionList.Count > 0);
-        }
+        //public override (bool succeeded, string message) Translate(string prompt, out Instruction[] instructions)
+        //{
+        //    _instructionList.Clear();
+        //    instructions = _instructionList.ToArray();
+        //    return (_instructionList.Count > 0, null);
+        //}
     }
 }

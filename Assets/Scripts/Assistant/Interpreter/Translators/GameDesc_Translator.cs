@@ -6,9 +6,9 @@ namespace T2G
     [Translator("create_project_gamedesc")]
     public class GameDesc_Translator : Translator
     {
-        public override bool Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
+        public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
-            return false;
+            return (true, null);
         }
     }
 }

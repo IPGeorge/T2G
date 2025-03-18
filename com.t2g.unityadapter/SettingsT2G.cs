@@ -1,5 +1,10 @@
 using System;
 using SimpleJSON;
+#if UNITY_EDITOR
+using UnityEditor;
+#else
+using UnityEngine;
+#endif
 
 namespace T2G
 {

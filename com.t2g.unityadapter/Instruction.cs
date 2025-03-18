@@ -1,3 +1,4 @@
+using SimpleJSON;
 using System;
 using UnityEngine;
 
@@ -35,5 +36,23 @@ namespace T2G
         }
         public EParameterType ParamType = EParameterType.SingleParameter;
         public string parameter = string.Empty;       //JSON data
+
+        public Instruction()
+        {
+            ExecutionType = EExecutionType.Void;
+            RequiresPreviousSuccess = false;
+            State = EInstructionState.Empty;
+            ParamType = EParameterType.SingleParameter;
+            parameter = string.Empty;
+        }
+
+        public Instruction(JSONObject jsonObj)
+        {
+            ExecutionType = (EExecutionType)jsonObj["ExecutionType"].AsInt;
+            RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
+            State = (EInstructionState)jsonObj["State"].AsInt;
+            ParamType = (EParameterType)jsonObj["ParamType"].AsInt;
+            parameter = jsonObj["parameter"];
+        }
     }
 }

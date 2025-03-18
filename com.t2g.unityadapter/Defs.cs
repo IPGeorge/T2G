@@ -38,7 +38,12 @@ namespace T2G
         public static readonly string k_WorldObjectCategory = "WorldObject";
         public static readonly string k_ObjectAddonCategory = "Addon";
 
-        //Instruction commands
+        //GameDesc game generations
         public static readonly string k_EndOfGameGeneration = "END_OF_GAME_GENERATION";
+
+        //Instruction
+        public static readonly string k_InstructionExecutionResponseSucceeded = "InstructionExecutionResponseSucceeded";
+        public static readonly string k_InstructionExecutionResponseMessage = "InstructionExecutionResponseMessage";
+        
     }
 }

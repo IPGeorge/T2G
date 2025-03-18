@@ -25,12 +25,12 @@ public abstract class Command
         return EditorPrefs.GetString(SettingsT2G.k_UnityEditorPath);
 
 #else
-        if (!PlayerPrefs.HasKey(Defs.k_UnityEditorPath))
+        if (!PlayerPrefs.HasKey(SettingsT2G.k_UnityEditorPath))
         {
             OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Error, "Unity Editor path is not set!");
             return null;
         }
-        return PlayerPrefs.GetString(Defs.k_UnityEditorPath);
+        return PlayerPrefs.GetString(SettingsT2G.k_UnityEditorPath);
 #endif
     }
     public string GetResourcePath()
@@ -41,9 +41,9 @@ public abstract class Command
             return EditorPrefs.GetString(SettingsT2G.k_ResourcePath);
         }
 #else
-        if (PlayerPrefs.HasKey(Defs.k_ResourcePath))
+        if (PlayerPrefs.HasKey(SettingsT2G.k_ResourcePath))
         {
-            return PlayerPrefs.GetString(Defs.k_ResourcePath);
+            return PlayerPrefs.GetString(SettingsT2G.k_ResourcePath);
         }
 #endif
         else

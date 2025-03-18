@@ -11,6 +11,7 @@ namespace T2G
     public class RBP_Translation : Translation     //Rule-Based Process
     {
         (string pattern, string key)[] _rules = {
+            (@"^(test|test instruction)$", "test"),
             (@"(create|create a|create a new|create new)\s+(\w\s+)*game(?:\s+project)?(?:\s+(?:under|at))?\s+(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)?)\.?", "create_project"),
                 //create\s+(\w\s+)*game(?: project)? --> Matches "create a game" or "create game" and optionally "project".
                 //  (?: project)? --> The (?: ... ) is a non-capturing group, making "project" optional.
@@ -21,23 +22,33 @@ namespace T2G
                 //  [a-zA-Z]:\\ --> Matches a drive letter(C:, D:, etc.).
                 //  [^\s]+ --> Matches the rest of the path(until a space appears).
                 //\.? --> Makes the trailing period optional.
-            (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?\.?", "init_project"),
-            (@"open\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?\.?", "open_project"),
-            (@"^(connect)$(?:\s+\w)?", "connect"),
-            (@"^(disconnect)$(?:\s+\w)?", "disconnect"),
-            (@"(clear|clear all)", "clear"),
-            ("", "create_object"),
-            ("", "delete_object"),
-            ("", "set_object_position"),
-            ("", "set_object_orientation"),
-            ("", "set_object_scale"),
-            ("", "move_object"),
-            ("", "rotate_object"),
-            ("", "scale_object_up"),
-            ("", "select_object"),
-            ("", "set_object_property"),
-            ("", "add_object_component"),
-            ("", "generate_from_gamedesc")
+            (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "init_project"),
+            (@"open\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "open_project"),
+            (@"^(connect|connect to)$(?:\s+\w)?(?:\.)?", "connect"),
+            (@"^(disconnect|disconnect from)$(?:\s+\w)?(?:\.)?", "disconnect"),
+            (@"(clear|clear all)(?:\.)?", "clear"),
+            (@"^create\s+(?:a*\s+new\s+)?(?<type>scene|level|space)(?:\s+named)?\s+(?<name>.+?)(?:\.)?$", "create_space"),
+                //^ --> Start of the string
+                //create\s+ --> Matches "create" followed by one or more spaces
+                //(?:a\s+new\s+)? --> Matches optional "a new " (non-capturing group)
+                //(?<type>scene|level|space) --> Captures "scene", "level", or "space" as the argument named "type"
+                //(?:\s+named)? --> Matches optional " named" (non-capturing group)
+                //\s+(<name>.+?) --> Captures the name (one or more characters after "named" or directly after the type) as tghe argument named "name"
+                //(?:\.)? --> Matches an optional period at the end
+                //$ --> Ensures the command ends there
+            //("", "create_object"),
+            //("", "delete_object"),
+            //("", "set_object_position"),
+            //("", "set_object_orientation"),
+            //("", "set_object_scale"),
+            //("", "move_object"),
+            //("", "rotate_object"),
+            //("", "scale_object_up"),
+            //("", "select_object"),
+            //("", "set_object_property"),
+            //("", "add_object_component"),
+            //("", "create_from_gamedesc"),
+            //("", "save_gamedesc")
         };
 
 

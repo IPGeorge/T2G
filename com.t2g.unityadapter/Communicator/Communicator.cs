@@ -9,9 +9,10 @@ namespace T2G.Communicator
 {
     public enum eMessageType : byte
     {
-        PlainText,                //A simple text message
+        Message,                  //A simple text message
         T2GSettings,              //the SettingsT2G json data
-        Instruction               //An instruction
+        Instruction,              //An instruction
+        Response                  //A response with a data { "result": true, "message":"bla! bla! bla!" }
     }
 
     public struct MessageStruct
@@ -158,7 +159,7 @@ namespace T2G.Communicator
             return true;
         }
 
-        public bool SendMessage(eMessageType type, string message)
+        virtual public bool SendMessage(eMessageType type, string message)
         {
             if(string.IsNullOrEmpty(message))
             {

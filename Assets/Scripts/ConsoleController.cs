@@ -276,9 +276,11 @@ namespace T2G
                 _inputHistory.RemoveRange(0, _maxInputHistorySize / 10);
             }
 
+            _InputMessage.readOnly = true;
             Assistant.Instance.ProcessInput(inputText, (response)=> 
             {
                 WriteConsoleMessage(eSender.Assistant, response);
+                _InputMessage.readOnly = false;
             });
 
 /*old

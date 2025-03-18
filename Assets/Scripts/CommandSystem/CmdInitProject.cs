@@ -15,6 +15,8 @@ namespace T2G
         static readonly string k_T2g_UnityAdapter = "com.t2g.unityadapter";
         static readonly string k_unity_ugui = "com.unity.ugui";
         static readonly string k_unity_ugui_version = "2.0.0";
+        static readonly string k_editor_coroutines = "com.unity.editorcoroutines";
+        static readonly string k_editor_coroutines_version = "1.0.0";
 
         private string _projectPathName;
 
@@ -82,6 +84,16 @@ namespace T2G
                 if (!dependencies.DependencyMap.ContainsKey(k_unity_ugui))
                 {
                     dependencies.DependencyMap.Add(k_unity_ugui, k_unity_ugui_version);
+                }
+
+                if (!dependencies.DependencyMap.ContainsKey(k_unity_ugui))
+                {
+                    dependencies.DependencyMap.Add(k_unity_ugui, k_unity_ugui_version);
+                }
+
+                if (!dependencies.DependencyMap.ContainsKey(k_editor_coroutines))
+                {
+                    dependencies.DependencyMap.Add(k_editor_coroutines, k_editor_coroutines_version);
                 }
 
                 json = JsonConvert.SerializeObject(dependencies, Formatting.Indented);

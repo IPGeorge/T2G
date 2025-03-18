@@ -6,7 +6,7 @@ namespace T2G
     [Translator("open_project")]
     public class OpenProject_Translator : Translator
     {
-        public override bool Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
+        public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
             instructions.Clear();
             Instruction instruction = new Instruction();
@@ -20,11 +20,11 @@ namespace T2G
                 instruction.parameter = PlayerPrefs.GetString(Defs.k_GameProjectPath, string.Empty);
                 if (string.IsNullOrEmpty(instruction.parameter))
                 {
-                    return false;
+                    return (false, k_MissingPath);
                 }
             }
             instructions.Add(instruction);
-            return true;
+            return (true, null);
         }
     }
 }

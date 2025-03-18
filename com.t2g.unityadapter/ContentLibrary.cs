@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 
 using System.IO;
 using UnityEditor;
@@ -8,6 +7,24 @@ namespace T2G
 {
     public class ContentLibrary
     {
+
+        //Find assets =====================================================================================
+        public static bool ResolveInstruction(ref Instruction instruction)
+        {
+            if(instruction.State == Instruction.EInstructionState.Empty || 
+                instruction.State == Instruction.EInstructionState.Resolved)
+            {
+                return true;
+            }
+
+
+
+            return true;
+        }
+
+#if UNITY_EDITOR
+        //Importing assets ===============================================================================
+
         public static int ImportScript(string scriptName, string dependencies)
             //0-imported
             //1-already exists, no import is needed
@@ -97,8 +114,6 @@ namespace T2G
                 return false;
             }
         }
-
+#endif
     }
 }
-
-#endif

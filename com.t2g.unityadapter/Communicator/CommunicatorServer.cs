@@ -289,13 +289,15 @@ namespace T2G.Communicator
             ProcessPooledReceivedMessage();
         }
 
-        protected override void ProcessPooledReceivedMessage()
+        protected async override void ProcessPooledReceivedMessage()
         {
-            if (PopReceivedMessage(out var messageData))
+            if (PopReceivedMessage(out var messageData) && messageData.Type == eMessageType.Instruction)
             {
                 string msg = messageData.Message.ToString();
                 OnReceivedMessage?.Invoke(msg);
-                Executor.Executor.Instance.Execute(msg);
+                JSONObject jsonObj = JSON.Parse(msg).AsObject;
+                Instruction instruction = new Instruction(jsonObj);
+                await Executor.Executor.Instance.Execute(instruction);
             }
         }
 
@@ -349,6 +351,11 @@ namespace T2G.Communicator
                                     CommunicatorServer.Instance.OnLogMessage?.Invoke("Received Resource Path: " + SettingsT2G.RecoursePath);
                                 }
                                 break;
+                            case eMessageType.Instruction:
+
+                                break;
+                            case eMessageType.Message:
+                            case eMessageType.Response:
                             default:
                                 comm.PoolReceivedMessage(receivedMessage, ref ReceivePool);
                                 break;

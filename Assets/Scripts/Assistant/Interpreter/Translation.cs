@@ -20,6 +20,10 @@ namespace T2G
 
     public abstract class Translator
     {
+        protected static string k_FailedToRetrieveAttribute = "Failed to retrieved instruction attribute key!";
+        protected static string k_MissingPath = "Please provide the project path!";
+        protected static string k_MissingName = "Please provide the name!";
+
         /* Function Translate(...)
          * This abstrac function needs to be implemented in sub-classes to generate instructions. 
          * Inputs:
@@ -27,7 +31,7 @@ namespace T2G
          *      instructions: returns the generated raw instructions
          * Returns: true-succeeded; false-failed
          */
-        abstract public bool Translate((string name, string value)[] arguments, ref List<Instruction> instructions);
+        abstract public (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions);
 
         protected string GetParamFromArguments((string name, string value)[] arguments, string paramName)
         {
@@ -107,17 +111,22 @@ namespace T2G
 
         protected List<Instruction> _instructionList = new List<Instruction>();
         
-        public virtual bool Translate(string prompt, out Instruction[] instructions)
+        public virtual (bool succeeded, string message) Translate(string prompt, out Instruction[] instructions)
         {
             _instructionList.Clear();
             if (ParseInstructionData(prompt, out var key, out var arguments) &&
                 _tranlatorPool.ContainsKey(key))
             {
                 var translator = _tranlatorPool[key];
-                translator.Translate(arguments, ref _instructionList);
+                var result = translator.Translate(arguments, ref _instructionList);
+                if(!result.succeeded)
+                {
+                    instructions = _instructionList.ToArray();
+                    return (false, result.message);
+                }
             }
             instructions = _instructionList.ToArray();
-            return (_instructionList.Count > 0);
+            return (_instructionList.Count > 0, null);
         }
 
         abstract protected bool ParseInstructionData(string prompt, out string key, out (string name, string value)[] arguments);

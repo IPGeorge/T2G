@@ -93,6 +93,16 @@ namespace T2G.Communicator
             }
         }
 
+        public override bool SendMessage(eMessageType type, string message)
+        {
+            if(!IsConnected)
+            {
+                StartClient(true);
+            }
+            return base.SendMessage(type, message);
+        }
+
+
         protected override void SendPooledMessege()
         {
             if (ClientState == eClientState.Connecting)

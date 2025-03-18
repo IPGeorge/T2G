@@ -9,7 +9,7 @@ using T2G.Communicator;
 
 namespace T2G.Executor
 {
-
+/* deprecated
     [AddAddon("Perspective Camera")]
     public class AddPerspectiveCamera : AddAddonBase
     {
@@ -302,6 +302,7 @@ namespace T2G.Executor
             }
         }
     }
+*/
 }
 
 #endif

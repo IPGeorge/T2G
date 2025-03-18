@@ -5,7 +5,7 @@ namespace T2G
     [Translator("create_project")]
     public class CreateProject_Translator : Translator
     {
-        public override bool Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
+        public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
@@ -14,7 +14,7 @@ namespace T2G
             instruction.ParamType = Instruction.EParameterType.SingleParameter;
             instruction.parameter = GetParamFromArguments(arguments, "path");
             instructions.Add(instruction);
-            return (instruction.parameter != null);
+            return (instruction.parameter != null, null);
         }
     }
 }

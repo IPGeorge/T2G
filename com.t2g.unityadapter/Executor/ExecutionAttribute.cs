@@ -1,7 +1,10 @@
 #if UNITY_EDITOR
 
+using SimpleJSON;
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using T2G.Communicator;
+using UnityEditor;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -9,31 +12,44 @@ namespace T2G.Executor
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class ExecutionAttribute : Attribute
     {
-        public string Instruction { get; private set; }
+        public string Keyword { get; private set; }
 
-        public ExecutionAttribute(string instruction)
+        public ExecutionAttribute(string keyword)
         {
-            Instruction = instruction;
+            Keyword = keyword;
         }
     }
 
-    public abstract class ExecutionBase
+    public abstract class Execution
     {
-        protected static GameObject s_currentObject = null;
-        public ExecutionBase() {  }
-        public static void SetCurrentObject(GameObject gameObject)
+        public Execution() {  }
+
+
+        public abstract Awaitable<(bool succeeded, string message)> Execute(Instruction instruction);
+        protected virtual void StoreResponseForInitializeOnLoad()
         {
-            s_currentObject = gameObject;
+            EditorPrefs.SetBool(Defs.k_InstructionExecutionResponseMessage, true);
+            EditorPrefs.SetString(Defs.k_InstructionExecutionResponseSucceeded, "Done!");
         }
-        public abstract void HandleExecution(Executor.Instruction instruction);
     }
 
+    
+    public class TextExecution : Execution
+    {
+        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        {
+            await Task.Delay(1000);
+            return (true, "Test response Ok!");
+        }
+    }
+
+/*
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class AddAddonAttribute : Attribute
+    public class AddComponentAttribute : Attribute
     {
         public string AddonType { get; private set; }
 
-        public AddAddonAttribute(string addonType)
+        public AddComponentAttribute(string addonType)
         {
             AddonType = addonType;
         }
@@ -44,6 +60,7 @@ namespace T2G.Executor
         public AddAddonBase() { }
         public abstract void AddAddon(GameObject gameObject, List<string> properties);
     }
+*/
 }
 
 #endif

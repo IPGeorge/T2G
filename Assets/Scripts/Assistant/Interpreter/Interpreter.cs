@@ -43,18 +43,21 @@ namespace T2G
             _gameDesc = new GameDesc();
         }
 
-        public async Awaitable<Instruction[]> InterpretPrompt(string prompt)
+        public async Awaitable<(Instruction[] instructions, string responseMessage)> InterpretPrompt(string prompt)
         {
             await Task.Delay(100);
             Instruction[] instructions = { };
+            string responseMessage = null;
             for (int i = 0; i < _translations.Count; ++i)
             {
-                if (_translations[i].translator.Translate(prompt, out instructions))
+                var result = _translations[i].translator.Translate(prompt, out instructions);
+                responseMessage = result.message;
+                if (result.succeeded)
                 {
                     break;
                 }
             }
-            return instructions;
+            return (instructions, responseMessage);
         }
 
 

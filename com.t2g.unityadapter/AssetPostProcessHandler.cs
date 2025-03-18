@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 
 namespace T2G
@@ -18,3 +19,4 @@ namespace T2G
         }
     }
 }
+#endif
