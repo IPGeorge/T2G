@@ -35,33 +35,25 @@ namespace T2G.Executor
 
     
     [Execution("test")]
-    public class TestExecution : Execution
+    public class test_Execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             await Task.Delay(1000);
-            return (true, "Test response Ok!");
+            return (true, "Ok!");
         }
     }
 
-/*
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class AddComponentAttribute : Attribute
+    [Execution("invalid")]
+    public class invalid_Execution : Execution
     {
-        public string AddonType { get; private set; }
-
-        public AddComponentAttribute(string addonType)
+        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
-            AddonType = addonType;
+            await Task.Delay(100);
+            return (true, "Invalid instruction!");
         }
     }
 
-    public abstract class AddAddonBase
-    {
-        public AddAddonBase() { }
-        public abstract void AddAddon(GameObject gameObject, List<string> properties);
-    }
-*/
 }
 
 #endif

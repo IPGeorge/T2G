@@ -85,7 +85,7 @@ namespace T2G.Communicator
                 AddConsoleText("\n System> Client was disconnected!");
             };
 
-            communicatorServer.OnReceivedMessage += (message) =>
+            communicatorServer.OnReceivedMessage += (type, message) =>
             {
                 AddConsoleText("\n Received> " + message);
             };

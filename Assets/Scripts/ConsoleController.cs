@@ -389,13 +389,13 @@ namespace T2G
             }
         }
 
-        void HandleOnReceivedMessage(string message)
-        {
-            WriteConsoleMessage(eSender.System, message);
-            //Client received message. Process it ...
-            //Assistant may want to handle this callback as well
-            //...
 
+        void HandleOnReceivedMessage(eMessageType type, string message)
+        {
+            if (type != eMessageType.Response)
+            {
+                WriteConsoleMessage(eSender.System, message);
+            }
         }
 
         public void HandleOnConnectedToServer()

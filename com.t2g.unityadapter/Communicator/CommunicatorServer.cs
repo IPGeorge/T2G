@@ -275,7 +275,7 @@ namespace T2G.Communicator
 
             if (IsConnected)
             {
-                var sendReceiveJob = new ServerSendReceiveJob()
+                var sendReceiveJob = new ServerReceiveJob()
                 {
                     Driver = _networkDriver,
                     Connections = _connections,
@@ -284,6 +284,8 @@ namespace T2G.Communicator
                 };
                 _jobHandle = sendReceiveJob.Schedule(_jobHandle);
                 _jobHandle.Complete();
+
+                CommunicatorServer.Instance.SendPooledMessege(ref _sendMessagePool, ref _connections, ref _networkDriver);
             }
 
             ProcessPooledReceivedMessage();
@@ -294,7 +296,7 @@ namespace T2G.Communicator
             if (PopReceivedMessage(out var messageData) && messageData.Type == eMessageType.Instruction)
             {
                 string msg = messageData.Message.ToString();
-                OnReceivedMessage?.Invoke(msg);
+                OnReceivedMessage?.Invoke(eMessageType.Instruction, msg);
                 JSONObject jsonObj = JSON.Parse(msg).AsObject;
                 Instruction instruction = new Instruction(jsonObj);
                 await Executor.Executor.Instance.Execute(instruction);
@@ -316,7 +318,7 @@ namespace T2G.Communicator
             }
         }
 
-        struct ServerSendReceiveJob : IJob
+        struct ServerReceiveJob : IJob
         {
             public NetworkDriver Driver;
             public NativeArray<NetworkConnection> Connections;
@@ -348,20 +350,20 @@ namespace T2G.Communicator
                             case eMessageType.T2GSettings:
                                 {
                                     SettingsT2G.FromJson(receivedMessage.Message.ToString(), false);
-                                    CommunicatorServer.Instance.OnLogMessage?.Invoke("Received Resource Path: " + SettingsT2G.RecoursePath);
+                                    comm.OnLogMessage?.Invoke("Received Resource Path: " + SettingsT2G.RecoursePath);
                                 }
                                 break;
                             case eMessageType.Instruction:
                                 {
                                     JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
                                     string keyword = jsonObj["Keyword"];
-                                    CommunicatorServer.Instance.OnLogMessage?.Invoke("Instruction: " + keyword);
+                                    comm.OnLogMessage?.Invoke("Instruction: " + keyword);
                                     Instruction instruction = new Instruction();
                                     instruction.Keyword = keyword;
                                     instruction.ParamType = (Instruction.EParameterType)jsonObj["ParamType"].AsInt;
                                     instruction.parameter = jsonObj["Parameter"];
                                     instruction.RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
-                                    instruction.ExecutionType = (Instruction.EExecutionType)jsonObj["Parameter"].AsInt;
+                                    instruction.ExecutionType = (Instruction.EExecutionType)jsonObj["ExecutionType"].AsInt;
                                     instruction.State = (Instruction.EInstructionState)jsonObj["State"].AsInt;
                                     Executor.Executor.Instance.EnqueueInstruction(instruction);
                                 }
@@ -376,11 +378,9 @@ namespace T2G.Communicator
                     else if (command == NetworkEvent.Type.Disconnect)
                     {
                         Connections[0] = default;
-                        CommunicatorServer.Instance.OnClientDisconnected?.Invoke();
+                        comm.OnClientDisconnected?.Invoke();
                     }
                 }
-
-                comm.SendPooledMessege(ref SendPool, ref Connections, ref Driver);
             }
         }
     }

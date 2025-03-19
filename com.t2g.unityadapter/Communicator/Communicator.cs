@@ -33,7 +33,7 @@ namespace T2G.Communicator
 
         public Action<string> OnSystemError;
         public Action<string> OnSentMessage;
-        public Action<string> OnReceivedMessage;
+        public Action<eMessageType, string> OnReceivedMessage;
 
         public enum eNetworkPipeline
         {
@@ -284,7 +284,7 @@ namespace T2G.Communicator
         {
             if(PopReceivedMessage(out var messageData))
             {
-                OnReceivedMessage?.Invoke(messageData.Message.ToString());
+                OnReceivedMessage?.Invoke(messageData.Type, messageData.Message.ToString());
             }
         }
     }

@@ -74,7 +74,14 @@ namespace T2G.Executor
             }
             else
             {
-                SendInstructionExecutionResponse(false, "Invalid instruction!");
+                instruction = new Instruction();
+                instruction.Keyword = "invalid";
+                instruction.ExecutionType = Instruction.EExecutionType.Void;
+                instruction.ParamType = Instruction.EParameterType.Empty;
+                instruction.parameter = string.Empty;
+                instruction.RequiresPreviousSuccess = false;
+                instruction.State = Instruction.EInstructionState.Empty;
+                _instructionQueue.Enqueue(instruction);
             }
         }
 
@@ -83,15 +90,13 @@ namespace T2G.Executor
             if (instruction != null && _executionPool.ContainsKey(instruction.Keyword))
             {
                 var result = await _executionPool[instruction.Keyword].Execute(instruction);
-
                 //The following line will be executed when InitializeOnload doesn't happen
                 SendInstructionExecutionResponse(result.succeeded, result.message);
-
                 return result.succeeded;
             }
             else
             {
-                CommunicatorServer.Instance.SendMessage(eMessageType.Response, "");
+                SendInstructionExecutionResponse(false, "Invalid instruction!");
                 return false;
             }
         }

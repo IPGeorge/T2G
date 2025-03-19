@@ -216,7 +216,7 @@ namespace T2G
             }
 
             string receivedMessage = string.Empty;
-            Action<string> waitForResponse = (message) =>
+            Action<eMessageType, string> waitForResponse = (type, message) =>
             {
                 receivedMessage = message;
             };

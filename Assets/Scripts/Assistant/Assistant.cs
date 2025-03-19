@@ -14,15 +14,25 @@ namespace T2G
 
         GameDesc _gameDesc = new GameDesc();
 
+        bool _waittingForResponse = false;
+        bool _response_succeeded = true;
+        string _response_message = string.Empty;
+
         private void Awake()
         {
             Instance = this;
+            CommunicatorClient.Instance.OnReceivedMessage += WaitForInstructionExecutionResponse;
         }
 
         void Start()
         {
             Interpreter = Interpreter.Instance;
             _gameDesc = new GameDesc();
+        }
+
+        private void OnDestroy()
+        {
+            CommunicatorClient.Instance.OnReceivedMessage -= WaitForInstructionExecutionResponse;
         }
 
         public async void ProcessInput(string inputText, Action<string> response)
@@ -32,31 +42,37 @@ namespace T2G
             {
                 bool prevSuccess = true;
                 int failedCount = 0;
+                bool hasResponseMesasge = false;
+
                 foreach(var instruction in result.instructions)
                 {
                     var procResult = await ProcessInstruction(instruction, prevSuccess);
                     prevSuccess = procResult.succeeded;
+                    
                     if (!prevSuccess)
                     {
                         failedCount++;
                     }
-                    if(!string.IsNullOrEmpty(procResult.responseMessage))
+
+                    hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                    if (hasResponseMesasge)
                     {
                         response?.Invoke(procResult.responseMessage);
                     }
                 }
 
-                Debug.Log($"Processed input '{inputText}' and generated instructions: \n{result.instructions[0].parameter}");
-
-                if (prevSuccess)
+                if (!hasResponseMesasge)
                 {
-                    response?.Invoke("Done!");
-                }
-                else
-                {
-                    response?.Invoke(failedCount == result.instructions.Length ? 
-                        "Failed!" : 
-                        $"Result: {result.instructions.Length - failedCount} succeeded; {failedCount} failed!");
+                    if (prevSuccess)
+                    {
+                        response?.Invoke("Done!");
+                    }
+                    else
+                    {
+                        response?.Invoke(failedCount == result.instructions.Length ?
+                            "Failed!" :
+                            $"Result: {result.instructions.Length - failedCount} succeeded; {failedCount} failed!");
+                    }
                 }
             }
             else
@@ -118,39 +134,47 @@ namespace T2G
             return (result, responseMessage);
         }
 
+        void WaitForInstructionExecutionResponse(eMessageType type, string message)
+        {
+            if(!_waittingForResponse)
+            {
+                return;
+            }
+
+            if(type == eMessageType.Message)
+            {
+                _response_succeeded = true;
+                _response_message = message;
+                ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, message);
+                _waittingForResponse = false;
+            }
+            else if(type == eMessageType.Response)
+            {
+                JSONObject jsonObj = JSON.Parse(message).AsObject;
+                _response_succeeded = jsonObj["succeeded"].AsBool;
+                _response_message = jsonObj["message"];
+                _waittingForResponse = false;
+            }
+        }
+
         async Awaitable<(bool result, string message)> SendToProjectForExecution(Instruction instruction)
         {
             string json = JsonUtility.ToJson(instruction);
             await CommunicatorClient.Instance.SendMessageAsync(eMessageType.Instruction, json);
 
-            string messageStr = string.Empty;
+            _waittingForResponse = true;
+
             float waitTimeOut = 180.0f;      //hard-coded the waiting timeout seconds
             while(CommunicatorClient.Instance.IsConnected && waitTimeOut > 0.0f)
             {
-                if (CommunicatorClient.Instance.PopReceivedMessage(out var response))
+                if(!_waittingForResponse)
                 {
-                    bool result = true;
-                    if (response.Type == eMessageType.Message)
-                    {
-                        messageStr = response.Message.ToString();
-                    }
-                    else if (response.Type == eMessageType.Response)
-                    {
-                        JSONObject responseObj = JSON.Parse(response.Message.ToString()).AsObject;
-                        result = responseObj["succeeded"].AsBool;
-                        messageStr = responseObj["message"];
-                    }
-                    else
-                    {
-                        messageStr = "Received unexpected type of response!";
-                        result = false;
-                    }
-                    return (result, messageStr);
+                    return (_response_succeeded, _response_message);
                 }
                 await Task.Delay(100);
                 waitTimeOut -= 0.1f;
             }
-            return (false, string.Empty);
+            return (false, "Time out!");
         }
     }
 }
