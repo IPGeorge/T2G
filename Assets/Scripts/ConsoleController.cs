@@ -34,8 +34,8 @@ namespace T2G
 
         [SerializeField] private GameObject _SettingsPanel;
         [SerializeField] private GameObject _HelpPanel;
-
         [SerializeField] private GameObject _OverlayPanel;
+        [SerializeField] private GameObject _DebugMenuPanel;
 
         [SerializeField] private TMP_InputField _InputMessage;
         [SerializeField] private TextMeshProUGUI _ConsoleDisplay;
@@ -92,19 +92,8 @@ namespace T2G
             communicatorClient.OnDisconnectedFromServer += HandleOnDisconnectedFromServer;
         }
 
-        void Test()
-        {
-            //var ins = Interpreter.Instance.InterpretPrompt("create a game project c:\\mygames\\myshooter");
-            //ins = Interpreter.Instance.InterpretPrompt("init project c:\\mygames\\myshooter");
-            //ins = Interpreter.Instance.InterpretPrompt("open project c:\\mygames\\myshooter");
-            //ins = Interpreter.Instance.InterpretPrompt("");
-            //ins = Interpreter.Instance.InterpretPrompt("");
-        }
-
         void Start()
         {
-            Test();
-
             _rectTransform = (RectTransform)transform;
 
             _consoleSizeIndex = PlayerPrefs.GetInt(k_ConsoleSizeIndex, 1);
@@ -209,6 +198,16 @@ namespace T2G
         {
             bool isActive = !_HelpPanel.activeSelf;
             _HelpPanel.SetActive(isActive);
+            if (!isActive)
+            {
+                SetFocusONConsoleInputField();
+            }
+        }
+
+        public void OpenCloseDebugMenu()
+        {
+            bool isActive = !_DebugMenuPanel.activeSelf;
+            _DebugMenuPanel.SetActive(isActive);
             if (!isActive)
             {
                 SetFocusONConsoleInputField();

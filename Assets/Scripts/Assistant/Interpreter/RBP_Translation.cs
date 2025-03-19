@@ -5,14 +5,14 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-
 namespace T2G
 {
     public class RBP_Translation : Translation     //Rule-Based Process
     {
-        (string pattern, string key)[] _rules = {
+        //TODO: Should create a unit test and test data to improve the following patterns
+        static (string pattern, string key)[] _rules = {
             (@"^(test|test instruction)$", "test"),
-            (@"(create|create a|create a new|create new)\s+(\w\s+)*(\s+game|project|game project)(?:\s+(?:under|at))?\s+(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)?)\.?", "create_project"),
+            (@"^(create|create a|create a new|create new)\s+((game|project|game project)\s+)(?:(under|at|in)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?$", "create_project"),
                 //create\s+(\w\s+)*game(?: project)? --> Matches "create a game" or "create game" and optionally "project".
                 //  (?: project)? --> The (?: ... ) is a non-capturing group, making "project" optional.
                 //(?:under|at) --> Matches either "under" or "at".
@@ -22,12 +22,12 @@ namespace T2G
                 //  [a-zA-Z]:\\ --> Matches a drive letter(C:, D:, etc.).
                 //  [^\s]+ --> Matches the rest of the path(until a space appears).
                 //\.? --> Makes the trailing period optional.
-            (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "init_project"),
+            (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at|in)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "init_project"),
             (@"open\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "open_project"),
             (@"^(connect|connect to)$(?:\s+\w)?(?:\.)?", "connect"),
             (@"^(disconnect|disconnect from)$(?:\s+\w)?(?:\.)?", "disconnect"),
             (@"(clear|clear all)(?:\.)?", "clear"),
-            (@"^create\s+(?:a*\s+new\s+)?(?<type>scene|level|space)(?:\s+named)?\s+(?<name>.+?)(?:\.)?$", "create_space"),
+            (@"^create\s+(?:a\s+new\s+)?(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_space"),
                 //^ --> Start of the string
                 //create\s+ --> Matches "create" followed by one or more spaces
                 //(?:a\s+new\s+)? --> Matches optional "a new " (non-capturing group)
@@ -36,7 +36,7 @@ namespace T2G
                 //\s+(<name>.+?) --> Captures the name (one or more characters after "named" or directly after the type) as tghe argument named "name"
                 //(?:\.)? --> Matches an optional period at the end
                 //$ --> Ensures the command ends there
-            //("", "create_object"),
+            (@"^(create|add|place)\s+(?:a|an\s+)?(?:object|entity|actor)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
             //("", "delete_object"),
             //("", "set_object_position"),
             //("", "set_object_orientation"),
@@ -51,11 +51,25 @@ namespace T2G
             //("", "save_gamedesc")
         };
 
+        public static int[] TestRegexMatch(string text)
+        {
+            List<int> matchIndices = new List<int>();
+            for(int i = 0; i < _rules.Length; ++i)
+            {
+                var pattern = _rules[i].pattern;
+                var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
+                if(match.Success)
+                {
+                    matchIndices.Add(i);
+                }
+            }
+            return matchIndices.ToArray();
+        }
 
         protected override bool ParseInstructionData(string prompt, out string key, out (string name, string value)[] arguments)
         {
             List<(string, string)> args = new List<(string, string)>();
-            for(int i = 0; i < _rules.Length; ++i)
+            for(int i = 0; i < _rules.Length; ++i)  //TODO: consider using multi-thread for betterr performance
             {
                 var pattern = _rules[i].pattern;
                 var match = Regex.Match(prompt, pattern, RegexOptions.IgnoreCase);
