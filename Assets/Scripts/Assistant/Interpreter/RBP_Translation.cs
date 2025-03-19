@@ -27,7 +27,7 @@ namespace T2G
             (@"^(connect|connect to)$(?:\s+\w)?(?:\.)?", "connect"),
             (@"^(disconnect|disconnect from)$(?:\s+\w)?(?:\.)?", "disconnect"),
             (@"(clear|clear all)(?:\.)?", "clear"),
-            (@"^create\s+(?:a\s+new\s+)?(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_space"),
+            (@"^create\s+(?:(a|a new|new)\s+)?(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_space"),
                 //^ --> Start of the string
                 //create\s+ --> Matches "create" followed by one or more spaces
                 //(?:a\s+new\s+)? --> Matches optional "a new " (non-capturing group)
