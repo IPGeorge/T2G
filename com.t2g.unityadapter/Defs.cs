@@ -44,6 +44,11 @@ namespace T2G
         //Instruction
         public static readonly string k_InstructionExecutionResponseSucceeded = "InstructionExecutionResponseSucceeded";
         public static readonly string k_InstructionExecutionResponseMessage = "InstructionExecutionResponseMessage";
-        
+
+        //Game Generation
+        public static readonly string k_SpacesDirectory = "Assets/Spaces";
+        public static readonly string k_DefaultSpaceName = "PrimeSpace";
+
+       
     }
 }

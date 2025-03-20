@@ -100,7 +100,7 @@ namespace T2G
             switch(instruction.ExecutionType)
             {
                 case Instruction.EExecutionType.LocalCmd:
-                    result = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.parameter);
+                    result = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.Data);
                     break;
                 case Instruction.EExecutionType.EditingOp:
                     if(instruction.State == Instruction.EInstructionState.Raw)

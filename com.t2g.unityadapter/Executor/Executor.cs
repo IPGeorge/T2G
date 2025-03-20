@@ -77,8 +77,8 @@ namespace T2G.Executor
                 instruction = new Instruction();
                 instruction.Keyword = "invalid";
                 instruction.ExecutionType = Instruction.EExecutionType.Void;
-                instruction.ParamType = Instruction.EParameterType.Empty;
-                instruction.parameter = string.Empty;
+                instruction.DataType = Instruction.EDataType.Empty;
+                instruction.Data = string.Empty;
                 instruction.RequiresPreviousSuccess = false;
                 instruction.State = Instruction.EInstructionState.Empty;
                 _instructionQueue.Enqueue(instruction);

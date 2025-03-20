@@ -12,8 +12,8 @@ namespace T2G
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = CmdClear.CommandKey;
-            instruction.ParamType = Instruction.EParameterType.Empty;
-            instruction.parameter = string.Empty;
+            instruction.DataType = Instruction.EDataType.Empty;
+            instruction.Data = string.Empty;
             instructions.Add(instruction);
             return (true, null);
         }

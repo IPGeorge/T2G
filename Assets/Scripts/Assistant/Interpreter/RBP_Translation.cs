@@ -36,6 +36,7 @@ namespace T2G
                 //\s+(<name>.+?) --> Captures the name (one or more characters after "named" or directly after the type) as tghe argument named "name"
                 //(?:\.)? --> Matches an optional period at the end
                 //$ --> Ensures the command ends there
+            (@"^(enter|go to|open)\s+(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "enter_space"),
             (@"^(create|add|place)\s+(?:a|an\s+)?(?:object|entity|actor)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
             //("", "delete_object"),
             //("", "set_object_position"),

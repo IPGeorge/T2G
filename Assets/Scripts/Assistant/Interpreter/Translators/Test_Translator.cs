@@ -20,8 +20,8 @@ namespace T2G
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = attribute.InstructionKey;
-            instruction.ParamType = Instruction.EParameterType.Empty;
-            instruction.parameter = string.Empty;
+            instruction.DataType = Instruction.EDataType.Empty;
+            instruction.Data = string.Empty;
             instructions.Add(instruction);
             return (true, null);
         }

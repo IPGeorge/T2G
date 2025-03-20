@@ -27,23 +27,23 @@ namespace T2G
         public EInstructionState State = EInstructionState.Empty;
 
         public string Keyword = string.Empty;
-        public enum EParameterType
+        public enum EDataType
         {
             Empty,
             SingleParameter,
             MultipleParameters,
             JsonData
         }
-        public EParameterType ParamType = EParameterType.SingleParameter;
-        public string parameter = string.Empty;       //JSON data
+        public EDataType DataType = EDataType.SingleParameter;
+        public string Data = string.Empty;       //JSON data
 
         public Instruction()
         {
             ExecutionType = EExecutionType.Void;
             RequiresPreviousSuccess = false;
             State = EInstructionState.Empty;
-            ParamType = EParameterType.SingleParameter;
-            parameter = string.Empty;
+            DataType = EDataType.SingleParameter;
+            Data = string.Empty;
         }
 
         public Instruction(JSONObject jsonObj)
@@ -51,8 +51,8 @@ namespace T2G
             ExecutionType = (EExecutionType)jsonObj["ExecutionType"].AsInt;
             RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
             State = (EInstructionState)jsonObj["State"].AsInt;
-            ParamType = (EParameterType)jsonObj["ParamType"].AsInt;
-            parameter = jsonObj["parameter"];
+            DataType = (EDataType)jsonObj["DataType"].AsInt;
+            Data = jsonObj["Data"];
         }
     }
 }

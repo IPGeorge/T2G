@@ -13,12 +13,12 @@ namespace T2G
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = CmdInitProject.CommandKey;
-            instruction.ParamType = Instruction.EParameterType.SingleParameter;
-            instruction.parameter = GetParamFromArguments(arguments, "path");
-            if (instruction.parameter == null)
+            instruction.DataType = Instruction.EDataType.SingleParameter;
+            instruction.Data = GetParamFromArguments(arguments, "path");
+            if (instruction.Data == null)
             {
-                instruction.parameter = PlayerPrefs.GetString(Defs.k_GameProjectPath, string.Empty);
-                if(string.IsNullOrEmpty(instruction.parameter))
+                instruction.Data = PlayerPrefs.GetString(Defs.k_GameProjectPath, string.Empty);
+                if(string.IsNullOrEmpty(instruction.Data))
                 {
                     return (false, k_MissingPath);
                 }

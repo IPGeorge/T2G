@@ -3,19 +3,19 @@ using System.Reflection;
 
 namespace T2G
 {
-    [Translator("create_space")]
-    public class CreateSpace_Translator : Translator
+    [Translator("enter_space")]
+    public class EnterSpace_Translator : Translator
     {
         public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
             instructions.Clear();
 
             var attribute = GetType().GetCustomAttribute<TranslatorAttribute>();
-            if(attribute == null)
+            if (attribute == null)
             {
                 return (false, k_FailedToRetrieveAttribute);
             }
-            
+
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;

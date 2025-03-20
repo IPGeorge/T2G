@@ -11,10 +11,10 @@ namespace T2G
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = CmdCreateProject.CommandKey;
-            instruction.ParamType = Instruction.EParameterType.SingleParameter;
-            instruction.parameter = GetParamFromArguments(arguments, "path");
+            instruction.DataType = Instruction.EDataType.SingleParameter;
+            instruction.Data = GetParamFromArguments(arguments, "path");
             instructions.Add(instruction);
-            return (instruction.parameter != null, null);
+            return (instruction.Data != null, null);
         }
     }
 }

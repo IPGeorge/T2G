@@ -2,6 +2,7 @@
 
 using SimpleJSON;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using T2G.Communicator;
 using UnityEditor;
@@ -24,12 +25,17 @@ namespace T2G.Executor
     {
         public Execution() {  }
 
-
         public abstract Awaitable<(bool succeeded, string message)> Execute(Instruction instruction);
         protected virtual void StoreResponseForInitializeOnLoad()
         {
             EditorPrefs.SetBool(Defs.k_InstructionExecutionResponseMessage, true);
             EditorPrefs.SetString(Defs.k_InstructionExecutionResponseSucceeded, "Done!");
+        }
+
+        protected bool ValidateInstructionKeyword(string keyword)
+        {
+            var attribute = GetType().GetCustomAttribute<ExecutionAttribute>();
+            return (string.Compare(keyword.ToLower(), attribute.Keyword.ToLower()) == 0);
         }
     }
 
