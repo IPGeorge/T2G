@@ -2,6 +2,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace T2G
 {
@@ -17,10 +18,33 @@ namespace T2G
                 return true;
             }
 
-
+            FindAsset(instruction);
 
             return true;
         }
+
+        async static void FindAsset(Instruction instruction)
+        {
+            var assetPahts = await SearchAssets(instruction.Data);
+        }
+
+        async static Awaitable<string[]> SearchAssets(string desctiption)
+        {
+            string tokens = "";
+            string assetType = "";
+            string url = $"http://localhost:5000/search?q={tokens}&type={assetType}";
+            string[] assetPaths = { };
+
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
+            {
+                await request.SendWebRequest();
+                //...
+
+            }
+            return  assetPaths;
+        }
+
+
 
 #if UNITY_EDITOR
         //Importing assets ===============================================================================
