@@ -7,7 +7,7 @@ using UnityEngine;
 namespace T2G
 {
     [Execution("create_object ")]
-    public class create_object_exection : Execution
+    public class create_object_execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
@@ -16,9 +16,7 @@ namespace T2G
                 return (false, "Invalid instruction data!");
             }
 
-            ContentLibrary.ResolveInstruction(ref instruction);
-
-            JSONObject jsonObj = JSON.Parse(instruction.Data).AsObject;
+            JSONObject jsonObj = JSON.Parse(instruction.ResolvedData).AsObject;
             string name = jsonObj["name"];
             string assetSourcePath = jsonObj["asset_path"];  //Relative path to
                                                              //The Resource Path (source)

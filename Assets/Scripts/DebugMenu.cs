@@ -118,7 +118,6 @@ public class DebugMenu : MonoBehaviour
     public async void OnTestSearchAssets()
     {
         string assetType = (_AssetType.value == 0) ? string.Empty : _AssetType.options[_AssetType.value].text;
-        Debug.LogError(assetType);
         _FoundAssets.text = await ContentLibrary.SearchAssets(_AssetInfo.text, assetType);
     }
 

@@ -3,19 +3,19 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+using SimpleJSON;
 
 namespace T2G
 {
     public class ContentLibrary
     {
 
-        //Find assets =====================================================================================
-        public static bool ResolveInstruction(ref Instruction instruction)
+#region  Find assets =====================================================================================
+        public static bool ResolveInstruction(Instruction instruction)
         {
             if(instruction.State == Instruction.EInstructionState.Empty || 
                 instruction.State == Instruction.EInstructionState.Resolved)
             {
-
                 return true;
             }
 
@@ -27,8 +27,20 @@ namespace T2G
         public async static void ResolveAssets(Instruction instruction)
         {
             var result = await SearchAssets(instruction.Data);
-
-
+            JSONObject jsonObj = JSON.Parse(result).AsObject;
+            JSONArray resultsArray = jsonObj["results"].AsArray;
+            if(resultsArray.Count > 0)
+            {
+                instruction.State = Instruction.EInstructionState.Resolved;
+            }
+            else
+            {
+                instruction.State = Instruction.EInstructionState.MissingResource;
+                result = await SearchAssets("default");
+                jsonObj = JSON.Parse(result).AsObject;
+                resultsArray = jsonObj["results"].AsArray;
+            }
+            instruction.ResolvedData = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
         }
 
         public async static Awaitable<string> SearchAssets(string assetInfo, string assetType = "")
@@ -44,7 +56,7 @@ namespace T2G
             return  assetPaths;
         }
 
-
+#endregion  Find assets ==================================================================================
 
 #if UNITY_EDITOR
         //Importing assets ===============================================================================

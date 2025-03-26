@@ -105,7 +105,7 @@ namespace T2G
                 case Instruction.EExecutionType.EditingOp:
                     if(instruction.State == Instruction.EInstructionState.Raw)
                     {
-                        ContentLibrary.ResolveInstruction(ref instruction);    //Will fill up missing contents
+                        ContentLibrary.ResolveInstruction(instruction);    //find the assets
                     }
                     
                     if (instruction.State == Instruction.EInstructionState.Resolved)
@@ -114,11 +114,11 @@ namespace T2G
                         result = response.result;
                         responseMessage = response.message;
                     }
-                    else if (instruction.State == Instruction.EInstructionState.ResolveWithMissingResource)
+                    else if (instruction.State == Instruction.EInstructionState.MissingResource)
                     {
                         var response = await SendToProjectForExecution(instruction);
                         result = response.result;
-                        responseMessage = response.message + " (Missing assets have been replaced with substitutes)";
+                        responseMessage = response.message + " (Missing assets, the default is used.)";
                     }
                     else
                     {
