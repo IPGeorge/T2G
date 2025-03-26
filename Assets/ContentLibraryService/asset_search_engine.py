@@ -105,6 +105,8 @@ if __name__ == "__main__":
         {"name": "Forest Background", "description": "A lush green forest background with trees and mist.", "type": "Image", "path": "/assets/backgrounds/forest.jpg"},
         {"name": "Magic Sword Model", "description": "A 3D model of an enchanted sword with glowing runes.", "type": "3D Model", "path": "/assets/models/magic_sword.obj"},
         {"name": "Player Character Prefab", "description": "A complete player character with animations.", "type": "Prefab", "path": "/assets/prefabs/player.prefab"},
+        #Default 
+        {"name": "default", "description": "default", "type": "default", "path": "Prefabs/Primitives/cube.prefab,Prefabs/Primitives/ObjectInterface.cs"},
 	#Primitives
         {"name": "capsule", "description": "primitive capsule", "type": "prefab", "path": "Prefabs/Primitives/capsule.prefab,Prefabs/Primitives/ObjectInterface.cs"},
         {"name": "cube", "description": "primitive cube", "type": "prefab", "path": "Prefabs/Primitives/cube.prefab,Prefabs/Primitives/ObjectInterface.cs"},
