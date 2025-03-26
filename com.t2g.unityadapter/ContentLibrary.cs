@@ -43,9 +43,11 @@ namespace T2G
             instruction.ResolvedData = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
         }
 
-        public async static Awaitable<string> SearchAssets(string assetInfo, string assetType = "")
+        public async static Awaitable<string> SearchAssets(string objInfo, string assetType = "")
         {
-            string tokens = assetInfo;
+            JSONObject jsonObj = JSON.Parse(objInfo).AsObject;
+            string objName = jsonObj["name"];
+            string tokens = jsonObj["type"];
             string url = $"http://localhost:5000/search?q={tokens}&type={assetType}";
             string assetPaths = string.Empty;
             using (UnityWebRequest request = UnityWebRequest.Get(url))
