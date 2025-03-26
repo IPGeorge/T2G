@@ -34,11 +34,11 @@ class AssetSearchEngine:
 
         if self.embeddings:
             n_samples = len(self.embeddings)
-            n_neighbors = min(n_samples, 3)
+            n_neighbors = min(n_samples, 5)
             self.nn_model = NearestNeighbors(n_neighbors=n_neighbors, metric='cosine')
             self.nn_model.fit(np.array(self.embeddings))
 
-    def index_sample_assets(self, assets):
+    def index_sample_assets(self, assets, sampleCount):
         conn = self._connect_db()
         cursor = conn.cursor()
 
@@ -69,7 +69,7 @@ class AssetSearchEngine:
         conn.close()
 
         n_samples = len(self.embeddings)
-        n_neighbors = min(n_samples, 3)
+        n_neighbors = min(n_samples, sampleCount)
         self.nn_model = NearestNeighbors(n_neighbors=n_neighbors, metric='cosine')
         self.nn_model.fit(np.array(self.embeddings))
 
@@ -96,21 +96,30 @@ class AssetSearchEngine:
         conn.close()
         return results
 
-
 # Example Usage
 if __name__ == "__main__":
     assets = [
+	#tests
         {"name": "Red Dragon Texture", "description": "A detailed texture of a fierce red dragon.", "type": "Texture", "path": "/assets/textures/red_dragon.png"},
         {"name": "Red Dragon Model", "description": "A 3D Model of a fierce red dragon.", "type": "3D Model", "path": "/assets/textures/red_dragon.fbx"},
         {"name": "Forest Background", "description": "A lush green forest background with trees and mist.", "type": "Image", "path": "/assets/backgrounds/forest.jpg"},
         {"name": "Magic Sword Model", "description": "A 3D model of an enchanted sword with glowing runes.", "type": "3D Model", "path": "/assets/models/magic_sword.obj"},
         {"name": "Player Character Prefab", "description": "A complete player character with animations.", "type": "Prefab", "path": "/assets/prefabs/player.prefab"},
+	#Primitives
+        {"name": "capsule", "description": "primitive capsule", "type": "prefab", "path": "Prefabs/Primitives/capsule.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "cube", "description": "primitive cube", "type": "prefab", "path": "Prefabs/Primitives/cube.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "cylinder", "description": "primitive cylinder", "type": "Prefab", "path": "Prefabs/Primitives/cylinder.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Prefabs/Primitives/ObjectInterface.cs"}
     ]
 
     engine = AssetSearchEngine()
-    engine.index_sample_assets(assets)
+    engine.index_sample_assets(assets, 3)
 
     print("Search result:", engine.search("fire dragon skin"))
     print("Search 3D:", engine.search("enchanted sword", asset_type="3D Model"))
     print("Search Image:", engine.search("misty forest", asset_type="Image"))
     print("Search:", engine.search("dragon character with sword"))
+    print("Search:", engine.search("a beatiful cube", asset_type="prefab"))
+

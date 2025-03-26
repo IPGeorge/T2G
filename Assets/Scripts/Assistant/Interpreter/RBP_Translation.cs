@@ -37,8 +37,7 @@ namespace T2G
                 //(?:\.)? --> Matches an optional period at the end
                 //$ --> Ensures the command ends there
             (@"^(enter|go to|open)\s+(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "enter_space"),
-            (@"^(?:please\s+)?(create|add|place)\s+(?:a\s+)?(?:new\s+)?(?<type>cube|sphere|sylinder|cone|plane)(?:\s+(?:named|with\s+the\s+name)\s+(?<name>.+?))?(?:\.)?$", "match_sample"),
-            (@"^(create|add|place)\s+(?:a|an\s+)?(?:object|entity|actor)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
+            (@"^(?:\w+\s+)?(create|place)\s+(?:a|an\s+)?(?<type>(?:\s+\w+))(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
             //("", "delete_object"),
             //("", "set_object_position"),
             //("", "set_object_orientation"),

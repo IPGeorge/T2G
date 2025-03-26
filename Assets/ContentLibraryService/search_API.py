@@ -1,5 +1,3 @@
-pip install flask
-
 from flask import Flask, request, jsonify
 from asset_search_engine import AssetSearchEngine
 
@@ -13,8 +11,11 @@ def search():
     
     if not query:
         return jsonify({"error": "Missing query parameter ?q=..."}), 400
-    
-    results = engine.search(query, asset_type)
+	    
+    if not asset_type:
+        results = engine.search(query)
+    else:
+        results = engine.search(query, asset_type=asset_type)
     return jsonify({"results": results})
 
 if __name__ == "__main__":

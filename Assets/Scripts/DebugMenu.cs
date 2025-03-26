@@ -112,6 +112,16 @@ public class DebugMenu : MonoBehaviour
         SaveRegexMatchTestData();
     }
 
+    [SerializeField] TMP_InputField _AssetInfo;
+    [SerializeField] TMP_Dropdown _AssetType;
+    [SerializeField] TextMeshProUGUI _FoundAssets;
+    public async void OnTestSearchAssets()
+    {
+        string assetType = (_AssetType.value == 0) ? string.Empty : _AssetType.options[_AssetType.value].text;
+        Debug.LogError(assetType);
+        _FoundAssets.text = await ContentLibrary.SearchAssets(_AssetInfo.text, assetType);
+    }
+
     #endregion Regex Match Test
 
 }

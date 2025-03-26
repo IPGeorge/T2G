@@ -15,31 +15,31 @@ namespace T2G
             if(instruction.State == Instruction.EInstructionState.Empty || 
                 instruction.State == Instruction.EInstructionState.Resolved)
             {
+
                 return true;
             }
 
-            FindAsset(instruction);
+            ResolveAssets(instruction);
 
             return true;
         }
 
-        async static void FindAsset(Instruction instruction)
+        public async static void ResolveAssets(Instruction instruction)
         {
-            var assetPahts = await SearchAssets(instruction.Data);
+            var result = await SearchAssets(instruction.Data);
+
+
         }
 
-        async static Awaitable<string[]> SearchAssets(string desctiption)
+        public async static Awaitable<string> SearchAssets(string assetInfo, string assetType = "")
         {
-            string tokens = "";
-            string assetType = "";
+            string tokens = assetInfo;
             string url = $"http://localhost:5000/search?q={tokens}&type={assetType}";
-            string[] assetPaths = { };
-
+            string assetPaths = string.Empty;
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
                 await request.SendWebRequest();
-                //...
-
+                assetPaths = request.downloadHandler.text;
             }
             return  assetPaths;
         }

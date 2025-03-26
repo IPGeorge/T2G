@@ -1,3 +1,4 @@
+using SimpleJSON;
 using System;
 using System.Threading.Tasks;
 using T2G.Executor;
@@ -10,8 +11,22 @@ namespace T2G
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
-            await Task.Delay(1000);
-            return (true, "Ok!");
+            if(instruction.DataType != Instruction.EDataType.JsonData)
+            {
+                return (false, "Invalid instruction data!");
+            }
+
+            ContentLibrary.ResolveInstruction(ref instruction);
+
+            JSONObject jsonObj = JSON.Parse(instruction.Data).AsObject;
+            string name = jsonObj["name"];
+            string assetSourcePath = jsonObj["asset_path"];  //Relative path to
+                                                             //The Resource Path (source)
+                                                             //The game project data path "\Assets". (target)
+                                                             //example "/Prefabs/Primitives/cube.prefab"
+
+
+            return (true, $"{name} was created!");
         }
     }
 }
