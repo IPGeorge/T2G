@@ -106,14 +106,14 @@ if __name__ == "__main__":
         {"name": "Magic Sword Model", "description": "A 3D model of an enchanted sword with glowing runes.", "type": "3D Model", "path": "/assets/models/magic_sword.obj"},
         {"name": "Player Character Prefab", "description": "A complete player character with animations.", "type": "Prefab", "path": "/assets/prefabs/player.prefab"},
         #Default 
-        {"name": "default", "description": "default", "type": "default", "path": "Prefabs/Primitives/cube.prefab,Prefabs/Primitives/ObjectInterface.cs"},
+        {"name": "default", "description": "default", "type": "default", "path": "Prefabs/Primitives/cube.prefab,Scripts/ObjectInterface.cs"},
 	#Primitives
-        {"name": "capsule", "description": "primitive capsule", "type": "prefab", "path": "Prefabs/Primitives/capsule.prefab,Prefabs/Primitives/ObjectInterface.cs"},
-        {"name": "cube", "description": "primitive cube", "type": "prefab", "path": "Prefabs/Primitives/cube.prefab,Prefabs/Primitives/ObjectInterface.cs"},
-        {"name": "cylinder", "description": "primitive cylinder", "type": "Prefab", "path": "Prefabs/Primitives/cylinder.prefab,Prefabs/Primitives/ObjectInterface.cs"},
-        {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Prefabs/Primitives/ObjectInterface.cs"},
-        {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Prefabs/Primitives/ObjectInterface.cs"},
-        {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Prefabs/Primitives/ObjectInterface.cs"}
+        {"name": "capsule", "description": "primitive capsule", "type": "prefab", "path": "Prefabs/Primitives/capsule.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "cube", "description": "primitive cube", "type": "prefab", "path": "Prefabs/Primitives/cube.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "cylinder", "description": "primitive cylinder", "type": "Prefab", "path": "Prefabs/Primitives/cylinder.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"}
     ]
 
     engine = AssetSearchEngine()

@@ -1,32 +1,41 @@
+#if UNITY_EDITOR
+
 using SimpleJSON;
 using System;
 using System.Threading.Tasks;
-using T2G.Executor;
+using UnityEditor;
 using UnityEngine;
 
-namespace T2G
+namespace T2G.Executor
 {
-    [Execution("create_object ")]
+    [Execution("create_object")]
     public class create_object_execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
-            if(instruction.DataType != Instruction.EDataType.JsonData)
+
+            if (!ValidateInstructionKeyword(instruction.Keyword))
+            {
+                return (false, "Invalid instruction keyword! 'create_object' was expected.");
+            }
+
+            if (instruction.DataType != Instruction.EDataType.JsonData ||
+                instruction.State != Instruction.EInstructionState.Resolved)
             {
                 return (false, "Invalid instruction data!");
             }
-
+            
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
-            JSONObject jsonObjAssets = JSON.Parse(instruction.ResolvedData).AsObject;
             string name = jsonObjData["name"];
-            string assetPaths = jsonObjAssets["results"]; //Relative path to
-                                                          //The Resource Path (source)
-                                                          //The game project data path "\Assets". (target)
-                                                          //example "/Prefabs/Primitives/cube.prefab"
-            string[] assetPathsArray = assetPaths.Split(',');
+            string[] assetPaths = instruction.ResolvedAssetPaths.Split(','); 
+                                        //Relative path to the Resource Path (source)
+                                        //The game project data path "/Assets". (target)
+                                        //example "/Prefabs/Primitives/cube.prefab"
+
+            Debug.LogError($"Create object 3: Name={name}, assets={instruction.ResolvedAssetPaths}");
 
             //Hookup asset updated callback or Oninitializeload
-            for(int i = 0; i < assetPathsArray.Length; ++i)
+            for (int i = 0; i < assetPaths.Length; ++i)
             {
                 //check file existing
 
@@ -36,9 +45,12 @@ namespace T2G
             return (true, $"{name} was created!");
         }
 
+        [InitializeOnLoadMethod]
         void CreateTheObject()
         {
             //GameObject.Instantiate<GameObject>();
         }
     }
 }
+
+#endif

@@ -96,7 +96,7 @@ namespace T2G.Executor
             }
             else
             {
-                SendInstructionExecutionResponse(false, "Invalid instruction!");
+                SendInstructionExecutionResponse(false, "Invalid instruction key!");
                 return false;
             }
         }

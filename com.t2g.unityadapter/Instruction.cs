@@ -36,7 +36,7 @@ namespace T2G
         }
         public EDataType DataType = EDataType.SingleParameter;
         public string Data = string.Empty;       //JSON data
-        public string ResolvedData = string.Empty;
+        public string ResolvedAssetPaths = string.Empty; 
 
         public Instruction()
         {
@@ -45,7 +45,7 @@ namespace T2G
             State = EInstructionState.Empty;
             DataType = EDataType.SingleParameter;
             Data = string.Empty;
-            ResolvedData = string.Empty;
+            ResolvedAssetPaths = string.Empty;
         }
 
         public Instruction(JSONObject jsonObj)
@@ -55,7 +55,7 @@ namespace T2G
             State = (EInstructionState)jsonObj["State"].AsInt;
             DataType = (EDataType)jsonObj["DataType"].AsInt;
             Data = jsonObj["Data"];
-            ResolvedData = jsonObj["ResolvedData"];
+            ResolvedAssetPaths = jsonObj["ResolvedAssetPaths"];
         }
     }
 }

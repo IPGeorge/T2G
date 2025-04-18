@@ -105,7 +105,7 @@ namespace T2G
                 case Instruction.EExecutionType.EditingOp:
                     if(instruction.State == Instruction.EInstructionState.Raw)
                     {
-                        ContentLibrary.ResolveInstruction(instruction);    //find the assets
+                        instruction = await ContentLibrary.ResolveInstruction(instruction);    //find the assets
                     }
                     
                     if (instruction.State == Instruction.EInstructionState.Resolved)

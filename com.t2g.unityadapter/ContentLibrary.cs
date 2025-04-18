@@ -11,20 +11,16 @@ namespace T2G
     {
 
 #region  Find assets =====================================================================================
-        public static bool ResolveInstruction(Instruction instruction)
+        public static async Awaitable<Instruction> ResolveInstruction(Instruction instruction)
         {
-            if(instruction.State == Instruction.EInstructionState.Empty || 
-                instruction.State == Instruction.EInstructionState.Resolved)
+            if (instruction.State == Instruction.EInstructionState.Raw)
             {
-                return true;
+                instruction = await ResolveAssets(instruction);
             }
-
-            ResolveAssets(instruction);
-
-            return true;
+            return instruction;
         }
 
-        public async static void ResolveAssets(Instruction instruction)
+        public async static Awaitable<Instruction> ResolveAssets(Instruction instruction)
         {
             var result = await SearchAssets(instruction.Data);
             JSONObject jsonObj = JSON.Parse(result).AsObject;
@@ -40,7 +36,8 @@ namespace T2G
                 jsonObj = JSON.Parse(result).AsObject;
                 resultsArray = jsonObj["results"].AsArray;
             }
-            instruction.ResolvedData = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
+            instruction.ResolvedAssetPaths = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
+            return instruction;
         }
 
         public async static Awaitable<string> SearchAssets(string objInfo, string assetType = "")
@@ -53,9 +50,12 @@ namespace T2G
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
                 await request.SendWebRequest();
-                assetPaths = request.downloadHandler.text;
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    assetPaths = request.downloadHandler.text;
+                }
             }
-            return  assetPaths;
+            return  assetPaths;  //returns list of asset path (delimitor ',') or empty
         }
 
 #endregion  Find assets ==================================================================================

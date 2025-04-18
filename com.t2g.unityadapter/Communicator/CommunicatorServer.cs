@@ -357,11 +357,14 @@ namespace T2G.Communicator
                                 {
                                     JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
                                     string keyword = jsonObj["Keyword"];
-                                    comm.OnLogMessage?.Invoke("Instruction: " + keyword + "\n" + "Data: " + jsonObj["Data"]);
+                                    comm.OnLogMessage?.Invoke("Instruction:" + keyword + 
+                                        "\n    Data:" + jsonObj["Data"] + 
+                                        "\n    AssetPaths:" + jsonObj["ResolvedAssetPaths"]);
                                     Instruction instruction = new Instruction();
                                     instruction.Keyword = keyword;
                                     instruction.DataType = (Instruction.EDataType)jsonObj["DataType"].AsInt;
                                     instruction.Data = jsonObj["Data"];
+                                    instruction.ResolvedAssetPaths = jsonObj["ResolvedAssetPaths"];
                                     instruction.RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
                                     instruction.ExecutionType = (Instruction.EExecutionType)jsonObj["ExecutionType"].AsInt;
                                     instruction.State = (Instruction.EInstructionState)jsonObj["State"].AsInt;

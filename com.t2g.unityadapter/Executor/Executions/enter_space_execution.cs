@@ -5,11 +5,10 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using T2G.Executor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace T2G
+namespace T2G.Executor
 {
     [Execution("enter_space")]
     public class enter_space_exection : Execution
@@ -18,7 +17,7 @@ namespace T2G
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword!");
+                return (false, "Invalid instruction keyword! 'enter_space' was expected.");
             }
 
             string spaceName = string.Empty;

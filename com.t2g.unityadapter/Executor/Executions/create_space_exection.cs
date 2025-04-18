@@ -18,7 +18,7 @@ namespace T2G
         {
             if(!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword!");
+                return (false, "Invalid instruction keyword! 'create_space' was expected.");
             }
 
             string spacesPath = Path.Combine(Application.dataPath, "Spaces");

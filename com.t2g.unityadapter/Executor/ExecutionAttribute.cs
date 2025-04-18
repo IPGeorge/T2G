@@ -56,7 +56,7 @@ namespace T2G.Executor
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             await Task.Delay(100);
-            return (true, "Invalid instruction!");
+            return (true, "Invalid instruction execution!");
         }
     }
 
