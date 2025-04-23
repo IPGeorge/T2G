@@ -48,7 +48,7 @@ public abstract class Command
 #endif
         else
         {
-            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.Error, $"Failed! T2G.UnityAdapter is missing.");
+            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.Error, "Could not find Resource Path!");
             return null;
         }
     }

@@ -2,6 +2,8 @@
 
 using SimpleJSON;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +15,6 @@ namespace T2G.Executor
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
-
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
                 return (false, "Invalid instruction keyword! 'create_object' was expected.");
@@ -27,28 +28,41 @@ namespace T2G.Executor
             
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
             string name = jsonObjData["name"];
-            string[] assetPaths = instruction.ResolvedAssetPaths.Split(','); 
-                                        //Relative path to the Resource Path (source)
-                                        //The game project data path "/Assets". (target)
-                                        //example "/Prefabs/Primitives/cube.prefab"
+            string[] assetPaths = instruction.ResolvedAssetPaths.Split(',');
+            //Relative path to the Resource Path (source), The game project path "/Assets". (target)
+            //example "/Prefabs/Primitives/cube.prefab"
 
-            Debug.LogError($"Create object 3: Name={name}, assets={instruction.ResolvedAssetPaths}");
-
-            //Hookup asset updated callback or Oninitializeload
-            for (int i = 0; i < assetPaths.Length; ++i)
+            string targetAssetPath;
+            List<string> assetsToImport = new List<string>();
+            int i;
+            for (i = assetPaths.Length - 1; i >= 0 ; --i)
             {
-                //check file existing
-
-                //copy if it doesn't exist
+                targetAssetPath = Path.Combine(Application.dataPath, assetPaths[i]);
+                if(File.Exists(targetAssetPath))
+                {
+                    continue;
+                }
+                assetsToImport.Add(assetPaths[i]);
             }
-
-            return (true, $"{name} was created!");
+            
+            PoolAssetsToImport(assetsToImport);
+            Executor.SetResponseForInitializeOnLoad();
+            await ImportPooledAssets();
+            InstantiatePooledPrefabs();
+            Executor.ClearResponseForInitializeOnLoad();
+            return (true, "Done!");  //When the above 3 lines passed, send execution response
         }
 
+
+        /* function CreatePooledObject
+         * When reload happens, continue the improting and initiating task.         
+         * */
         [InitializeOnLoadMethod]
-        void CreateTheObject()
+        async static Awaitable CreatePooledObject()  
         {
-            //GameObject.Instantiate<GameObject>();
+            await ImportPooledAssets();
+            InstantiatePooledPrefabs();
+            Executor.SendExecutionResponse(); //Send execution response 
         }
     }
 }

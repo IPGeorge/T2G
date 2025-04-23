@@ -4,7 +4,7 @@ namespace T2G
     {
         //Game project
         public static readonly string k_GameProjectPath = "GameProjectPath";
-
+        public static readonly string k_ProjectAssetRoot = "Assets";
         public static readonly string k_InitRefreshAssetDatabase = "RefreshAssetData";
         public static readonly string k_InitOpenScene = "OpenScene";
         public static readonly string k_DashboardIsOpen = "DashboardIsOpen";
