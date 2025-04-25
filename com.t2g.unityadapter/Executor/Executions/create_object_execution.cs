@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -13,6 +14,8 @@ namespace T2G.Executor
     [Execution("create_object")]
     public class create_object_execution : Execution
     {
+        public static object EditorManager { get; private set; }
+
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
@@ -27,16 +30,21 @@ namespace T2G.Executor
             }
             
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
-            string name = jsonObjData["name"];
+            string objName = jsonObjData["name"];
             string[] assetPaths = instruction.ResolvedAssetPaths.Split(',');
-            //Relative path to the Resource Path (source), The game project path "/Assets". (target)
-            //example "/Prefabs/Primitives/cube.prefab"
-
+                //Source: Relative path to the Resource Path; Target: The game project path "/Assets"            
+                //example "/Prefabs/Primitives/cube.prefab"
             string targetAssetPath;
             List<string> assetsToImport = new List<string>();
+            string prefabToInstantiate = string.Empty;
             int i;
-            for (i = assetPaths.Length - 1; i >= 0 ; --i)
+            for (i = 0; i < assetPaths.Length; ++i)
             {
+                string extension = Path.GetExtension(assetPaths[i]).ToLower();
+                if (string.Compare(extension, ".prefab") == 0)
+                {
+                    prefabToInstantiate = assetPaths[i];
+                }
                 targetAssetPath = Path.Combine(Application.dataPath, assetPaths[i]);
                 if(File.Exists(targetAssetPath))
                 {
@@ -44,13 +52,14 @@ namespace T2G.Executor
                 }
                 assetsToImport.Add(assetPaths[i]);
             }
-            
-            PoolAssetsToImport(assetsToImport);
-            Executor.SetResponseForInitializeOnLoad();
+
+            PoolAssetsToImport(assetsToImport, prefabToInstantiate, objName);
+            Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
             await ImportPooledAssets();
-            InstantiatePooledPrefabs();
-            Executor.ClearResponseForInitializeOnLoad();
-            return (true, "Done!");  //When the above 3 lines passed, send execution response
+            bool succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
+            var result = (true, Executor.GetSucceededResponseMessage());
+            Executor.ClearResponseForInitializeOnLoad();    
+            return result;
         }
 
 
@@ -61,8 +70,18 @@ namespace T2G.Executor
         async static Awaitable CreatePooledObject()  
         {
             await ImportPooledAssets();
-            InstantiatePooledPrefabs();
-            Executor.SendExecutionResponse(); //Send execution response 
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            bool created = await InstantiatePooledPrefab();
+            if (created)
+            {
+                Executor.SendExecutionResponse(true); //Send execution response 
+                Executor.SaveActiveScene();
+            }
+            else
+            {
+                Executor.SendExecutionResponse(false);
+            }
+            Executor.ClearResponseForInitializeOnLoad();
         }
     }
 }

@@ -395,6 +395,19 @@ namespace T2G.Executor
             }
             return settingsList;
         }
+
+        public static void SaveActiveScene()
+        {
+            var activeScene = EditorSceneManager.GetActiveScene();
+            if (string.IsNullOrEmpty(activeScene.name))
+            {
+                EditorSceneManager.SaveScene(activeScene, Path.Combine(Defs.k_SpacesDirectory, Defs.k_DefaultSpaceName + ".unity"));
+            }
+            else
+            {
+                EditorSceneManager.SaveScene(activeScene);
+            }
+        }
     }
 }
 #endif

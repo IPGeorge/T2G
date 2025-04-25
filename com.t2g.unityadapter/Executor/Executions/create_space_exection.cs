@@ -1,9 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
-using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using T2G.Executor;
 using UnityEditor.SceneManagement;
@@ -55,16 +53,7 @@ namespace T2G
 
             Debug.LogError($"{instruction.DataType} - {instruction.Data} : spaceName = {spaceName}");
 
-            //Save active space
-            var activeScene = EditorSceneManager.GetActiveScene();
-            if (string.IsNullOrEmpty(activeScene.name))
-            {
-                EditorSceneManager.SaveScene(activeScene, Path.Combine(Defs.k_SpacesDirectory, Defs.k_DefaultSpaceName + ".unity"));
-            }
-            else
-            {
-                EditorSceneManager.SaveScene(activeScene);
-            }
+            T2G.Executor.Executor.SaveActiveScene();
 
             //create or open the target space
             if(string.IsNullOrWhiteSpace(spaceName))

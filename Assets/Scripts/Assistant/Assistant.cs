@@ -4,6 +4,7 @@ using SimpleJSON;
 using System;
 using T2G.Communicator;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace T2G
 {
@@ -18,10 +19,13 @@ namespace T2G
         bool _response_succeeded = true;
         string _response_message = string.Empty;
 
+
         private void Awake()
         {
             Instance = this;
+            CommunicatorClient.Instance.OnDisconnectedFromServer += OnDisconnectedFromServerHandler;
             CommunicatorClient.Instance.OnReceivedMessage += WaitForInstructionExecutionResponse;
+            StartCoroutine(AutoConnectToServerAfterDisconnection());
         }
 
         void Start()
@@ -33,6 +37,24 @@ namespace T2G
         private void OnDestroy()
         {
             CommunicatorClient.Instance.OnReceivedMessage -= WaitForInstructionExecutionResponse;
+            CommunicatorClient.Instance.OnDisconnectedFromServer -= OnDisconnectedFromServerHandler;
+        }
+
+        void OnDisconnectedFromServerHandler()
+        {
+            
+        }
+
+        IEnumerator AutoConnectToServerAfterDisconnection()
+        {
+            while(true)
+            {
+                yield return new WaitForSeconds(5.0f);
+                if (!CommunicatorClient.Instance.IsConnected)
+                {
+                    CommunicatorClient.Instance.StartClient(true);
+                }
+            }
         }
 
         public async void ProcessInput(string inputText, Action<string> response)
@@ -164,8 +186,8 @@ namespace T2G
 
             _waittingForResponse = true;
 
-            float waitTimeOut = 180.0f;      //hard-coded the waiting timeout seconds
-            while(CommunicatorClient.Instance.IsConnected && waitTimeOut > 0.0f)
+            float waitTimeOut = 60.0f;      //hard-coded the waiting timeout seconds
+            while(waitTimeOut > 0.0f)
             {
                 if(!_waittingForResponse)
                 {

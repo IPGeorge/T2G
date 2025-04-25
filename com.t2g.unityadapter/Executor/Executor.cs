@@ -53,19 +53,26 @@ namespace T2G.Executor
             _isActive = false;
         }
 
-        /* function: SendExecutionResponse
-         *  This task can be called by code or by the engine when reload happens.
-         */
-        [InitializeOnLoadMethod]
-        public static void SendExecutionResponse()
+         public static void SendExecutionResponse(bool? succeeded = null)
         {
-            if (EditorPrefs.HasKey(Defs.k_InstructionExecutionResponseMessage) &&
-                EditorPrefs.HasKey(Defs.k_InstructionExecutionResponseSucceeded))
+            if (EditorPrefs.HasKey(Defs.k_InstructionExecutionHasResponseMessage))
             {
-                bool succeeded = EditorPrefs.GetBool(Defs.k_InstructionExecutionResponseMessage);
-                string message = EditorPrefs.GetString(Defs.k_InstructionExecutionResponseSucceeded);
-                SendInstructionExecutionResponse(succeeded, message);
+                bool hasResponse = EditorPrefs.GetBool(Defs.k_InstructionExecutionHasResponseMessage);
+                if(succeeded == null)
+                {
+                    succeeded = EditorPrefs.GetBool(Defs.k_InstructionExecutionSucceeded, true);
+                }
+
+                string message = succeeded.Value ?
+                    EditorPrefs.GetString(Defs.k_InstructionExecutionResponseSucceeded) :
+                    EditorPrefs.GetString(Defs.k_InstructionExecutionResponseFailed);
+
+                SendInstructionExecutionResponse(succeeded.Value, message);
                 ClearResponseForInitializeOnLoad();
+            }
+            else
+            {
+                SendInstructionExecutionResponse(succeeded.Value, succeeded.Value ? "Done!" : "Failed!");
             }
         }
 
@@ -77,16 +84,51 @@ namespace T2G.Executor
             CommunicatorServer.Instance.SendMessage(eMessageType.Response, jsonObj.ToString());
         }
 
-        public static void SetResponseForInitializeOnLoad(string message = "Done!")
+        public static void SetResponseForInitializeOnLoad(string messageTrue = "Done!", string messageFalse = "Failed!", bool? succeeded = null)
         {
-            EditorPrefs.SetBool(Defs.k_InstructionExecutionResponseMessage, true);
-            EditorPrefs.SetString(Defs.k_InstructionExecutionResponseSucceeded, message);
+            EditorPrefs.SetBool(Defs.k_InstructionExecutionHasResponseMessage, true);
+            if(succeeded != null && !succeeded.Value)
+            {
+                EditorPrefs.SetBool(Defs.k_InstructionExecutionResponseSucceeded, false);
+            }
+            else
+            {
+                EditorPrefs.SetBool(Defs.k_InstructionExecutionResponseSucceeded, true);
+            }
+
+            EditorPrefs.SetString(Defs.k_InstructionExecutionResponseSucceeded, messageTrue);
+            EditorPrefs.SetString(Defs.k_InstructionExecutionResponseFailed, messageFalse);
+        }
+
+        public static string GetSucceededResponseMessage()
+        {
+            string defaultResponse = "Done!";
+            if (EditorPrefs.GetBool(Defs.k_InstructionExecutionHasResponseMessage, false))
+            {
+                return EditorPrefs.GetString(Defs.k_InstructionExecutionResponseSucceeded, defaultResponse);
+            }
+            else
+            {
+                return defaultResponse;
+            }
+        }
+
+        public static string GetFailedResponseMessage()
+        {
+            string defaultResponse = "Failed!";
+            if (EditorPrefs.GetBool(Defs.k_InstructionExecutionHasResponseMessage, false))
+            {
+                return EditorPrefs.GetString(Defs.k_InstructionExecutionResponseFailed, defaultResponse);
+            }
+            else
+            {
+                return defaultResponse;
+            }
         }
 
         public static void ClearResponseForInitializeOnLoad()
         {
-            EditorPrefs.DeleteKey(Defs.k_InstructionExecutionResponseMessage);
-            EditorPrefs.DeleteKey(Defs.k_InstructionExecutionResponseSucceeded);
+            EditorPrefs.SetBool(Defs.k_InstructionExecutionHasResponseMessage, false);
         }
 
         public void EnqueueInstruction(Instruction instruction)
@@ -114,8 +156,7 @@ namespace T2G.Executor
             if (instruction != null && _executionPool.ContainsKey(instruction.Keyword))
             {
                 var result = await _executionPool[instruction.Keyword].Execute(instruction);
-                //The following line will be executed when InitializeOnload doesn't happen
-                SendInstructionExecutionResponse(result.succeeded, result.message);
+                SendInstructionExecutionResponse(result.succeeded, result.message); //is executed when InitializeOnload didn't happen
                 return result.succeeded;
             }
             else

@@ -42,9 +42,11 @@ namespace T2G
         public static readonly string k_EndOfGameGeneration = "END_OF_GAME_GENERATION";
 
         //Instruction
+        public static readonly string k_InstructionExecutionHasResponseMessage = "InstructionExecutionHasResponseMessage";
+        public static readonly string k_InstructionExecutionSucceeded = "InstructionExecutionSucceeded";
         public static readonly string k_InstructionExecutionResponseSucceeded = "InstructionExecutionResponseSucceeded";
-        public static readonly string k_InstructionExecutionResponseMessage = "InstructionExecutionResponseMessage";
-
+        public static readonly string k_InstructionExecutionResponseFailed = "InstructionExecutionResponseFailed";
+        
         //Game Generation
         public static readonly string k_SpacesDirectory = "Assets/Spaces";
         public static readonly string k_DefaultSpaceName = "PrimeSpace";

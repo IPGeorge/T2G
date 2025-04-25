@@ -36,44 +36,44 @@ namespace T2G.Executor
             return (string.Compare(keyword.ToLower(), attribute.Keyword.ToLower()) == 0);
         }
 
-        static protected void PoolAssetsToImport(List<string> assetsToImport)
+        static protected void PoolAssetsToImport(List<string> assetsToImport, string newObjPrefab = null, string newObjName = null)
         {
             if (assetsToImport.Count > 0)
             {
                 string poolPath = Path.Combine(Application.persistentDataPath, k_AssetsToImportPoolFileName);
-                string prefabsPath = Path.Combine(Application.persistentDataPath, k_AssetsToInstantiateFileName);
-                using (StreamWriter poolWriter = new StreamWriter(poolPath, File.Exists(poolPath)),
-                       prefabsWriter = new StreamWriter(prefabsPath, File.Exists(prefabsPath)))
+                using (StreamWriter poolWriter = new StreamWriter(poolPath, File.Exists(poolPath)))
                 {
-                    for (int i = assetsToImport.Count - 1; i >= 0 ; --i)
+                    for (int i = 0; i < assetsToImport.Count; ++i)
                     {
                         poolWriter.WriteLine(assetsToImport[i]);
-                        if(string.Compare(Path.GetExtension(assetsToImport[i]).ToLower(), "prefab") == 0)
-                        {
-                            prefabsWriter.WriteLine(assetsToImport[i]);
-                        }
+                    }
+                }
+            }
+
+            if(newObjPrefab != null)
+            {
+                string prefabPath = Path.Combine(Application.persistentDataPath, k_AssetsToInstantiateFileName);
+                using (StreamWriter prefabsWriter = new StreamWriter(prefabPath, File.Exists(prefabPath)))
+                {
+                    if (string.Compare(Path.GetExtension(newObjPrefab).ToLower(), ".prefab") == 0)
+                    {
+                        prefabsWriter.WriteLine(newObjPrefab);
+                        prefabsWriter.WriteLine(newObjName == null ? string.Empty : newObjName);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Invalid new object prefab: {newObjPrefab}");
                     }
                 }
             }
         }
 
-        static void ImportOnePooledAsset(List<string> assetsToImport, string poolPath)
+        static async Awaitable ImportOnePooledAsset(List<string> assetsToImport, string poolPath)
         {
             string assetPath = assetsToImport[0];
             assetsToImport.RemoveAt(0);
             File.WriteAllLines(poolPath, assetsToImport.ToArray());
-
-            string sourceAssetPath = Path.Combine(SettingsT2G.RecoursePath, assetPath);
-            string targetAssetPath = Path.Combine(Application.dataPath, assetPath);
-            string targetDirectory = Path.GetDirectoryName(targetAssetPath);
-            if(File.Exists(sourceAssetPath))
-            {
-                if(!Directory.Exists(targetDirectory))
-                {
-                    Directory.CreateDirectory(targetDirectory);
-                }
-                File.Copy(sourceAssetPath, targetDirectory);
-            }
+            await ContentLibrary.ImportAsset(assetPath);
         }
 
         protected static async Awaitable ImportPooledAssets()
@@ -86,26 +86,73 @@ namespace T2G.Executor
             List<string> assetsToImport = new List<string>(File.ReadAllLines(poolPath));
             while(assetsToImport.Count > 0)
             {
-                ImportOnePooledAsset(assetsToImport, poolPath);
+                await ImportOnePooledAsset(assetsToImport, poolPath);
                 await Task.Yield();
             }
+            File.Delete(poolPath);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         }
 
-        protected static async void InstantiatePooledPrefabs()
+        protected static async Awaitable<bool> InstantiatePooledPrefab(string objName = null, string prefabPoolPath = null)
         {
-            string prefabsPath = Path.Combine(Application.persistentDataPath, k_AssetsToInstantiateFileName);
-            if (!File.Exists(prefabsPath))
+            Debug.Log($"create obj: {objName}, prefab: {prefabPoolPath}");
+            while (EditorApplication.isCompiling)
             {
-                return;
-            }
-            List<string> prefabsToInstantiate = new List<string>(File.ReadAllLines(prefabsPath));
-            foreach(var prefab in prefabsToInstantiate)
-            {
-                string prefabPath = Path.Combine("Assets", prefab);
-                GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-                GameObject.Instantiate<GameObject>(prefabAsset);
                 await Task.Yield();
             }
+
+            string prefabPath = string.Empty;
+            if (string.IsNullOrEmpty(prefabPoolPath))
+            {
+                prefabPoolPath = Path.Combine(Application.persistentDataPath, k_AssetsToInstantiateFileName);
+                if (File.Exists(prefabPoolPath))
+                {
+                    List<string> prefabsToInstantiate = new List<string>(File.ReadAllLines(prefabPoolPath));
+                    if(prefabsToInstantiate.Count >= 2)
+                    { 
+                        prefabPath = Path.Combine("Assets", prefabsToInstantiate[0]);
+                        objName = string.IsNullOrEmpty(prefabsToInstantiate[1]) ? 
+                            $"obj{DateTime.Now.Ticks}":
+                            prefabsToInstantiate[1];
+                        File.Delete(prefabPoolPath);
+                    }
+                    else
+                    {
+                        File.Delete(prefabPoolPath);
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                prefabPath = Path.Combine("Assets", prefabPoolPath);
+                prefabPoolPath = Path.Combine(Application.persistentDataPath, k_AssetsToInstantiateFileName);
+                if(File.Exists(prefabPoolPath))
+                {
+                    File.Delete(prefabPoolPath);
+                }
+            }
+
+            GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefabAsset == null)
+            {
+                Debug.LogError($"Failed 2: path={prefabPath}; prefabAsset is null!");
+                return false;
+            }
+            GameObject gameObj = GameObject.Instantiate<GameObject>(prefabAsset);
+
+            if(string.IsNullOrEmpty(objName))
+            {
+                objName = $"Obj{DateTime.Now.Ticks.ToString()}";
+            }
+            gameObj.name = objName;
+
+            await Task.Yield();
+            return true;
         }
     }
 

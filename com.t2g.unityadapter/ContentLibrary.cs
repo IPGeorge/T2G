@@ -4,6 +4,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 
 namespace T2G
 {
@@ -63,94 +66,113 @@ namespace T2G
 #if UNITY_EDITOR
         //Importing assets ===============================================================================
 
-        public static int ImportScript(string scriptName, string dependencies)
-            //0-imported
-            //1-already exists, no import is needed
-            //-1-failed
+        public enum EAssetType
         {
-            int retVal = -1;
-            string scriptsFolderName = "Scripts";
-            var sourcePath = Path.Combine(SettingsT2G.RecoursePath, scriptsFolderName, scriptName);
-            var destDir = Path.Combine(Application.dataPath, scriptsFolderName);
-            var destPath = Path.Combine(destDir, scriptName);
-            if (File.Exists(destPath))
-            {
-                retVal = 1;
-            }
-            else if (File.Exists(sourcePath))
-            {
-                if (!Directory.Exists(destDir))
-                {
-                    Directory.CreateDirectory(destDir);
-                }
-                File.Copy(sourcePath, destPath);
-                var importPath = Path.Combine("Assets", scriptsFolderName, scriptName);
-                var dependencyArray = dependencies.Split(',');
-                foreach (var dependency in dependencyArray)
-                {
-                    sourcePath = Path.Combine(SettingsT2G.RecoursePath, scriptsFolderName, dependency);
-                    destPath = Path.Combine(Application.dataPath, scriptsFolderName, dependency);
-                    if (!File.Exists(destPath) && File.Exists(sourcePath))
-                    {
-                        File.Copy(sourcePath, destPath);
-                    }
-                }
-                AssetDatabase.Refresh();
-                retVal = 0;
-            }
-
-            return retVal;
+            Script,
+            Prefab,
+            Package,
+            Model,
+            Image,
+            Audio,
+            Video,
+            Other
         }
 
-        public static int ImportPrefab(string prefabName, AssetDatabase.ImportPackageCallback CompletedHanddler)
+        static Dictionary<string, EAssetType> s_AssetTypeMap = new Dictionary<string, EAssetType>()
+        {
+            { ".cs", EAssetType.Script },
+            { ".prefab", EAssetType.Prefab },
+            { ".unitypackage", EAssetType.Package },
+            { ".fbx", EAssetType.Model },
+            { ".png", EAssetType.Image },
+            { ".jpg", EAssetType.Image },
+            { ".tga", EAssetType.Image },
+            { ".bmp", EAssetType.Image },
+            { ".wav", EAssetType.Audio },
+            { ".mp3", EAssetType.Audio },
+            { ".avi", EAssetType.Video },
+            { ".mp4", EAssetType.Video }
+        };
+        
+        public static EAssetType GetAssetType(string assetPathName)
+        {
+            string assetExtension = Path.GetExtension(assetPathName);
+            if(s_AssetTypeMap.ContainsKey(assetExtension))
+            {
+                return s_AssetTypeMap[assetExtension];
+            }
+            return EAssetType.Other;
+        }
+
+        public static async Awaitable<bool> ImportAsset(string assetPathName) 
         {
             if (!SettingsT2G.Loaded)
             {
                 SettingsT2G.Load();
             }
-            string prefabsFolderName = "Prefabs";
-            string packagePath = Path.Combine(SettingsT2G.RecoursePath, prefabsFolderName, prefabName, $"{prefabName}.unitypackage");
-            string assetPrefabPathFolder = Path.Combine(Application.dataPath, prefabsFolderName);
-            string assetPrefabPath = Path.Combine(assetPrefabPathFolder, prefabName, $"{prefabName}.prefab");
-            if(File.Exists(assetPrefabPath))
-            {
-                return 1;
-            }
-            else if (File.Exists(packagePath))
-            {
-                if (!Directory.Exists(assetPrefabPathFolder))
-                {
-                    Directory.CreateDirectory(assetPrefabPathFolder);
-                }
-                AssetDatabase.importPackageCompleted += CompletedHanddler;
-                AssetDatabase.ImportPackage(packagePath, false);
-                AssetDatabase.Refresh();
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        }
 
-        public static bool ImportPackage(string packageName, AssetDatabase.ImportPackageCallback CompletedHanddler)
-        {
-            if (!SettingsT2G.Loaded)
-            {
-                SettingsT2G.Load();
-            }
-            string packagePath = Path.Combine(SettingsT2G.RecoursePath, "Packages", packageName, $"{packageName}.unitypackage");
-            if (File.Exists(packagePath))
-            {
-                AssetDatabase.importPackageCompleted += CompletedHanddler;
-                AssetDatabase.ImportPackage(packagePath, false);
-                AssetDatabase.Refresh();
-                return true;
-            }
-            else
+            string sourceAssetPath = Path.Combine(SettingsT2G.RecoursePath, assetPathName);
+            string targetAssetPath = Path.Combine(Application.dataPath, assetPathName);
+            string targetDirectory = Path.GetDirectoryName(targetAssetPath);
+            string targetAssetProjectPath = Path.Combine("Assets", assetPathName);
+            if (!File.Exists(sourceAssetPath))
             {
                 return false;
             }
+
+            try
+            {
+                if (!Directory.Exists(targetDirectory))
+                {
+                    Directory.CreateDirectory(targetDirectory);
+                }
+
+                var assetType = GetAssetType(assetPathName);
+                if (assetType == EAssetType.Package)
+                {
+                    return await ImportPackage(assetPathName);
+                }
+                else
+                {
+                    File.Copy(sourceAssetPath, targetAssetPath);
+                    AssetDatabase.ImportAsset(targetAssetProjectPath);
+                }
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+                return false;
+            }
+        }
+
+        public static async Awaitable<bool> ImportPackage(string packagePathName)
+        {
+            if (!SettingsT2G.Loaded)
+            {
+                SettingsT2G.Load();
+            }
+            string packagePath = Path.Combine(SettingsT2G.RecoursePath, packagePathName);
+            if (File.Exists(packagePath))
+            {
+                bool importing = true;
+                AssetDatabase.ImportPackageCallback competeCallback = null;
+                competeCallback = (handler) =>
+                {
+                    importing = false;
+                    AssetDatabase.importPackageCompleted -= competeCallback;
+                    AssetDatabase.Refresh();
+                };
+                AssetDatabase.importPackageCompleted += competeCallback;
+                AssetDatabase.ImportPackage(packagePath, false);
+                while(importing)
+                {
+                    await Task.Yield();
+                }
+                return true;
+            }
+            return false;
         }
 #endif
     }
