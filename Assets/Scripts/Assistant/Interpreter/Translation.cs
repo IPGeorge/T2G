@@ -90,7 +90,7 @@ namespace T2G
 
     public abstract class Translation
     {
-        Dictionary<string, Translator> _tranlatorPool = new Dictionary<string, Translator>(); //(rule, translation)
+        Dictionary<string, Translator> _translatorPool = new Dictionary<string, Translator>(); //(rule, translation)
         void Register_Translators()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -100,7 +100,7 @@ namespace T2G
             {
                 var attribute = translatorClass.GetCustomAttribute<TranslatorAttribute>();
                 var translator = (Translator)(Activator.CreateInstance(translatorClass));
-                _tranlatorPool.Add(attribute.InstructionKey, translator);
+                _translatorPool.Add(attribute.InstructionKey, translator);
             }
         }
 
@@ -115,9 +115,9 @@ namespace T2G
         {
             _instructionList.Clear();
             if (ParseInstructionData(prompt, out var key, out var arguments) &&
-                _tranlatorPool.ContainsKey(key))
+                _translatorPool.ContainsKey(key))
             {
-                var translator = _tranlatorPool[key];
+                var translator = _translatorPool[key];
                 var result = translator.Translate(arguments, ref _instructionList);
                 if(!result.succeeded)
                 {

@@ -51,8 +51,6 @@ namespace T2G
                     break;
             }
 
-            Debug.LogError($"{instruction.DataType} - {instruction.Data} : spaceName = {spaceName}");
-
             T2G.Executor.Executor.SaveActiveScene();
 
             //create or open the target space

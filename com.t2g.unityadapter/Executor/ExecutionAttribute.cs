@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -150,7 +151,8 @@ namespace T2G.Executor
                 objName = $"Obj{DateTime.Now.Ticks.ToString()}";
             }
             gameObj.name = objName;
-
+            Executor.PlaceObjectInFrontOfSceneView(gameObj);
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             await Task.Yield();
             return true;
         }

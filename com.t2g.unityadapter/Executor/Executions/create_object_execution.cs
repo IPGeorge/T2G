@@ -1,12 +1,9 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -57,6 +54,7 @@ namespace T2G.Executor
             Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
             await ImportPooledAssets();
             bool succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
+            Executor.SaveActiveScene();
             var result = (true, Executor.GetSucceededResponseMessage());
             Executor.ClearResponseForInitializeOnLoad();    
             return result;

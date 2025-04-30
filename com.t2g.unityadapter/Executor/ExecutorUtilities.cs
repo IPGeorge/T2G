@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor.SceneManagement;
 using T2G.Communicator;
 using SimpleJSON;
+using UnityEditor;
 
 namespace T2G.Executor
 {
@@ -407,6 +408,25 @@ namespace T2G.Executor
             {
                 EditorSceneManager.SaveScene(activeScene);
             }
+        }
+
+        public static bool PlaceObjectInFrontOfSceneView(GameObject gameObject)
+        {
+            // Get the current Scene View camera
+            SceneView sceneView = SceneView.lastActiveSceneView;
+            if (sceneView == null || sceneView.camera == null)
+            {
+                Debug.LogWarning("No active Scene View camera found.");
+                return false;
+            }
+
+            Camera cam = sceneView.camera;
+            Vector3 forward = cam.transform.forward;
+            Vector3 position = cam.transform.position + forward * 5f;  // 5 units in front of camera
+            gameObject.transform.position = position;
+            gameObject.transform.rotation = Quaternion.identity;
+            Selection.activeGameObject = gameObject;
+            return true;
         }
     }
 }

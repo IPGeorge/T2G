@@ -166,13 +166,18 @@ namespace T2G
                 };
                 AssetDatabase.importPackageCompleted += competeCallback;
                 AssetDatabase.ImportPackage(packagePath, false);
-                while(importing)
+                while (importing)
                 {
                     await Task.Yield();
                 }
+                AssetDatabase.Refresh();
                 return true;
             }
-            return false;
+            else
+            {
+                Debug.LogError($"Couldn't find and import {packagePathName}");
+                return false;
+            }
         }
 #endif
     }
