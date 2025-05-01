@@ -5,16 +5,16 @@ using T2G.Executor;
 using UnityEditor;
 using UnityEngine;
 
-namespace T2G
+namespace T2G.Executor
 {
-    [Execution("delete_object")]
-    public class delete_object_execution : Execution
+    [Execution("select_object")]
+    public class select_object_execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'delete_object' was expected.");
+                return (false, "Invalid instruction keyword! 'select_object' was expected.");
             }
 
             string objName = string.Empty;
@@ -56,17 +56,18 @@ namespace T2G
 
             if (gameObj != null)
             {
-                GameObject.DestroyImmediate(gameObj);
-                Executor.Executor.SaveActiveScene();
-                return (true, $"{objName} was deleted.");
+                Selection.activeGameObject = gameObj;
+                //Selection.SetActiveObjectWithContext(gameObj, null);
+                EditorUtility.SetDirty(gameObj);
+                Executor.ForceUpdateEditorWindows();
+                return (true, $"{objName} was selected.");
             }
             else
             {
-                return (false, $"Couldn't find and delete {objName}!");
+                return (false, $"Couldn't find and select {objName}!");
             }
         }
     }
+
 }
-
-
 #endif

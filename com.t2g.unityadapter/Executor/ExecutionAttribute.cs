@@ -152,7 +152,8 @@ namespace T2G.Executor
             }
             gameObj.name = objName;
             Executor.PlaceObjectInFrontOfSceneView(gameObj);
-            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            Selection.activeObject = gameObj;
+            Executor.ForceUpdateEditorWindows();
             await Task.Yield();
             return true;
         }

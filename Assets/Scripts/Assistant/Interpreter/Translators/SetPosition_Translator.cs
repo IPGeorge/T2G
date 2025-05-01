@@ -4,8 +4,9 @@ using System.Reflection;
 
 namespace T2G
 {
-    [Translator("delete_object")]
-    public class DeleteObjectTranslator : Translator
+    [Translator("set_position")]
+
+    public class SetPosition_Translator : Translator
     {
         public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
@@ -23,6 +24,7 @@ namespace T2G
             instruction.Keyword = attribute.InstructionKey;
             instruction.DataType = Instruction.EDataType.JsonData;
             string name = GetParamFromArguments(arguments, "name");
+            string position = GetParamFromArguments(arguments, "position");
             if (string.IsNullOrEmpty(name))
             {
                 return (false, null);
@@ -31,6 +33,7 @@ namespace T2G
             {
                 JSONObject jsonObj = new JSONObject();
                 jsonObj.Add("name", name);
+                jsonObj.Add("position", position);
                 instruction.Data = jsonObj.ToString();
                 instructions.Add(instruction);
                 return (true, null);

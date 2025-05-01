@@ -31,14 +31,15 @@ namespace T2G.Executor
             }
         }
 
-        public static float[] ParseFloat2(string float3String)
+        public static float[] ParseFloat2(string float2String)
         {
             float[] fValue = new float[2] { 0.0f, 0.0f };
-            if (float3String.Substring(0, 1).CompareTo("[") == 0 &&
-                float3String.Substring(float3String.Length - 1, 1).CompareTo("]") == 0)
+            int lastIndex = float2String.Length - 1;
+            if ((float2String.Substring(0, 1).CompareTo("[") == 0 || float2String.Substring(0, 1).CompareTo("(") == 0) &&
+                (float2String.Substring(lastIndex, 1).CompareTo("]") == 0 || float2String.Substring(lastIndex, 1).CompareTo(")") == 0))
             {
-                float3String = float3String.Substring(1, float3String.Length - 2);
-                var elements = float3String.Split(',');
+                float2String = float2String.Substring(1, float2String.Length - 2);
+                var elements = float2String.Split(',');
                 if (elements.Length == 2)
                 {
                     for (int i = 0; i < 2; ++i)
@@ -53,8 +54,9 @@ namespace T2G.Executor
         public static float[] ParseFloat3(string float3String)
         {
             float[] fValue = new float[3] { 0.0f, 0.0f, 0.0f };
-            if (float3String.Substring(0, 1).CompareTo("[") == 0 &&
-                float3String.Substring(float3String.Length - 1, 1).CompareTo("]") == 0)
+            int lastIndex = float3String.Length - 1;
+            if ((float3String.Substring(0, 1).CompareTo("[") == 0 || float3String.Substring(0, 1).CompareTo("(") == 0) &&
+                (float3String.Substring(lastIndex, 1).CompareTo("]") == 0 || float3String.Substring(lastIndex, 1).CompareTo(")") == 0))
             {
                 float3String = float3String.Substring(1, float3String.Length - 2);
                 var elements = float3String.Split(',');
@@ -72,8 +74,9 @@ namespace T2G.Executor
         public static float[] ParseFloat4(string float4String)
         {
             float[] fValue = new float[4] { 0.0f, 0.0f, 0.0f, 0.0f };
-            if (float4String.Substring(0, 1).CompareTo("[") == 0 &&
-                float4String.Substring(float4String.Length - 1, 1).CompareTo("]") == 0)
+            int lastIndex = float4String.Length - 1;
+            if ((float4String.Substring(0, 1).CompareTo("[") == 0 || float4String.Substring(0, 1).CompareTo("(") == 0) &&
+                (float4String.Substring(lastIndex, 1).CompareTo("]") == 0) || (float4String.Substring(lastIndex, 1).CompareTo(")") == 0))
             {
                 float4String = float4String.Substring(1, float4String.Length - 2);
                 var elements = float4String.Split(',');
@@ -428,6 +431,27 @@ namespace T2G.Executor
             Selection.activeGameObject = gameObject;
             return true;
         }
+
+        public static void ForceUpdateEditorWindows()
+        {
+            EditorUtility.SetDirty(Selection.activeGameObject);
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            SceneView.RepaintAll();
+
+            EditorApplication.DirtyHierarchyWindowSorting();
+            EditorApplication.RepaintHierarchyWindow();
+
+            var inspectorType = typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindow");
+            EditorWindow.GetWindow(inspectorType)?.Repaint();
+        }
+
+        public static void ForceUpdateSceneView()
+        {
+            EditorUtility.SetDirty(Selection.activeGameObject);
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            SceneView.RepaintAll();
+        }
+
     }
 }
 #endif
