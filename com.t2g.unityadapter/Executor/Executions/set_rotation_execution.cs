@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
+using System.Threading.Tasks;
 using T2G.Executor;
 using UnityEditor;
 using UnityEngine;
@@ -60,6 +61,7 @@ namespace T2G.Executor
                 Vector3 rot = new Vector3(rotArr[0], rotArr[1], rotArr[2]);
                 gameObj.transform.localRotation = Quaternion.Euler(rot);
                 Executor.ForceUpdateSceneView();
+                await Task.Yield();
                 return (true, $"{objName} was rotated to {rotStr}");
             }
             else

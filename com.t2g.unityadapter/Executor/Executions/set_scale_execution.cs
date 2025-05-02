@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
+using System.Threading.Tasks;
 using T2G.Executor;
 using UnityEditor;
 using UnityEngine;
@@ -60,6 +61,7 @@ namespace T2G.Executor
                 Vector3 scale = new Vector3(scaleArr[0], scaleArr[1], scaleArr[2]);
                 gameObj.transform.localScale = scale;
                 Executor.ForceUpdateSceneView();
+                await Task.Yield();
                 return (true, $"{objName} was scaled to {scaleArr}");
             }
             else

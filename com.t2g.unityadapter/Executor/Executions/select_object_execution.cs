@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
+using System.Threading.Tasks;
 using T2G.Executor;
 using UnityEditor;
 using UnityEngine;
@@ -58,8 +59,8 @@ namespace T2G.Executor
             {
                 Selection.activeGameObject = gameObj;
                 //Selection.SetActiveObjectWithContext(gameObj, null);
-                EditorUtility.SetDirty(gameObj);
                 Executor.ForceUpdateEditorWindows();
+                await Task.Yield();
                 return (true, $"{objName} was selected.");
             }
             else

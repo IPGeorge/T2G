@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
+using System.Threading.Tasks;
 using T2G.Executor;
 using UnityEditor;
 using UnityEngine;
@@ -60,6 +61,7 @@ namespace T2G.Executor
                 Vector3 position = new Vector3(posArr[0], posArr[1], posArr[2]);
                 gameObj.transform.localPosition = position;
                 Executor.ForceUpdateSceneView();
+                await Task.Yield();
                 return (true, $"{objName} was placed at {positionStr}");
             }
             else

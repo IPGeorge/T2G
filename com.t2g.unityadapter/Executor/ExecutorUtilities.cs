@@ -434,9 +434,16 @@ namespace T2G.Executor
 
         public static void ForceUpdateEditorWindows()
         {
+            if(Selection.activeGameObject == null)
+            {
+                return;
+            }
+
             EditorUtility.SetDirty(Selection.activeGameObject);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            EditorApplication.QueuePlayerLoopUpdate();
             SceneView.RepaintAll();
+            //SceneView.lastActiveSceneView.FrameSelected(); //Auto change scnee view camera focus. Is not needed here. 
 
             EditorApplication.DirtyHierarchyWindowSorting();
             EditorApplication.RepaintHierarchyWindow();
