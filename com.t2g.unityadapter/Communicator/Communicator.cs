@@ -102,9 +102,9 @@ namespace T2G.Communicator
 
         public virtual void Disconnect()
         {
-            if(_networkDriver.IsCreated)
+            if(!_networkDriver.IsCreated)
             {
-
+                return;
             }
 
             foreach (var connection in _connections)

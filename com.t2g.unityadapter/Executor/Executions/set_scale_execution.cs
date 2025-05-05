@@ -62,7 +62,7 @@ namespace T2G.Executor
                 gameObj.transform.localScale = scale;
                 Executor.ForceUpdateSceneView();
                 await Task.Yield();
-                return (true, $"{objName} was scaled to {scaleArr}");
+                return (true, $"{objName} was scaled to {scaleStr}");
             }
             else
             {

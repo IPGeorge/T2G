@@ -27,7 +27,7 @@ namespace T2G
             (@"^(connect|connect to)$(?:\s+\w)?(?:\.)?", "connect"),
             (@"^(disconnect|disconnect from)$(?:\s+\w)?(?:\.)?", "disconnect"),
             (@"(clear|clear all)(?:\.)?", "clear"),
-            (@"^create\s+(?:(a|a new|new)\s+)?(?<type>scene|level|space)(?:\s+(?:named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_space"),
+            (@"^create\s+(?:(a|a new|new)\s+)?(?<type>scene|level|space)(?:\s+(?:named|called|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_space"),
                 //^ --> Start of the string
                 //create\s+ --> Matches "create" followed by one or more spaces
                 //(?:a\s+new\s+)? --> Matches optional "a new " (non-capturing group)
@@ -37,12 +37,12 @@ namespace T2G
                 //(?:\.)? --> Matches an optional period at the end
                 //$ --> Ensures the command ends there
             (@"^(enter|go to|open)\s+(?:(?<type>scene|level|space)\s+)?(?:named|with the name\s+)?(?<name>.+?)(?:\.)?$", "enter_space"),
-            (@"^(?:\w+\s+)?(create|place|Add)\s+(?:a\s+|an\s+)?(?<type>(?:\s+\w+))(?:\s+(?:name|named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
+            (@"^(?:\w+\s+)?(create|place|Add)\s+(?:a\s+|an\s+)?(?<type>(?:\w+\s+)*\w+)(?:\s+(?:called|named|with the name))?\s+(?<name>.+?)(?:\.)?$", "create_object"),
             (@"^(?:\w+\s+)?(select)(?:\s+(?:object))?\s+(?<name>.+?)(?:\.)?$", "select_object"),
             (@"^(?:\w+\s+)?(delete|remove)(?:\s+(?:object))?\s+(?<name>.+?)(?:\.)?$", "delete_object"),
             (@"^(?:\w+\s+)?(place|locate|relocate)(?:\s+object)?\s+(?<name>\w+)(?:\s+(?:at|to))?\s+(?<position>\(?\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)?)?(?:\.)?$", "set_position"),
-            (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+(?:rotation)\s+(?<eulerAngles>\(?\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)?))?(?:\.)?$", "set_rotation"),
-            (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+(?:scale)\s+(?<scale>\(?\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)?))?(?:\.)?$", "set_scale"),
+            (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+rotation\s+(?<eulerAngles>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_rotation"),
+            (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_scale"),
             //("", "move|push|pull|left|right object"),
             //("", "rotate|turn_object"),
             //("", "scale up|down_object"),

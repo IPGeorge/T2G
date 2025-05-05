@@ -96,7 +96,6 @@ namespace T2G.Executor
 
         protected static async Awaitable<bool> InstantiatePooledPrefab(string objName = null, string prefabPoolPath = null)
         {
-            Debug.Log($"create obj: {objName}, prefab: {prefabPoolPath}");
             while (EditorApplication.isCompiling)
             {
                 await Task.Yield();

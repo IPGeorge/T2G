@@ -58,6 +58,12 @@ namespace T2G.Communicator
                 return;
             }
 
+            if(_networkDriver.IsCreated && 
+                _networkDriver.GetConnectionState(_connections[0]) != NetworkConnection.State.Disconnected)
+            {
+                return;
+            }
+
             Silent = silent;
 
             if (IsActive)
@@ -145,6 +151,7 @@ namespace T2G.Communicator
                     {
                         OnFailedToConnectToServer?.Invoke();
                     }
+                    return;
                 }
             }
 

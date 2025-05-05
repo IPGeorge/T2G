@@ -50,7 +50,7 @@ namespace T2G
             while(true)
             {
                 yield return new WaitForSeconds(5.0f);
-                if (!CommunicatorClient.Instance.IsConnected)
+                if (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Disconnected)
                 {
                     CommunicatorClient.Instance.StartClient(true);
                 }

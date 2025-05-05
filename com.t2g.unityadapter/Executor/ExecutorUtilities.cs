@@ -454,7 +454,10 @@ namespace T2G.Executor
 
         public static void ForceUpdateSceneView()
         {
-            EditorUtility.SetDirty(Selection.activeGameObject);
+            if (Selection.activeGameObject != null)
+            {
+                EditorUtility.SetDirty(Selection.activeGameObject);
+            }
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             SceneView.RepaintAll();
         }
