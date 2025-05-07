@@ -44,11 +44,14 @@ namespace T2G
                 instruction = new Instruction();
                 instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
-                instruction.Keyword = "set_values";
+                instruction.Keyword = "set_value";
                 instruction.DataType = Instruction.EDataType.JsonData;
                 JSONObject jsonValues = new JSONObject();
                 jsonObj.Add("name", name);
-                jsonObj.Add("speed", speedStr);
+                jsonObj.Add("scriptName", "SpinController");
+                jsonObj.Add("fieldName", "Speed");
+                jsonObj.Add("value", speedStr);
+                jsonObj.Add("dataType", "float");
                 instruction.Data = jsonObj.ToString();
                 instructions.Add(instruction);
             }

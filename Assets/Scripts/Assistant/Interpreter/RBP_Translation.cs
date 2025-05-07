@@ -45,11 +45,11 @@ namespace T2G
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_scale"),
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
             (@"^spin(?:\s+(?<name>\w+))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
-            //("", "set_object_property"),
-            //("", "add_object_component"),
-            //("", "create_from_gamedesc"),
-            //("", "save_gamedesc")
-        };
+            (@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_value"),
+
+        //("", "create_from_gamedesc"),
+        //("", "save_gamedesc")
+    };
 
         public static int[] TestRegexMatch(string text)
         {

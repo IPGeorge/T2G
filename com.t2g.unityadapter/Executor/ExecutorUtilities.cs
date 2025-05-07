@@ -46,9 +46,10 @@ namespace T2G.Executor
                     {
                         float.TryParse(elements[i], out fValue[i]);
                     }
+                    return fValue;
                 }
             }
-            return fValue;
+            return null;
         }
 
         public static float[] ParseFloat3(string float3String)
@@ -66,9 +67,10 @@ namespace T2G.Executor
                     {
                         float.TryParse(elements[i], out fValue[i]);
                     }
+                    return fValue;
                 }
             }
-            return fValue;
+            return null;
         }
 
         public static float[] ParseFloat4(string float4String)
@@ -86,9 +88,10 @@ namespace T2G.Executor
                     {
                         float.TryParse(elements[i], out fValue[i]);
                     }
+                    return fValue;
                 }
             }
-            return fValue;
+            return null;
         }
 
         public static void ParseAndSetValues(GameObject gameObject, string controller, string valuePairs)
@@ -296,7 +299,7 @@ namespace T2G.Executor
             return retVal;
         }
 
-        public static void SetFieldValue(object component, System.Reflection.FieldInfo fieldInfo, string value)
+        public static bool SetFieldValue(object component, System.Reflection.FieldInfo fieldInfo, string value)
         {
             value = value.Trim('"');
             if(fieldInfo.FieldType == typeof(string))
@@ -339,8 +342,13 @@ namespace T2G.Executor
                 Color color = new Color(float4[0], float4[1], float4[2], float4[3]);
                 fieldInfo.SetValue(component, color);
             }
+            else
+            {
+                return false;
+            }
+            return true;
         }
-        public static void SetPropertyValue(object component, System.Reflection.PropertyInfo propertyInfo, string value)
+        public static bool SetPropertyValue(object component, System.Reflection.PropertyInfo propertyInfo, string value)
         {
             value = value.Trim('"');
             if (propertyInfo.PropertyType == typeof(string))
@@ -383,6 +391,11 @@ namespace T2G.Executor
                 Color color = new Color(float4[0], float4[1], float4[2], float4[3]);
                 propertyInfo.SetValue(component, color);
             }
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         public static List<string> GetSettingsList(string settingsString)
