@@ -26,28 +26,37 @@ namespace T2G
         public async static Awaitable<Instruction> ResolveAssets(Instruction instruction)
         {
             var result = await SearchAssets(instruction.Data);
+            if (string.IsNullOrEmpty(result))
+            {
+                result = await SearchAssets("default");
+            }
+
             JSONObject jsonObj = JSON.Parse(result).AsObject;
             JSONArray resultsArray = jsonObj["results"].AsArray;
-            if(resultsArray.Count > 0)
+            if (resultsArray.Count > 0)
             {
                 instruction.State = Instruction.EInstructionState.Resolved;
+                instruction.ResolvedAssetPaths = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
             }
-            else
-            {
-                instruction.State = Instruction.EInstructionState.MissingResource;
-                result = await SearchAssets("default");
-                jsonObj = JSON.Parse(result).AsObject;
-                resultsArray = jsonObj["results"].AsArray;
-            }
-            instruction.ResolvedAssetPaths = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
+           
             return instruction;
         }
 
         public async static Awaitable<string> SearchAssets(string objInfo, string assetType = "")
         {
             JSONObject jsonObj = JSON.Parse(objInfo).AsObject;
-            string objName = jsonObj["name"];
-            string tokens = jsonObj["type"];
+            string tokens = "default";
+            if (jsonObj == null)
+            {
+                if(!string.IsNullOrEmpty(objInfo))
+                {
+                    tokens = objInfo;
+                }
+            }
+            else
+            {
+                tokens = jsonObj["type"];
+            }
             string url = $"http://localhost:5000/search?q={tokens}&type={assetType}";
             string assetPaths = string.Empty;
             using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -118,6 +127,11 @@ namespace T2G
             if (!File.Exists(sourceAssetPath))
             {
                 return false;
+            }
+
+            if(File.Exists(targetAssetPath))
+            {
+                return true;
             }
 
             try

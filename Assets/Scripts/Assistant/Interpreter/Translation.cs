@@ -33,7 +33,17 @@ namespace T2G
          */
         abstract public (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions);
 
-        protected string GetParamFromArguments((string name, string value)[] arguments, string paramName)
+        protected string GetAttributeName()
+        {
+            var attribute = GetType().GetCustomAttribute<TranslatorAttribute>();
+            if (attribute == null)
+            {
+                return null;     
+            }
+            return attribute.InstructionKey;
+        }
+
+        protected string GetParamFromArguments((string name, string value)[] arguments, string paramName, string defaultResponse = null)
         {
             foreach (var argument in arguments)
             {
@@ -42,7 +52,7 @@ namespace T2G
                     return argument.value;
                 }
             }
-            return null;
+            return (defaultResponse != null) ? defaultResponse : null;
         }
 
         protected string GetJsonFromArguments((string name, string value)[] arguments, params string[] requiredParamNames)

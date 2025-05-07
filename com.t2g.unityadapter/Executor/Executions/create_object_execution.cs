@@ -53,10 +53,10 @@ namespace T2G.Executor
             PoolAssetsToImport(assetsToImport, prefabToInstantiate, objName);
             Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
             await ImportPooledAssets();
-            bool succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
+            var succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
             Executor.SaveActiveScene();
-            var result = (true, Executor.GetSucceededResponseMessage());
-            Executor.ClearResponseForInitializeOnLoad();    
+            var result = (succeeded.result, succeeded.result ? Executor.GetSucceededResponseMessage() : Executor.GetFailedResponseMessage());
+            Executor.ClearResponseForInitializeOnLoad();
             return result;
         }
 
@@ -69,13 +69,13 @@ namespace T2G.Executor
         {
             await ImportPooledAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-            bool created = await InstantiatePooledPrefab();
-            if (created)
+            var created = await InstantiatePooledPrefab();
+            if (created.result)
             {
                 Executor.SendExecutionResponse(true); //Send execution response 
                 Executor.SaveActiveScene();
             }
-            else
+            else if(created.exitCode != 0)    //Failed to create the object
             {
                 Executor.SendExecutionResponse(false);
             }

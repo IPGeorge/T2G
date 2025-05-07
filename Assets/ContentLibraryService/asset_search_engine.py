@@ -113,7 +113,8 @@ if __name__ == "__main__":
         {"name": "cylinder", "description": "primitive cylinder", "type": "Prefab", "path": "Prefabs/Primitives/cylinder.prefab,Scripts/ObjectInterface.cs"},
         {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Scripts/ObjectInterface.cs"},
         {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
-        {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"}
+        {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"},
+        {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"}
     ]
 
     engine = AssetSearchEngine()

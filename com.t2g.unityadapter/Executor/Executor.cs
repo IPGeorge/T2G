@@ -153,7 +153,7 @@ namespace T2G.Executor
 
         public async Awaitable<bool> Execute(Instruction instruction)
         {
-            if (instruction != null && _executionPool.ContainsKey(instruction.Keyword))
+            if (instruction != null && _executionPool.ContainsKey(instruction.Keyword.ToLower()))
             {
                 var result = await _executionPool[instruction.Keyword].Execute(instruction);
                 SendInstructionExecutionResponse(result.succeeded, result.message); //is executed when InitializeOnload didn't happen

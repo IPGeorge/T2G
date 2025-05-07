@@ -462,6 +462,20 @@ namespace T2G.Executor
             SceneView.RepaintAll();
         }
 
+        public static System.Type GetClassTypeByName(string typeName)
+        {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            System.Type type = null;
+            foreach (var assembly in assemblies)
+            {
+                type = assembly.GetType(typeName);
+                if (type != null)
+                {
+                    break;
+                }
+            }
+            return type;
+        }
     }
 }
 #endif

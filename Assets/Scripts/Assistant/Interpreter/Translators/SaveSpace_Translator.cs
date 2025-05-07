@@ -1,12 +1,11 @@
-using System;
+using SimpleJSON;
 using System.Collections.Generic;
 using System.Reflection;
-using SimpleJSON;
 
 namespace T2G
 {
-    [Translator("create_object")]
-    public class CreateObject_Translator : Translator
+    [Translator("save_space")]
+    public class SaveSpace_Translator : Translator
     {
         public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
@@ -20,16 +19,9 @@ namespace T2G
 
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
-            instruction.State = Instruction.EInstructionState.Raw;
+            instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = attributeName;
-            instruction.DataType = Instruction.EDataType.JsonData;
-            string name = GetParamFromArguments(arguments, "name");
-            string type = GetParamFromArguments(arguments, "type").Trim();
-            JSONObject jsonObj = new JSONObject();
-            jsonObj.Add("name", string.IsNullOrEmpty(name) ? $"Obj{DateTime.Now.Ticks}" : name);
-            jsonObj.Add("type", type);
-            instruction.Data = jsonObj.ToString();
-
+            instruction.DataType = Instruction.EDataType.Empty;
             instructions.Add(instruction);
             return (true, null);
         }
