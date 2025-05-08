@@ -72,7 +72,6 @@ namespace T2G.Executor
 
                         foreach (PropertyInfo pi in componentType.GetProperties())
                         {
-                            Debug.LogError($"{fieldName}: {fieldType} --> actual propertyName={pi.Name}: {pi.PropertyType.Name}");
                             if (string.Compare(pi.Name, fieldName) == 0)
                             {
                                 if(Executor.SetPropertyValue(component, pi, fieldValue))

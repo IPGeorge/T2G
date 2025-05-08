@@ -46,10 +46,9 @@ namespace T2G
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
             (@"^spin(?:\s+(?<name>\w+))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
             (@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_value"),
-
-        //("", "create_from_gamedesc"),
-        //("", "save_gamedesc")
-    };
+            (@"^(generate|create)\s+(?:a\s+new\s+)?game\s+from\s+(?<filePath>[\w\-]+\.json)\s*$", "generate_from_gamedesc"),
+            (@"^export\s+(?<filePath>[\w\-]+\.json)\s*$", "export_gamedesc")
+        };
 
         public static int[] TestRegexMatch(string text)
         {
