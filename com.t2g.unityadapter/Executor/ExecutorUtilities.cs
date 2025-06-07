@@ -13,7 +13,7 @@ namespace T2G.Executor
     public partial class Executor
     {
         public static void RespondCompletion(bool succeeded, string message = null)
-            //Succeeded=[true: code=0(completed), code=1(postponed)]; [false: failed]
+        //Succeeded=[true: code=0(completed), code=1(postponed)]; [false: failed]
         {
             string response;
             if (!string.IsNullOrEmpty(message))
@@ -98,7 +98,7 @@ namespace T2G.Executor
         {
             Dictionary<string, string> fieldValues = new Dictionary<string, string>();
             var setValues = valuePairs.Substring(1, valuePairs.Length - 2).Split("\",\"");
-            for(int i = 0; i < setValues.Length - 1; i+=2)
+            for (int i = 0; i < setValues.Length - 1; i += 2)
             {
                 fieldValues.Add(setValues[i].Trim('"'), setValues[i + 1].Trim('"'));
             }
@@ -107,12 +107,12 @@ namespace T2G.Executor
             var component = gameObject.GetComponent(controller);
             Type type = component.GetType();
             var properties = type.GetProperties();
-            for(int i = 0; i < properties.Length; ++i)
+            for (int i = 0; i < properties.Length; ++i)
             {
                 var propertyInfo = properties[i];
-                if(fieldValues.ContainsKey(propertyInfo.Name))
+                if (fieldValues.ContainsKey(propertyInfo.Name))
                 {
-                    if(propertyInfo.PropertyType == typeof(string))
+                    if (propertyInfo.PropertyType == typeof(string))
                     {
                         propertyInfo.SetValue(component, fieldValues[propertyInfo.Name]);
                     }
@@ -133,7 +133,7 @@ namespace T2G.Executor
                         var valuesStr = fieldValues[propertyInfo.Name];
                         valuesStr = valuesStr.Substring(1, valuesStr.Length - 2);
                         var values = valuesStr.Split(",");
-                        Color color = new Color(float.Parse(values[0]), 
+                        Color color = new Color(float.Parse(values[0]),
                             float.Parse(values[1]), float.Parse(values[2]), float.Parse(values[3]));
                         propertyInfo.SetValue(component, color);
                     }
@@ -142,7 +142,7 @@ namespace T2G.Executor
                         var valuesStr = fieldValues[propertyInfo.Name];
                         valuesStr = valuesStr.Substring(1, valuesStr.Length - 2);
                         var values = valuesStr.Split(",");
-                        Vector3 vec3 = new Vector3(float.Parse(values[0]), 
+                        Vector3 vec3 = new Vector3(float.Parse(values[0]),
                             float.Parse(values[1]), float.Parse(values[2]));
                         propertyInfo.SetValue(component, vec3);
                     }
@@ -230,14 +230,14 @@ namespace T2G.Executor
         public static string GetPropertyValue(string propertyName, ref List<string> argList, bool removeProperty = true, int startIndex = 0)
         {
             string value = string.Empty;
-            if(!string.IsNullOrEmpty(propertyName) && argList != null && argList.Count > 0)
+            if (!string.IsNullOrEmpty(propertyName) && argList != null && argList.Count > 0)
             {
-                for(int i = startIndex; i < argList.Count - 1; i += 2)
+                for (int i = startIndex; i < argList.Count - 1; i += 2)
                 {
-                    if(argList[i].CompareTo(propertyName) == 0)
+                    if (argList[i].CompareTo(propertyName) == 0)
                     {
                         value = argList[i + 1];
-                        if(removeProperty)
+                        if (removeProperty)
                         {
                             argList.RemoveRange(i, 2);
                         }
@@ -250,7 +250,7 @@ namespace T2G.Executor
         public static string GetScriptClassName(string scriptName)
         {
             int idx = scriptName.IndexOf(".cs");
-            if(idx > 0)
+            if (idx > 0)
             {
                 scriptName = scriptName.Substring(0, idx);
             }
@@ -260,7 +260,7 @@ namespace T2G.Executor
         public static bool FileExistsInProject(string fileName)
         {
             string[] founds = Directory.GetFiles(Application.dataPath, fileName, SearchOption.AllDirectories);
-            return (founds != null && founds.Length > 0);    
+            return (founds != null && founds.Length > 0);
         }
         public static bool FilesExistInProject(string[] fileNames)
         {
@@ -268,7 +268,7 @@ namespace T2G.Executor
             for (int i = 0; i < fileNames.Length; ++i)
             {
                 string[] founds = Directory.GetFiles(Application.dataPath, fileNames[i], SearchOption.AllDirectories);
-                if(founds == null || founds.Length == 0)
+                if (founds == null || founds.Length == 0)
                 {
                     retVal = false;
                     break;
@@ -302,7 +302,7 @@ namespace T2G.Executor
         public static bool SetFieldValue(object component, System.Reflection.FieldInfo fieldInfo, string value)
         {
             value = value.Trim('"');
-            if(fieldInfo.FieldType == typeof(string))
+            if (fieldInfo.FieldType == typeof(string))
             {
                 fieldInfo.SetValue(component, value);
             }
@@ -438,7 +438,8 @@ namespace T2G.Executor
 
             Camera cam = sceneView.camera;
             Vector3 forward = cam.transform.forward;
-            Vector3 position = cam.transform.position + forward * 5f;  // 5 units in front of camera
+            Vector3 position = cam.transform.position + forward * 5f;   // 5 units in front of camera
+            position.y = cam.transform.position.y;                      //make the new object the same hight with the camera 
             gameObject.transform.position = position;
             gameObject.transform.rotation = Quaternion.identity;
             Selection.activeGameObject = gameObject;
@@ -447,7 +448,7 @@ namespace T2G.Executor
 
         public static void ForceUpdateEditorWindows()
         {
-            if(Selection.activeGameObject == null)
+            if (Selection.activeGameObject == null)
             {
                 return;
             }
@@ -488,6 +489,38 @@ namespace T2G.Executor
                 }
             }
             return type;
+        }
+
+        public static bool PutDownObject(GameObject target)
+        {
+            if (Physics.defaultPhysicsScene == null || target == null)
+            {
+                return false;
+            }
+
+            var colliders = target.GetComponentsInChildren<Collider>();
+            if (colliders.Length == 0)
+            {
+                return false;
+            }
+
+            var bounds = new Bounds(Vector3.zero, Vector3.zero);
+            foreach (Collider collider in colliders)
+            {
+                Debug.LogError($"collider-{collider.name}: ({collider.bounds.size.x},{collider.bounds.size.y},{collider.bounds.size.z}).");
+                bounds.Encapsulate(collider.bounds);
+            }
+
+            float maxDistance = Mathf.Max(bounds.size.y * 3.0f, 10000.0f);
+            if (Physics.Raycast(target.transform.position, Vector3.down, out var hit, maxDistance))
+            {
+                Vector3 newPos = target.transform.position;
+                newPos.y = hit.point.y - bounds.min.y;
+                target.transform.position = newPos;
+                return true;
+            }
+
+            return false;
         }
     }
 }

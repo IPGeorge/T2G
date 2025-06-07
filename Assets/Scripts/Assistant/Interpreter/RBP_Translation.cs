@@ -46,6 +46,15 @@ namespace T2G
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
             (@"^spin(?:\s+(?<name>\w+))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
             (@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_value"),
+
+            (@"^(?:\w+\s+)?create ground(?:\.)?\s*$", "create_ground"),
+            (@"^(?:\w+\s+)?create terrain(?:\.)?\s*$", "create_terrain"),
+            (@"^(?:\w+\s+)?create sun(?:\.)?\s*$", "create_sun"),
+            (@"^(?:\w+\s+)?create water plane(?:\.)?\s*$", "create_water_plane"),
+            (@"^(?:\w+\s+)?create sky(?:\.)?\s*$", "create_sky"),
+            (@"^(?:\w+\s+)?set weather(?:\.)?\s*$", "set_weather"),
+            (@"^(?:\w+\s+)?set time(?:\.)?\s*$", "set_time"),
+            (@"^(?:\w+\s+)?set date(?:\.)?\s*$", "set_date"),
             (@"^(generate|create)\s+(?:a\s+new\s+)?game\s+from\s+(?<filePath>[\w\-]+\.json)\s*$", "generate_from_gamedesc"),
             (@"^export\s+(?<filePath>[\w\-]+\.json)\s*$", "export_gamedesc")
         };

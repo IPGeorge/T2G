@@ -200,6 +200,7 @@ namespace T2G.Executor
             }
             gameObj.name = objName;
             Executor.PlaceObjectInFrontOfSceneView(gameObj);
+            Executor.PutDownObject(gameObj);
             Selection.activeObject = gameObj;
             Executor.ForceUpdateEditorWindows();
             await Task.Yield();

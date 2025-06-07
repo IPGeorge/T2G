@@ -114,7 +114,8 @@ if __name__ == "__main__":
         {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Scripts/ObjectInterface.cs"},
         {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
         {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"},
-        {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"}
+        {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"},
+	{"name": "swat", "description": "a swat character", "type": "package", "path": "packages/swat.unitypackage,swat.prefab" }
     ]
 
     engine = AssetSearchEngine()
@@ -125,4 +126,5 @@ if __name__ == "__main__":
     print("Search Image:", engine.search("misty forest", asset_type="Image"))
     print("Search:", engine.search("dragon character with sword"))
     print("Search:", engine.search("a beatiful cube", asset_type="prefab"))
+    print("Search:", engine.search("a brave swat soldier", asset_type="package"))
 
