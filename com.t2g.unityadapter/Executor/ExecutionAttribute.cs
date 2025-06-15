@@ -199,7 +199,18 @@ namespace T2G.Executor
                 objName = $"Obj{DateTime.Now.Ticks.ToString()}";
             }
             gameObj.name = objName;
-            Executor.PlaceObjectInFrontOfSceneView(gameObj);
+
+            string tag = gameObj.tag.ToLower();
+            if (string.Compare(tag, "natual") == 0)
+            {
+                gameObj.transform.position = Vector3.zero;
+                gameObj.transform.rotation = Quaternion.identity;
+            }
+            else if(string.Compare(tag, "located") != 0)
+            {
+                Executor.PlaceObjectInFrontOfSceneView(gameObj);
+            }
+            
             Executor.PutDownObject(gameObj);
             Selection.activeObject = gameObj;
             Executor.ForceUpdateEditorWindows();

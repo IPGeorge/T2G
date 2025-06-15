@@ -115,7 +115,16 @@ if __name__ == "__main__":
         {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
         {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"},
         {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"},
-	{"name": "swat", "description": "a swat character", "type": "package", "path": "packages/swat.unitypackage,swat.prefab" }
+	{"name": "swat", "description": "swat player character", "type": "package", "path": "packages/swat.unitypackage,swat.prefab" },
+	{"name": "terrain01", "description": "depression terrain", "type": "package", "path": "packages/terrains/terrain01.unitypackage,terrains/terrain01.prefab" },
+	{"name": "Millitary Base", "description": "a millitary base island", "type": "package", "path": "packages/terrains/MillitaryBaseIsland.unitypackage,terrains/MillitaryBaseIsland.prefab" },
+	{"name": "FisrPersonCamera", "description": "First-person camera", "type": "package", "path": "packages/Cameras/FirstPersonCamera.unitypackage,Cameras/FirstPersonCamera.prefab" },
+	{"name": "ThirdPersonCamera", "description": "Third-person camera", "type": "package", "path": "packages/Cameras/ThirdPersonCamera.unitypackage,Cameras/ThirdPersonCamera.prefab" },
+	{"name": "TopDownCamera", "description": "Top-down camera", "type": "package", "path": "packages/Cameras/TopDownCamera.unitypackage,Cameras/TopDownCameraswat.prefab" },
+	{"name": "PlainGround", "description": "Plain ground", "type": "package", "path": "packages/Natual/PlainGround.unitypackage,Natual/PlayGround.prefab" },
+	{"name": "Sky", "description": "Sky with cloud, day of time systems", "type": "package", "path": "packages/Natual/Sky.unitypackage,Natual/Sky.prefab" },
+	{"name": "Sun", "description": "Directional sun light ", "type": "package", "path": "packages/Natual/Sun.unitypackage,Natual/Sun.prefab" },
+	{"name": "WaterPlane", "description": "water, ocean, lake, sea", "type": "package", "path": "packages/Natual/WaterPlan.unitypackage,Natual/WaterPlane.prefab" }
     ]
 
     engine = AssetSearchEngine()
