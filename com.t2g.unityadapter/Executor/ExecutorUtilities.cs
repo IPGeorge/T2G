@@ -507,7 +507,6 @@ namespace T2G.Executor
             var bounds = new Bounds(Vector3.zero, Vector3.zero);
             foreach (Collider collider in colliders)
             {
-                Debug.LogError($"collider-{collider.name}: ({collider.bounds.size.x},{collider.bounds.size.y},{collider.bounds.size.z}).");
                 bounds.Encapsulate(collider.bounds);
             }
 

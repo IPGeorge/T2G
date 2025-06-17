@@ -39,11 +39,11 @@ namespace T2G.Executor
             for (i = 0; i < assetPaths.Length; ++i)
             {
                 string extension = Path.GetExtension(assetPaths[i]).ToLower();
-                if(string.Compare(extension, ".unitypackage") == 0)
-                {
-                    packageToImport = assetPaths[i];
-                }
-                else if (string.Compare(extension, ".prefab") == 0)
+                //if(string.Compare(extension, ".unitypackage") == 0)
+                //{
+                //    //packageToImport = assetPaths[i];
+                //}
+                if (string.Compare(extension, ".prefab") == 0)
                 {
                     prefabToInstantiate = assetPaths[i];
                 }
@@ -57,10 +57,10 @@ namespace T2G.Executor
 
             PoolAssetsToImport(assetsToImport, prefabToInstantiate, objName);
             Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
-            if (!string.IsNullOrEmpty(packageToImport))
-            {
-                await ContentLibrary.ImportPackage(packageToImport);
-            }
+            //if (!string.IsNullOrEmpty(packageToImport))
+            //{
+            //    await ContentLibrary.ImportPackage(packageToImport);
+            //}
             await ImportPooledAssets();
             var succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
             Executor.SaveActiveScene();

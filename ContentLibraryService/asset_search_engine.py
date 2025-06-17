@@ -115,16 +115,23 @@ if __name__ == "__main__":
         {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
         {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"},
         {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"},
-	{"name": "swat", "description": "swat player character", "type": "package", "path": "packages/swat.unitypackage,swat.prefab" },
-	{"name": "terrain01", "description": "depression terrain", "type": "package", "path": "packages/terrains/terrain01.unitypackage,terrains/terrain01.prefab" },
-	{"name": "Millitary Base", "description": "a millitary base island", "type": "package", "path": "packages/terrains/MillitaryBaseIsland.unitypackage,terrains/MillitaryBaseIsland.prefab" },
-	{"name": "FisrPersonCamera", "description": "First-person camera", "type": "package", "path": "packages/Cameras/FirstPersonCamera.unitypackage,Cameras/FirstPersonCamera.prefab" },
-	{"name": "ThirdPersonCamera", "description": "Third-person camera", "type": "package", "path": "packages/Cameras/ThirdPersonCamera.unitypackage,Cameras/ThirdPersonCamera.prefab" },
-	{"name": "TopDownCamera", "description": "Top-down camera", "type": "package", "path": "packages/Cameras/TopDownCamera.unitypackage,Cameras/TopDownCameraswat.prefab" },
-	{"name": "PlainGround", "description": "Plain ground", "type": "package", "path": "packages/Natual/PlainGround.unitypackage,Natual/PlayGround.prefab" },
-	{"name": "Sky", "description": "Sky with cloud, day of time systems", "type": "package", "path": "packages/Natual/Sky.unitypackage,Natual/Sky.prefab" },
-	{"name": "Sun", "description": "Directional sun light ", "type": "package", "path": "packages/Natual/Sun.unitypackage,Natual/Sun.prefab" },
-	{"name": "WaterPlane", "description": "water, ocean, lake, sea", "type": "package", "path": "packages/Natual/WaterPlan.unitypackage,Natual/WaterPlane.prefab" }
+	{"name": "swat", "description": "swat player character", "type": "package", "path": "Packages/PlayerSwat/Playerswat.unitypackage,Prefabs/PlayerSwat/PlayerSwat.prefab" },
+	{"name": "terrain01", "description": "depression terrain", "type": "package", "path": "Packages/Terrains/terrain01.unitypackage,Prefabs/terrains/terrain01.prefab" },
+	{"name": "Millitary Base", "description": "a millitary base island", "type": "package", "path": "Packages/Terrains/MillitaryBaseIsland.unitypackage,Prefabs/Terrains/MillitaryBaseIsland.prefab" },
+	{"name": "FisrPersonCamera", "description": "First-person camera", "type": "package", "path": "Packages/Cameras/FirstPersonCamera.unitypackage,Prefabs/Cameras/FirstPersonCamera.prefab" },
+	{"name": "ThirdPersonCamera", "description": "Third-person camera", "type": "package", "path": "Packages/Cameras/ThirdPersonCamera.unitypackage,Prefabs/Cameras/ThirdPersonCamera.prefab" },
+	{"name": "TopDownCamera", "description": "Top-down camera", "type": "package", "path": "packages/Cameras/TopDownCamera.unitypackage,Prefabs/Cameras/TopDownCamera.prefab" },
+	{"name": "PlainGround", "description": "Plain ground", "type": "package", "path": "Packages/Natual/PlainGround.unitypackage,Prefabs/Natual/PlainGround.prefab" },
+	{"name": "Sky", "description": "Sky with cloud, day of time systems", "type": "package", "path": "Packages/Natual/Sky.unitypackage,Prefabs/Natual/SKy/Sky Dome.prefab" },
+	{"name": "Sun", "description": "Directional sun light ", "type": "package", "path": "Packages/Natual/Sun.unitypackage,Prefabs/Natual/Sun.prefab" },
+	{"name": "WaterPlane", "description": "water, ocean, lake, sea", "type": "package", "path": "Packages/Natual/WaterPlane.unitypackage,Prefabs/Natual/WaterPlane/WaterPlane.prefab" },
+	{"name": "Gun_AK", "description": "Gun AK47 rifle", "type": "package", "path": "Packages/Guns/Gun_AK.unitypackage,Prefabs/Guns/Gun_AK/Gun_AK.prefab" },
+	{"name": "Gun_G36", "description": "Gun G36 rifle", "type": "package", "path": "Packages/Guns/Gun_G36.unitypackage,Prefabs/Guns/Gun_G36/Gun_G36.prefab" },
+	{"name": "Gun_L85", "description": "Gun L85 rifle", "type": "package", "path": "Packages/Guns/Gun_L85.unitypackage,Prefabs/Guns/Gun_L85/Gun_L85.prefab" },
+	{"name": "Gun_M4", "description": "Gun M4 rifle", "type": "package", "path": "Packages/Guns/Gun_M4.unitypackage,Prefabs/Guns/Gun_M4/Gun_M4.prefab" },
+	{"name": "Gun_MP5", "description": "Gun MP5 rifle", "type": "package", "path": "Packages/Guns/Gun_MP5.unitypackage,Prefabs/Guns/Gun_MP5/Gun_MP5.prefab" },
+	{"name": "Gun_Scar", "description": "Gun Scar rifle", "type": "package", "path": "Packages/Guns/Gun_Scar.unitypackage,Prefabs/Guns/Gun_Scar/Gun_Scar.prefab" },
+	{"name": "Gun_Type97", "description": "Gun Type97 rifle", "type": "package", "path": "Packages/Guns/Gun_Type97.unitypackage,Prefabs/Guns/Gun_Type97/Gun_Type97.prefab" }
     ]
 
     engine = AssetSearchEngine()
