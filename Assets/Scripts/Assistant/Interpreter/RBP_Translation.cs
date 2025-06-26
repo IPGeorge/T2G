@@ -24,6 +24,7 @@ namespace T2G
                 //\.? --> Makes the trailing period optional.
             (@"(init|initialize)\s+(?:(game|project|game project)\s+)?(?:(under|at|in)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "init_project"),
             (@"open\s+(?:(game|project|game project)\s+)?(?:(under|at)\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?", "open_project"),
+            (@"^generate\s+(?:game\s+)?(?:from\s+)?(?<path>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\.)?$", "generate_game"),
             (@"^(connect|connect to)$(?:\s+\w)?(?:\.)?", "connect"),
             (@"^(disconnect|disconnect from)$(?:\s+\w)?(?:\.)?", "disconnect"),
             (@"(clear|clear all)(?:\.)?", "clear"),
@@ -45,18 +46,7 @@ namespace T2G
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_scale"),
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
             (@"^spin(?:\s+(?<name>\w+))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
-            (@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_value"),
-
-            (@"^(?:\w+\s+)?create ground(?:\.)?\s*$", "create_ground"),
-            (@"^(?:\w+\s+)?create terrain(?:\.)?\s*$", "create_terrain"),
-            (@"^(?:\w+\s+)?create sun(?:\.)?\s*$", "create_sun"),
-            (@"^(?:\w+\s+)?create water plane(?:\.)?\s*$", "create_water_plane"),
-            (@"^(?:\w+\s+)?create sky(?:\.)?\s*$", "create_sky"),
-            (@"^(?:\w+\s+)?set weather(?:\.)?\s*$", "set_weather"),
-            (@"^(?:\w+\s+)?set time(?:\.)?\s*$", "set_time"),
-            (@"^(?:\w+\s+)?set date(?:\.)?\s*$", "set_date"),
-            (@"^(generate|create)\s+(?:a\s+new\s+)?game\s+from\s+(?<filePath>[\w\-]+\.json)\s*$", "generate_from_gamedesc"),
-            (@"^export\s+(?<filePath>[\w\-]+\.json)\s*$", "export_gamedesc")
+            (@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_property"),
         };
 
         public static int[] TestRegexMatch(string text)

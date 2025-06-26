@@ -408,3 +408,37 @@ public class Quest
     public string WinCondition;
     public string LoseCondition;
 }
+
+
+[Serializable]
+public class GameDescLite
+{
+    public string Engine;
+    public string ProjectName;
+    public string ProjectPath;
+    public string Title;
+    public string Genre;
+    public SpaceDescLite[] Spaces; 
+
+    public string GetFullProjectPath()
+    {
+        return Path.Combine(ProjectPath, ProjectName);
+    }
+}
+
+[Serializable]
+public class SpaceDescLite
+{
+    public string SpaceName;
+    public SpaceObject[] Objects;
+}
+
+[Serializable]
+public class SpaceObject
+{
+    public string Name;
+    public string Desc;
+    public string[] Contents = null;
+    public (string, object)[] Properties = null;            //Property (name, value) paires
+}
+

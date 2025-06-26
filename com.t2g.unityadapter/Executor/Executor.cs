@@ -161,7 +161,7 @@ namespace T2G.Executor
             }
             else
             {
-                SendInstructionExecutionResponse(false, "Invalid instruction key!");
+                SendInstructionExecutionResponse(false, $"Invalid instruction key: {instruction.Keyword.ToLower()}");
                 return false;
             }
         }

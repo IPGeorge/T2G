@@ -20,6 +20,7 @@ namespace T2G
             _commandsRegistry.Add(CmdConnect.CommandKey.ToLower(), typeof(CmdConnect));
             _commandsRegistry.Add(CmdDisconnect.CommandKey.ToLower(), typeof(CmdDisconnect));
             _commandsRegistry.Add(CmdClear.CommandKey.ToLower(), typeof(CmdClear));
+            _commandsRegistry.Add(CmdGenerateGame.CommandKey.ToLower(), typeof(CmdGenerateGame));
         }
 
         private void Awake()

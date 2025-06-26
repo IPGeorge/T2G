@@ -57,7 +57,7 @@ namespace T2G
             }
         }
 
-        public async void ProcessInput(string inputText, Action<string> response)
+        public async Awaitable ProcessInput(string inputText, Action<string> response)
         {
             var result = await Interpreter.Instance.InterpretPrompt(inputText);
             if (result.instructions != null && result.instructions.Length > 0)

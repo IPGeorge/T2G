@@ -254,7 +254,12 @@ namespace T2G
             _messagePool.Add($"\n<color={textColor}>{senderPrompt}> {message}</color>");
         }
 
-        public void OnInputEnds(string inputString)
+        public async void OnInputEnds(string inputString)
+        {
+            await InputEndsProcess(inputString);
+        }
+
+        public async Awaitable InputEndsProcess(string inputString)
         {
             string inputText = _InputMessage.text;
             if (string.IsNullOrWhiteSpace(inputString))
@@ -276,40 +281,11 @@ namespace T2G
             }
 
             _InputMessage.readOnly = true;
-            Assistant.Instance.ProcessInput(inputText, (response)=> 
+            await Assistant.Instance.ProcessInput(inputText, (response)=> 
             {
                 WriteConsoleMessage(eSender.Assistant, response);
                 _InputMessage.readOnly = false;
             });
-
-/*old
-
-            //Execute if it is a command 
-            if (CommandSystem.Instance.IsCommand(inputStr))             //Process command
-            {
-                var cmdStr = Regex.Replace(inputStr, " {2,}", " ");  //ensure only one space delimeter
-                string[] cmdAndArgs = cmdStr.Split(" ");
-                string cmd = cmdAndArgs[0].ToLower();
-
-                string[] args = cmdAndArgs.Where((item, index) => index != 0).ToArray();
-                var cmdSys = CommandSystem.Instance;
-                cmdSys.ExecuteCommand(
-                        (succeeded, sender, message) =>
-                        {
-                            WriteConsoleMessage(sender, message);
-                        },
-                        cmd, args);
-            }
-            else  //process a prompt
-            {
-                SimAssistant.Instance.ProcessPrompt(inputStr, (responseMessage) =>
-                {
-                    responseMessage = responseMessage.Replace("{user}", SettingsT2G.User);
-                    responseMessage = responseMessage.Replace("{assistant}", SettingsT2G.Assistant);
-                    WriteConsoleMessage(eSender.Assistant, responseMessage);
-                });
-            }
-*/
 
             //Clear input
             _InputMessage.text = string.Empty;
@@ -387,7 +363,6 @@ namespace T2G
                 WriteConsoleMessage(eSender.Error, "Failed to connect to the server!");
             }
         }
-
 
         void HandleOnReceivedMessage(eMessageType type, string message)
         {

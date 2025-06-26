@@ -1,23 +1,21 @@
 
 #if UNITY_EDITOR
 
-using System;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using SimpleJSON;
 using System.Reflection;
 
 namespace T2G.Executor
 {
-    [Execution("set_value")]
+    [Execution("set_property")]
     public class set_value_execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'add_script' was expected.");
+                return (false, "Invalid instruction keyword! 'set_property' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)

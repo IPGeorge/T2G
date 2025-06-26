@@ -441,7 +441,7 @@ namespace T2G.Executor
             Vector3 position = cam.transform.position + forward * 5f;   // 5 units in front of camera
             position.y = cam.transform.position.y;                      //make the new object the same hight with the camera 
             gameObject.transform.position = position;
-            gameObject.transform.rotation = Quaternion.identity;
+            //gameObject.transform.rotation = Quaternion.identity;      //Comment this line to keep the prefab's original rotation
             Selection.activeGameObject = gameObject;
             return true;
         }
