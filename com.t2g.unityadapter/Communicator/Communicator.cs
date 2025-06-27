@@ -116,7 +116,7 @@ namespace T2G.Communicator
             }
         }
 
-        protected virtual void Dispose()
+        public virtual void Dispose()
         {
             if (!IsActive)
             {

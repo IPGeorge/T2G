@@ -361,6 +361,7 @@ namespace T2G
             if (!WaitForConnect)
             {
                 WriteConsoleMessage(eSender.Error, "Failed to connect to the server!");
+                CommunicatorClient.Instance.Dispose();
             }
         }
 

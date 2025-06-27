@@ -79,7 +79,15 @@ namespace T2G.Communicator
                 endPoint = NetworkEndpoint.LoopbackIpv4.WithPort(Port);
             }
             _connectionTimer = _connectionTimeout;
-            _connections[0] = _networkDriver.Connect(endPoint);
+
+            try
+            {
+                _connections[0] = _networkDriver.Connect(endPoint);
+            }
+            catch(Exception _)
+            {
+            }
+
             ClientState = eClientState.Connecting;
         }
 

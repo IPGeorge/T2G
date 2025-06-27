@@ -44,7 +44,7 @@ namespace T2G.Communicator
             }
         }
 
-        protected override void Dispose()
+        public override void Dispose()
         {
             if (IsActive && _connections != null)
             {

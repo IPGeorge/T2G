@@ -16,6 +16,8 @@ namespace T2G
         GameDesc _gameDesc = new GameDesc();
 
         bool _waittingForResponse = false;
+        public bool WaitingForResponse => _waittingForResponse;
+
         bool _response_succeeded = true;
         string _response_message = string.Empty;
 

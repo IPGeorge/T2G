@@ -146,6 +146,7 @@ namespace T2G
             if (timer >= timeout)
             {
                 ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Failed to connect to the server!");
+                CommunicatorClient.Instance.Dispose();
                 retVal = false;
             }
             ConsoleController.Instance.WaitForConnect = saved;

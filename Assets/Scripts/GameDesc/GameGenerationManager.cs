@@ -32,7 +32,6 @@ namespace T2G
 
             for (int i = 0; i < inputs.Count; ++i)
             {
-                Debug.LogError($"Execute command: {inputs[i]}");
                 await ConsoleController.Instance.InputEndsProcess(inputs[i]);
             }
         }
