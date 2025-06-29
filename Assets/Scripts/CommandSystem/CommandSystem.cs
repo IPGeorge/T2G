@@ -57,6 +57,7 @@ namespace T2G
             var command = (Command)Activator.CreateInstance(_commandsRegistry[commandKey]);
             command.OnExecutionCompleted = (result, sender, message) => 
             {
+                ConsoleController.Instance.WriteConsoleMessage(sender, message);
                 waitingForCompletion = false;
             };
             command.Execute(args);

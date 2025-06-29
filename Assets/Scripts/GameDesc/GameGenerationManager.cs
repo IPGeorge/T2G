@@ -1,12 +1,23 @@
 using System.Collections.Generic;
+using System;
 using System.IO;
 using UnityEngine;
+using T2G.Communicator;
 
 namespace T2G
 {
 
     public class GameGenerationManager
     {
+        Dictionary<string, Action<List<string>, string, string>> PropertyNameParsers = 
+            new Dictionary<string, Action<List<string>, string, string>>()
+        {
+            { "position", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} position {value}"); }},
+            { "rotation", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} rotation {value}"); }},
+            { "scale", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} scale {value}"); } },
+            { "spawn_point", (inputs, objName, value) => { inputs.Add($"place {objName} at {value}"); } }
+        };
+
         static GameGenerationManager _instance = null;
         public static GameGenerationManager Instance
         {
@@ -20,8 +31,21 @@ namespace T2G
             }
         }
 
+
+        public enum eResult
+        {
+            IsUnknown,
+            IsRunning,
+            Succeeded,
+            Failed
+        }
+
+        public eResult ExecutionResult = eResult.IsUnknown;
+
         public async void StartGeneratingGameFromGameDesc(string gameDescText)
         {
+            ExecutionResult = eResult.IsRunning;
+
             GameDescLite gameDesc = JsonUtility.FromJson<GameDescLite>(gameDescText);
 
             List<string> inputs = new List<string>();
@@ -29,12 +53,59 @@ namespace T2G
             inputs.Add($"create a new project {fullProjectPath}");
             inputs.Add($"initialize project {fullProjectPath}");
             inputs.Add($"Open project {fullProjectPath}");
+            inputs.Add("[WaitForConnection]");
+            for (int i = 0; i < gameDesc.Spaces.Length; ++i)
+            {
+                inputs.Add($"create a new space named {gameDesc.Spaces[i].Name}");
+                for(int j = 0; j < gameDesc.Spaces[i].Objects.Length; ++j)
+                {
+                    string objectName = gameDesc.Spaces[i].Objects[j].Name;
+                    if(string.IsNullOrEmpty(objectName))
+                    {
+                        objectName = gameDesc.Spaces[i].Objects[j].Desc + " - " + DateTime.Now.Ticks.ToString();
+                    }
+                    inputs.Add($"create a {gameDesc.Spaces[i].Objects[j].Desc} named {objectName}");
+                    if (gameDesc.Spaces[i].Objects[j].Properties != null)
+                    {
+                        for (int k = 0; k < gameDesc.Spaces[i].Objects[j].Properties.Length; ++k)
+                        {
+                           if(gameDesc.Spaces[i].Objects[j].Properties[k].IndexOf("=") <= 0)
+                            {
+                                continue;
+                            }
+                            string[] propertyValue = gameDesc.Spaces[i].Objects[j].Properties[k].Split("=");
+                            string key = propertyValue[0].ToLower();
+                            if (PropertyNameParsers.ContainsKey(key) && !string.IsNullOrWhiteSpace(objectName))
+                            {
+                                PropertyNameParsers[key]?.Invoke(inputs, objectName, propertyValue[1]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            inputs.Add("save");
 
             for (int i = 0; i < inputs.Count; ++i)
             {
-                await ConsoleController.Instance.InputEndsProcess(inputs[i]);
+                if (inputs[i] == "[WaitForConnection]")
+                {
+                    bool connected = await CommunicatorClient.Instance.WaitForConnection(180.0f);
+                    if(!connected)
+                    {
+                        ExecutionResult = eResult.Failed;
+                        ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, $"Game generation teminated!");
+                        return;
+                    }
+                }
+                else
+                {
+                    await ConsoleController.Instance.InputEndsProcess(inputs[i]);
+                }
             }
-        }
 
+            ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, $"Game generation completed!");
+            ExecutionResult = eResult.Succeeded;
+        }
     }
 }

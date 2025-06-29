@@ -234,5 +234,16 @@ namespace T2G.Communicator
                 }
             }
         }
+
+        public async Task<bool> WaitForConnection(float timeout)
+        {
+            while (timeout > 0.0f &&
+                CommunicatorClient.Instance.ClientState != CommunicatorClient.eClientState.Connected)
+            {
+                await Task.Delay(1000);
+                timeout -= 1.0f;
+            }
+            return CommunicatorClient.Instance.IsConnected;
+        }
     }
 }

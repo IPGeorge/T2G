@@ -136,11 +136,6 @@ namespace T2G
 
             try
             {
-                if (!Directory.Exists(targetDirectory))
-                {
-                    Directory.CreateDirectory(targetDirectory);
-                }
-
                 var assetType = GetAssetType(assetPathName);
                 if (assetType == EAssetType.Package)
                 {
@@ -148,6 +143,11 @@ namespace T2G
                 }
                 else
                 {
+                    if (!Directory.Exists(targetDirectory))
+                    {
+                        Directory.CreateDirectory(targetDirectory);
+                    }
+
                     File.Copy(sourceAssetPath, targetAssetPath);
                     AssetDatabase.ImportAsset(targetAssetProjectPath);
                 }

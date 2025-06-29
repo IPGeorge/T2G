@@ -19,25 +19,13 @@ namespace T2G
                 float.TryParse(args[0], out timeoutScale);
             }
             CommunicatorClient.Instance.StartClient();
-            Task.Run(async () => { await WaitForConnection(timeoutScale); });
+            Task.Run(async () => { 
+                bool connected = await CommunicatorClient.Instance.WaitForConnection(timeoutScale);
+                OnExecutionCompleted?.Invoke(true, 
+                    ConsoleController.eSender.System, 
+                    connected ? "Connected!" : "Timeout!");
+            });
             return true;
-        }
-
-        async Task WaitForConnection(float timeout)
-        {
-            while (CommunicatorClient.Instance.ClientState == CommunicatorClient.eClientState.Connecting)
-            {
-                await Task.Delay((int)(timeout));
-            }
-
-            if (CommunicatorClient.Instance.IsConnected)
-            {
-                OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Connected!");
-            }
-            else
-            {
-                OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.System, "Timeout!");
-            }
         }
 
         public override string GetKey()

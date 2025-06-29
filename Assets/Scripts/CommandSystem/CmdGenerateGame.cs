@@ -1,5 +1,6 @@
 
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace T2G
@@ -20,6 +21,8 @@ namespace T2G
 
             _gameDescPath = args[0];
 
+            GenerateGameSepc(0);
+
             if (!File.Exists(_gameDescPath))
             {
                 OnExecutionCompleted?.Invoke(false, 
@@ -32,31 +35,8 @@ namespace T2G
             OnExecutionCompleted?.Invoke(true,
                     ConsoleController.eSender.Assistant,
                     $"Game description text {_gameDescPath} was loaded sucessfully! \nStart game generation ...");
+            
             GameGenerationManager.Instance.StartGeneratingGameFromGameDesc(gameDescText);
-
-            //GameDescLite gameDesc = new GameDescLite();
-            //gameDesc.Engine = "Unity";
-            //gameDesc.ProjectName = "SwatShooter";
-            //gameDesc.ProjectPath = "C:/MyGames";
-            //gameDesc.Title = "SwatShooter";
-            //gameDesc.Genre = "Third-person shooter";
-            //gameDesc.Spaces = new SpaceDescLite[1];
-            //gameDesc.Spaces[0] = new SpaceDescLite();
-            //gameDesc.Spaces[0].SpaceName = "TrainingGround";
-            //gameDesc.Spaces[0].Objects = new SpaceObject[5];
-            //gameDesc.Spaces[0].Objects[0] = new SpaceObject();
-            //gameDesc.Spaces[0].Objects[0].Desc = "Sunlight";
-            //gameDesc.Spaces[0].Objects[1] = new SpaceObject();
-            //gameDesc.Spaces[0].Objects[1].Desc = "Plain ground";
-            //gameDesc.Spaces[0].Objects[2] = new SpaceObject();
-            //gameDesc.Spaces[0].Objects[2].Desc = "third-person camera";
-            //gameDesc.Spaces[0].Objects[3] = new SpaceObject();
-            //gameDesc.Spaces[0].Objects[3].Desc = "Player swat shooter";
-            //gameDesc.Spaces[0].Objects[4] = new SpaceObject();
-            //gameDesc.Spaces[0].Objects[4].Desc = "M4 rifle";
-            //string json = JsonUtility.ToJson(gameDesc, true);
-            //File.WriteAllText(_gameDescPath, json);
-            //Debug.LogError($"---> Game Desc wrote to {_gameDescPath}");
 
             return true;
         }
@@ -71,5 +51,62 @@ namespace T2G
             return new string[] { _gameDescPath };
         }
 
+        void GenerateGameSepc(int index)
+        {
+            GameDescLite gameDesc = new GameDescLite();
+            gameDesc.Engine = "Unity";
+
+            switch (index)
+            {
+                case 0:
+                    gameDesc.ProjectName = "SwatShooter";
+                    gameDesc.ProjectPath = "C:/MyGames";
+                    gameDesc.Title = "SwatShooter";
+                    gameDesc.Genre = "Third-person shooter";
+                    gameDesc.Spaces = new SpaceDescLite[1];
+                    gameDesc.Spaces[0] = new SpaceDescLite();
+                    gameDesc.Spaces[0].Name = "TrainingGround";
+                    gameDesc.Spaces[0].Objects = new SpaceObject[6];
+                    gameDesc.Spaces[0].Objects[0] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[0].Desc = "SunLight";
+                    gameDesc.Spaces[0].Objects[0].Name = "Sun";
+                    gameDesc.Spaces[0].Objects[0].Properties = new string[1];
+                    gameDesc.Spaces[0].Objects[0].Properties[0] = "rotation=(120, 0, 0)";
+                    gameDesc.Spaces[0].Objects[1] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[1].Desc = "Plain ground";
+                    gameDesc.Spaces[0].Objects[1].Name = "Ground";
+                    gameDesc.Spaces[0].Objects[2] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[2].Desc = "Player swat shooter";
+                    gameDesc.Spaces[0].Objects[2].Name = "Player";
+                    gameDesc.Spaces[0].Objects[2].Properties = new string[2];
+                    gameDesc.Spaces[0].Objects[2].Properties[0] = "position=(0, 0, 0)";
+                    gameDesc.Spaces[0].Objects[2].Properties[1] = "rotation=(0, -60, 0)";
+                    gameDesc.Spaces[0].Objects[3] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[3].Desc = "third-person camera";
+                    gameDesc.Spaces[0].Objects[3].Name = "Player Camera";
+                    gameDesc.Spaces[0].Objects[3].Properties = new string[2];
+                    gameDesc.Spaces[0].Objects[3].Properties[0] = "position=(0, 2, -3)";
+                    gameDesc.Spaces[0].Objects[3].Properties[1] = "rotation=(10, 0, 0)";
+                    gameDesc.Spaces[0].Objects[4] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[4].Desc = "M4 rifle";
+                    gameDesc.Spaces[0].Objects[4].Name = "M4-Rifle";
+                    gameDesc.Spaces[0].Objects[4].Properties = new string[2];
+                    gameDesc.Spaces[0].Objects[4].Properties[0] = "position=(-2, 1, 3)";
+                    gameDesc.Spaces[0].Objects[4].Properties[1] = "rotation=(180, 0, 0)";
+                    gameDesc.Spaces[0].Objects[5] = new SpaceObject();
+                    gameDesc.Spaces[0].Objects[5].Desc = "G36 gun";
+                    gameDesc.Spaces[0].Objects[5].Properties = new string[1];
+                    gameDesc.Spaces[0].Objects[5].Properties[0] = "position=(2, 1, 3)";
+                    string json = JsonUtility.ToJson(gameDesc, true);
+                    File.WriteAllText(_gameDescPath, json);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

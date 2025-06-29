@@ -429,7 +429,7 @@ public class GameDescLite
 [Serializable]
 public class SpaceDescLite
 {
-    public string SpaceName;
+    public string Name;
     public SpaceObject[] Objects;
 }
 
@@ -438,7 +438,6 @@ public class SpaceObject
 {
     public string Name;
     public string Desc;
-    public string[] Contents = null;
-    public (string, object)[] Properties = null;            //Property (name, value) paires
+    public string[] Properties = null;  //Property name=value) paires
 }
 
