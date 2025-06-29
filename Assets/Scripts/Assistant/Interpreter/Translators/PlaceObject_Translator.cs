@@ -1,11 +1,11 @@
+using SimpleJSON;
 using System;
 using System.Collections.Generic;
-using SimpleJSON;
 
 namespace T2G
 {
-    [Translator("create_object")]
-    public class CreateObject_Translator : Translator
+    [Translator("place_at_spawnpoint")]
+    public class PlaceObject_Translator : Translator 
     {
         public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
@@ -19,16 +19,20 @@ namespace T2G
 
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
-            instruction.State = Instruction.EInstructionState.Raw;
+            instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Keyword = attributeName;
             instruction.DataType = Instruction.EDataType.JsonData;
-            string name = GetParamFromArguments(arguments, "name");
-            string type = GetParamFromArguments(arguments, "type").Trim();
+            string objName = GetParamFromArguments(arguments, "objectName");
+            string spawnpointNames = GetParamFromArguments(arguments, "spawnpointNames");
+            if(string.IsNullOrEmpty(objName) || string.IsNullOrEmpty(spawnpointNames))
+            {
+                return (false, null);
+            }
             JSONObject jsonObj = new JSONObject();
-            jsonObj.Add("name", string.IsNullOrEmpty(name) ? $"Obj{DateTime.Now.Ticks}" : name);
-            jsonObj.Add("type", type);
+            jsonObj.Add("objectName", objName);
+            jsonObj.Add("spawnpointNames", spawnpointNames);
             instruction.Data = jsonObj.ToString();
-
+            instruction.DataType = Instruction.EDataType.JsonData;
             instructions.Add(instruction);
             return (true, null);
         }

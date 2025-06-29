@@ -44,7 +44,7 @@ namespace T2G
             (@"^(?:\w+\s+)?(select)(?:\s+(?:object))?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\.)?$", "select_object"),
             //(@"^(?:\w+\s+)?(delete|remove)(?:\s+(?:object))?\s+(?<name>.+?)(?:\.)?$", "delete_object"),
             (@"^(?:\w+\s+)?(delete|remove)(?:\s+(?:object))?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\.)?$", "delete_object"),
-            (@"^(?:place|put)\s+(?<objectName>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+(?:at|on)\s+(?<spawnPointName>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*(?:spawn\s+point)?(?:\.)?$", "place_at_spawn_point"),
+            (@"^(?:place|put)\s+(?<objectName>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+(?:at|on)\s+(?<spawnpointNames>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*(?:spawn\s+point)?(?:\.)?$", "place_at_spawnpoint"),
             //(@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+(position|location)\s+(?:at\s+)?(?<position>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_position"),
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+(position|location)\s+(?:at\s+)?(?<position>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_position"),
             //(@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+rotation\s+(?<eulerAngles>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_rotation"),
