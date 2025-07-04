@@ -111,7 +111,7 @@ namespace T2G
                         gameDesc.Spaces = new SpaceDescLite[1];
                         gameDesc.Spaces[0] = new SpaceDescLite();
                         gameDesc.Spaces[0].Name = "Millitary Island";
-                        gameDesc.Spaces[0].Objects = new SpaceObject[7];
+                        gameDesc.Spaces[0].Objects = new SpaceObject[8];
                         gameDesc.Spaces[0].Objects[0] = new SpaceObject();
                         gameDesc.Spaces[0].Objects[0].Desc = "Sky";
                         gameDesc.Spaces[0].Objects[0].Name = "Sky";
@@ -134,16 +134,23 @@ namespace T2G
                         gameDesc.Spaces[0].Objects[4].Properties = new string[2];
                         gameDesc.Spaces[0].Objects[4].Properties[0] = "position=(0, 2, -3)";
                         gameDesc.Spaces[0].Objects[4].Properties[1] = "rotation=(10, 0, 0)";
+                        gameDesc.Spaces[0].Objects[4].SetValues = new SetValuePair[1];
+                        gameDesc.Spaces[0].Objects[4].SetValues[0] = new SetValuePair() { Field = "TargetName", Values = "Player" };
                         gameDesc.Spaces[0].Objects[5] = new SpaceObject();
                         gameDesc.Spaces[0].Objects[5].Desc = "M4 rifle";
                         gameDesc.Spaces[0].Objects[5].Name = "M4-Rifle";
                         gameDesc.Spaces[0].Objects[5].Properties = new string[2];
-                        gameDesc.Spaces[0].Objects[5].Properties[0] = "position=(-2, 1, 3)";
+                        gameDesc.Spaces[0].Objects[5].Properties[0] = "position=(-1.88, 1.5, 55)";
                         gameDesc.Spaces[0].Objects[5].Properties[1] = "rotation=(180, 0, 0)";
                         gameDesc.Spaces[0].Objects[6] = new SpaceObject();
-                        gameDesc.Spaces[0].Objects[6].Desc = "Simple UI";
-                        gameDesc.Spaces[0].Objects[6].Name = "MainMenu";
-
+                        gameDesc.Spaces[0].Objects[6].Desc = "G36 rifle";
+                        gameDesc.Spaces[0].Objects[6].Name = "G36-Rifle";
+                        gameDesc.Spaces[0].Objects[6].Properties = new string[2];
+                        gameDesc.Spaces[0].Objects[6].Properties[0] = "position=(-27, 1.5, -105)";
+                        gameDesc.Spaces[0].Objects[6].Properties[1] = "rotation=(180, 0, 0)";
+                        gameDesc.Spaces[0].Objects[7] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[7].Desc = "Simple UI";
+                        gameDesc.Spaces[0].Objects[7].Name = "MainMenu";
                         string json = JsonUtility.ToJson(gameDesc, true);
                         File.WriteAllText(_gameDescPath, json);
                     }

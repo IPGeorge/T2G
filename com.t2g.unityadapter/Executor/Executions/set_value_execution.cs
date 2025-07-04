@@ -84,7 +84,6 @@ namespace T2G.Executor
                     {
                         if(string.Compare(method.Name, "SetSpecificPropertyValue") == 0)
                         {
-                            Debug.LogError($"set {component.gameObject} {property} to {value}");
                             method.Invoke(component, new string[] { property, value });
                             return (true, null);
                         }
