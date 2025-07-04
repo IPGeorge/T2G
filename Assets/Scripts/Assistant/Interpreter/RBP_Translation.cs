@@ -44,7 +44,7 @@ namespace T2G
             (@"^(?:\w+\s+)?(select)(?:\s+(?:object))?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\.)?$", "select_object"),
             //(@"^(?:\w+\s+)?(delete|remove)(?:\s+(?:object))?\s+(?<name>.+?)(?:\.)?$", "delete_object"),
             (@"^(?:\w+\s+)?(delete|remove)(?:\s+(?:object))?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\.)?$", "delete_object"),
-            (@"^(?:place|put)\s+(?<objectName>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+(?:at|on)\s+(?<spawnpointNames>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*(?:spawn\s+point)?(?:\.)?$", "place_at_spawnpoint"),
+            (@"^(?:place|put)\s+(?<objectName>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+(?:at|on)\s+(?<spawnpointNames>(?:\s*(""[^""]+""|'[^']+'|[\w\-]+)\s*,?)+)\s*(?:spawn\s+point)?(?:\.)?$", "place_at_spawnpoint"),
             //(@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+(position|location)\s+(?:at\s+)?(?<position>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_position"),
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+(position|location)\s+(?:at\s+)?(?<position>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_position"),
             //(@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+rotation\s+(?<eulerAngles>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_rotation"),
@@ -52,11 +52,9 @@ namespace T2G
             //(@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>\w+)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_scale"),
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$",  "set_scale"),
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
-            //(@"^spin(?:\s+(?<name>\w+))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
             (@"^spin(?:\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
-            //(@"^set\s+(?<name>\w+)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_property"),
-            (@"^set\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+to\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_property")
-        };
+            (@"^set\s+(?<objName>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+(property|attribute))?\s+(?<property>\w+)\s+(to|to be)\s+(?<value>(?:-?\d+(?:\.\d+)?|\(\s*-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)*\s*\)))(?:\s+for\s+(?<script>\w+))?\s*$", "set_value")
+    };
 
         public static int[] TestRegexMatch(string text)
         {

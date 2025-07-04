@@ -438,6 +438,14 @@ public class SpaceObject
 {
     public string Name;
     public string Desc;
-    public string[] Properties = null;  //Property name=value) paires
+    public string[] Properties = null;          //Examples: Name=value, spawnpoint=SpawnPoint1,SpawnPoint2
+    public SetValuePair[] SetValues = null;     //Examples: {"CloudDensity", "0.5"}, {"Date", "20/8/2020"}  
+}
+
+[Serializable]
+public class SetValuePair
+{
+    public string Field;
+    public string Values;
 }
 

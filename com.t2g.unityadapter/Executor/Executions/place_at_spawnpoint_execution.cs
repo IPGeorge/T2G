@@ -53,7 +53,7 @@ namespace T2G.Executor
             obj.transform.SetPositionAndRotation(spawnpoint.transform.position, spawnpoint.transform.rotation);
             Executor.SaveActiveScene();
 
-            return (true, "");
+            return (true, $"{objName} was placed at {spawnpointName}.");
         }
     }
 }

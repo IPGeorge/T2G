@@ -8,14 +8,14 @@ using System.Reflection;
 
 namespace T2G.Executor
 {
-    [Execution("set_property")]
+    [Execution("set_value")]
     public class set_value_execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_property' was expected.");
+                return (false, "Invalid instruction keyword! 'set_value' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)
@@ -25,18 +25,16 @@ namespace T2G.Executor
 
             GameObject gameObj = Selection.activeGameObject;
             var jsonObj = GetInstructionJsonData(instruction);
-            string name = jsonObj["name"];
-            string scriptName = jsonObj["scriptName"];
-            string fieldName = jsonObj["fieldName"];
-            string fieldValue = jsonObj["value"];
-            string fieldType = jsonObj["dataType"];       //string, bool, int, float, float2(Vectro2), float3(Vector3), float4(Vectro4), Color 
+            string objName = jsonObj["objName"];
+            string property = jsonObj["property"];
+            string value = jsonObj["value"];
 
-            if (!string.IsNullOrEmpty(jsonObj["name"]))
+            if (!string.IsNullOrEmpty(objName))
             {
-                var targetObj = GameObject.Find(name);
+                var targetObj = GameObject.Find(objName);
                 if (targetObj == null)
                 {
-                    return (false, "No target game object was found!");
+                    return (false, $"{objName } was not found!");
                 }
                 else
                 {
@@ -44,50 +42,57 @@ namespace T2G.Executor
                 }
             }
 
-            if (gameObj != null && !string.IsNullOrEmpty(fieldName) && !string.IsNullOrEmpty(fieldValue))
+            if (gameObj != null && !string.IsNullOrEmpty(property) && !string.IsNullOrEmpty(value))
             {
                 var components = gameObj.GetComponents<Component>();
                 foreach(var component in components)
                 {
                     var componentType = component.GetType();
-                    if (string.Compare(componentType.Name, scriptName) == 0 || string.IsNullOrEmpty(scriptName))
+                    foreach (FieldInfo fi in componentType.GetFields())
                     {
-                        foreach (FieldInfo fi in componentType.GetFields())
+                        if (string.Compare(fi.Name, property) == 0)
                         {
-                            if (string.Compare(fi.Name, fieldName) == 0)
+                            if (Executor.SetFieldValue(component, fi, value))
                             {
-                                if(Executor.SetFieldValue(component, fi, fieldValue))
-                                {
-                                    await Task.Yield();
-                                    return (true, null);
-                                }
-                                else
-                                {
-                                    break;
-                                }
+                                await Task.Yield();
+                                return (true, null);
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
+                    }
 
-                        foreach (PropertyInfo pi in componentType.GetProperties())
+                    foreach (PropertyInfo pi in componentType.GetProperties())
+                    {
+                        if (string.Compare(pi.Name, property) == 0)
                         {
-                            if (string.Compare(pi.Name, fieldName) == 0)
+                            if (Executor.SetPropertyValue(component, pi, value))
                             {
-                                if(Executor.SetPropertyValue(component, pi, fieldValue))
-                                {
-                                    await Task.Yield();
-                                    return (true, null);
-                                }
-                                else
-                                {
-                                    break;
-                                }
+                                await Task.Yield();
+                                return (true, null);
                             }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    foreach(var method in componentType.GetMethods())
+                    {
+                        if(string.Compare(method.Name, "SetSpecificPropertyValue") == 0)
+                        {
+                            Debug.LogError($"set {component.gameObject} {property} to {value}");
+                            method.Invoke(component, new string[] { property, value });
+                            return (true, null);
                         }
                     }
                 }
             }
 
-            return (false, $"Failed to set value for {scriptName}.{fieldName}!");
+            return (false, $"Failed to set {property} value to be {value}!");
         }
     }
 }

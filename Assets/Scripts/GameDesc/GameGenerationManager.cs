@@ -15,7 +15,7 @@ namespace T2G
             { "position", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} position {value}"); }},
             { "rotation", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} rotation {value}"); }},
             { "scale", (inputs, objName, value) => { if(Utilities.ParseVector3(value, out var _)) inputs.Add($"set {objName} scale {value}"); } },
-            { "spawn_point", (inputs, objName, value) => { inputs.Add($"place {objName} at {value}"); } }
+            { "spawnpoint", (inputs, objName, value) => { inputs.Add($"place {objName} at {value}"); } }
         };
 
         static GameGenerationManager _instance = null;
@@ -79,6 +79,15 @@ namespace T2G
                             {
                                 PropertyNameParsers[key]?.Invoke(inputs, objectName, propertyValue[1]);
                             }
+                        }
+                    }
+                    if(gameDesc.Spaces[i].Objects[j].SetValues != null)
+                    {
+                        for(int k = 0; k < gameDesc.Spaces[i].Objects[j].SetValues.Length; ++k)
+                        {
+                            string fieldName = gameDesc.Spaces[i].Objects[j].SetValues[k].Field;
+                            string fieldValue = gameDesc.Spaces[i].Objects[j].SetValues[k].Values;
+                            inputs.Add($"set {objectName} property {fieldName} to {fieldValue}");
                         }
                     }
                 }

@@ -43,7 +43,7 @@ namespace T2G
                 instruction = new Instruction();
                 instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
-                instruction.Keyword = "set_value";
+                instruction.Keyword = "spin_object";
                 instruction.DataType = Instruction.EDataType.JsonData;
                 JSONObject jsonValues = new JSONObject();
                 jsonObj.Add("name", name);

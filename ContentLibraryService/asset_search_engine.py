@@ -114,7 +114,10 @@ if __name__ == "__main__":
         {"name": "plane", "description": "primitive plane", "type": "prefab", "path": "Prefabs/Primitives/plane.prefab,Scripts/ObjectInterface.cs"},
         {"name": "quade", "description": "primitive quade", "type": "prefab", "path": "Prefabs/Primitives/quade.prefab,Scripts/ObjectInterface.cs"},
         {"name": "sphere", "description": "primitive sphere", "type": "prefab", "path": "Prefabs/Primitives/sphere.prefab,Scripts/ObjectInterface.cs"},
+	#scripts
         {"name": "spin controller", "description": "spin controller", "type": "script", "path": "Scripts/SpinController.cs"},
+	#prefabs
+	#Package prefabs
 	{"name": "swat", "description": "swat player character", "type": "package", "path": "Packages/PlayerSwat/Playerswat.unitypackage,Prefabs/PlayerSwat/PlayerSwat.prefab" },
 	{"name": "terrain01", "description": "depression terrain", "type": "package", "path": "Packages/Terrains/terrain01.unitypackage,Prefabs/terrains/terrain01.prefab" },
 	{"name": "Millitary Base", "description": "a millitary base island", "type": "package", "path": "Packages/Terrains/MillitaryBaseIsland.unitypackage,Prefabs/Terrains/MillitaryBaseIsland.prefab" },
@@ -131,7 +134,8 @@ if __name__ == "__main__":
 	{"name": "Gun_M4", "description": "Gun M4 rifle", "type": "package", "path": "Packages/Guns/Gun_M4.unitypackage,Prefabs/Guns/Gun_M4/Gun_M4.prefab" },
 	{"name": "Gun_MP5", "description": "Gun MP5 rifle", "type": "package", "path": "Packages/Guns/Gun_MP5.unitypackage,Prefabs/Guns/Gun_MP5/Gun_MP5.prefab" },
 	{"name": "Gun_Scar", "description": "Gun Scar rifle", "type": "package", "path": "Packages/Guns/Gun_Scar.unitypackage,Prefabs/Guns/Gun_Scar/Gun_Scar.prefab" },
-	{"name": "Gun_Type97", "description": "Gun Type97 rifle", "type": "package", "path": "Packages/Guns/Gun_Type97.unitypackage,Prefabs/Guns/Gun_Type97/Gun_Type97.prefab" }
+	{"name": "Gun_Type97", "description": "Gun Type97 rifle", "type": "package", "path": "Packages/Guns/Gun_Type97.unitypackage,Prefabs/Guns/Gun_Type97/Gun_Type97.prefab" },
+	{"name": "Simple UI", "description": "Simple UI", "type": "package", "path": "Packages/UI/SimpleUI.unitypackage,Prefabs/SimpleUI/SimpleUI.prefab" }
     ]
 
     engine = AssetSearchEngine()
