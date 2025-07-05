@@ -426,6 +426,16 @@ namespace T2G.Executor
             }
         }
 
+        public static void AddSceneToBuildSettingsSceneList(string scenePathName)
+        {
+            var scenes = EditorBuildSettings.scenes;
+            int len = scenes.Length;
+            EditorBuildSettingsScene[] newScenes = new EditorBuildSettingsScene[len + 1];
+            System.Array.Copy(scenes, newScenes, len);
+            newScenes[len] = new EditorBuildSettingsScene(scenePathName, true);
+            EditorBuildSettings.scenes = newScenes;
+        }
+
         public static bool PlaceObjectInFrontOfSceneView(GameObject gameObject)
         {
             // Get the current Scene View camera

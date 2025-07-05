@@ -13,20 +13,20 @@ namespace T2G
         private string _gameDescPath;
         public override bool Execute(params string[] args)
         {
-            if(args.Length == 0)
+            if (args.Length == 0)
             {
-                OnExecutionCompleted?.Invoke(false,ConsoleController.eSender.Assistant, "Need a game description file to generate the game!");
+                OnExecutionCompleted?.Invoke(false, ConsoleController.eSender.Assistant, "Need a game description file to generate the game!");
                 return false;
             }
 
             _gameDescPath = args[0];
 
-            GenerateGameSepc(1);
+            GenerateGameSepc(2);
 
             if (!File.Exists(_gameDescPath))
             {
-                OnExecutionCompleted?.Invoke(false, 
-                    ConsoleController.eSender.Error, 
+                OnExecutionCompleted?.Invoke(false,
+                    ConsoleController.eSender.Error,
                     $"Couldn't find the game description file {_gameDescPath}!");
                 return false;
             }
@@ -35,7 +35,7 @@ namespace T2G
             OnExecutionCompleted?.Invoke(true,
                     ConsoleController.eSender.Assistant,
                     $"Game description text {_gameDescPath} was loaded sucessfully! \nStart game generation ...");
-            
+
             GameGenerationManager.Instance.StartGeneratingGameFromGameDesc(gameDescText);
 
             return true;
@@ -156,6 +156,49 @@ namespace T2G
                     }
                     break;
                 case 2:
+                    {
+                        gameDesc.ProjectName = "Duel";
+                        gameDesc.ProjectPath = "C:/MyGames";
+                        gameDesc.Title = "Duel";
+                        gameDesc.Genre = "Fight";
+                        gameDesc.Spaces = new SpaceDescLite[1];
+                        gameDesc.Spaces[0] = new SpaceDescLite();
+                        gameDesc.Spaces[0].Name = "Arena";
+                        gameDesc.Spaces[0].Objects = new SpaceObject[5];
+                        gameDesc.Spaces[0].Objects[0] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[0].Desc = "Sky";
+                        gameDesc.Spaces[0].Objects[0].Name = "Sky";
+                        gameDesc.Spaces[0].Objects[0].SetValues = new SetValuePair[1];
+                        gameDesc.Spaces[0].Objects[0].SetValues[0] = new SetValuePair() { Field = "CloudDensity", Values = "0.3" };
+                        gameDesc.Spaces[0].Objects[1] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[1].Desc = "Terrain";
+                        gameDesc.Spaces[0].Objects[1].Name = "Terrain";
+                        gameDesc.Spaces[0].Objects[1].Properties = new string[1];
+                        gameDesc.Spaces[0].Objects[1].Properties[0] = "position=(0, -5.2, 0)";
+                        gameDesc.Spaces[0].Objects[2] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[2].Desc = "Knight";
+                        gameDesc.Spaces[0].Objects[2].Name = "LeftKnight";
+                        gameDesc.Spaces[0].Objects[2].Properties = new string[2];
+                        gameDesc.Spaces[0].Objects[2].Properties[0] = "position=(-10, 0, 0)";
+                        gameDesc.Spaces[0].Objects[2].Properties[1] = "rotation=(0, 90, 0)";
+                        gameDesc.Spaces[0].Objects[3] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[3].Desc = "Knight";
+                        gameDesc.Spaces[0].Objects[3].Name = "RightKnight";
+                        gameDesc.Spaces[0].Objects[3].Properties = new string[2];
+                        gameDesc.Spaces[0].Objects[3].Properties[0] = "position=(10, 0, 0)";
+                        gameDesc.Spaces[0].Objects[3].Properties[1] = "rotation=(0, -90, 0)";
+                        gameDesc.Spaces[0].Objects[4] = new SpaceObject();
+                        gameDesc.Spaces[0].Objects[4].Desc = "Observe camera";
+                        gameDesc.Spaces[0].Objects[4].Name = "ObserveCamera";
+                        gameDesc.Spaces[0].Objects[4].Properties = new string[2];
+                        gameDesc.Spaces[0].Objects[4].Properties[0] = "position=(0, 3, -15)";
+                        gameDesc.Spaces[0].Objects[4].Properties[1] = "rotation=(10, 0, 0)";
+                        gameDesc.Spaces[0].Objects[4].SetValues = new SetValuePair[2];
+                        gameDesc.Spaces[0].Objects[4].SetValues[0] = new SetValuePair() { Field = "TargetA", Values = "LeftKnight" };
+                        gameDesc.Spaces[0].Objects[4].SetValues[1] = new SetValuePair() { Field = "TargetB", Values = "RightKnight" };
+                        string json = JsonUtility.ToJson(gameDesc, true);
+                        File.WriteAllText(_gameDescPath, json);
+                    }
                     break;
                 default:
                     break;

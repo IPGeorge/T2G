@@ -124,6 +124,7 @@ if __name__ == "__main__":
 	{"name": "FisrPersonCamera", "description": "First-person camera", "type": "package", "path": "Packages/Cameras/FirstPersonCamera.unitypackage,Prefabs/Cameras/FirstPersonCamera.prefab" },
 	{"name": "ThirdPersonCamera", "description": "Third-person camera", "type": "package", "path": "Packages/Cameras/ThirdPersonCamera.unitypackage,Prefabs/Cameras/ThirdPersonCamera.prefab" },
 	{"name": "TopDownCamera", "description": "Top-down camera", "type": "package", "path": "packages/Cameras/TopDownCamera.unitypackage,Prefabs/Cameras/TopDownCamera.prefab" },
+	{"name": "ObserveCamera", "description": "Observe camera", "type": "package", "path": "Packages/Cameras/ObserveCamera.unitypackage,Prefabs/Cameras/ObserveCamera.prefab" },
 	{"name": "PlainGround", "description": "Plain ground", "type": "package", "path": "Packages/Natual/PlainGround.unitypackage,Prefabs/Natual/PlainGround.prefab" },
 	{"name": "Sky", "description": "Sky with cloud, day of time systems", "type": "package", "path": "Packages/Natual/Sky.unitypackage,Prefabs/Natual/SKy/Sky Dome.prefab" },
 	{"name": "Sun", "description": "Directional sun light ", "type": "package", "path": "Packages/Natual/Sun.unitypackage,Prefabs/Natual/Sun.prefab" },
@@ -135,7 +136,8 @@ if __name__ == "__main__":
 	{"name": "Gun_MP5", "description": "Gun MP5 rifle", "type": "package", "path": "Packages/Guns/Gun_MP5.unitypackage,Prefabs/Guns/Gun_MP5/Gun_MP5.prefab" },
 	{"name": "Gun_Scar", "description": "Gun Scar rifle", "type": "package", "path": "Packages/Guns/Gun_Scar.unitypackage,Prefabs/Guns/Gun_Scar/Gun_Scar.prefab" },
 	{"name": "Gun_Type97", "description": "Gun Type97 rifle", "type": "package", "path": "Packages/Guns/Gun_Type97.unitypackage,Prefabs/Guns/Gun_Type97/Gun_Type97.prefab" },
-	{"name": "Simple UI", "description": "Simple UI", "type": "package", "path": "Packages/UI/SimpleUI.unitypackage,Prefabs/SimpleUI/SimpleUI.prefab" }
+	{"name": "Simple UI", "description": "Simple UI", "type": "package", "path": "Packages/UI/SimpleUI.unitypackage,Prefabs/SimpleUI/SimpleUI.prefab" },
+	{"name": "Knight", "description": "Warrior knight horseman", "type": "package", "path": "Packages/Knight/Knight.unitypackage,Prefabs/Knight/Knight.prefab" }
     ]
 
     engine = AssetSearchEngine()

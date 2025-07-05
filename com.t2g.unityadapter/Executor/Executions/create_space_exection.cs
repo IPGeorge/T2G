@@ -82,6 +82,7 @@ namespace T2G
                 EditorSceneManager.newSceneCreated += (scene, setup, mode) =>
                 {
                     EditorSceneManager.SaveScene(scene, space);
+                    Executor.Executor.AddSceneToBuildSettingsSceneList(space);
                     isCreated = true;
                 };
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
