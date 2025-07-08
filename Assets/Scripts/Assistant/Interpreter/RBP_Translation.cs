@@ -47,8 +47,11 @@ namespace T2G
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+rotation\s+(?<eulerAngles>\(?\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$", "set_rotation"),
             (@"^(?:\w+\s+)?(set)(?:\s+object)?\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)(?:\s+scale\s+(?<scale>\(?\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*,\s*\d+(?:\.\d+)?\s*\)?))?(?:\.)?\s*$",  "set_scale"),
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
-            (@"^spin(?:\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object")
-    };
+            (@"^spin(?:\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
+            (@"^(add|modify)\s+script\s+(?<filepath>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\-\s]+))?\s*$", "add_script"),
+            (@"^(print|display|write)\s+(?<text>""[^""]+""|'[^']+'|[\w\s\-_]+)\s+at\s+(?<position>(center|top[- ]?right|bottom[- ]?mid|[\w\-]+|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)))\s*$", "print_text"),
+            (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font")       
+        };
 
         public static int[] TestRegexMatch(string text)
         {
