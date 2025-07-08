@@ -69,7 +69,16 @@ namespace T2G.Executor
             {
                 Directory.CreateDirectory(targetPath);
             }
-            File.Copy(sourceScriptPath, targetscriptFilePath, true);
+
+            if (File.Exists(sourceScriptPath))
+            {
+                File.Copy(sourceScriptPath, targetscriptFilePath, true);
+            }
+            else
+            {
+                ContentLibrary.ImportAsset(sourceScriptPath);
+            }
+            
             AssetDatabase.Refresh();
         }
 
@@ -78,29 +87,31 @@ namespace T2G.Executor
             var targetObj = GameObject.Find(objName);
             if (targetObj == null)
             {
-                Debug.LogWarning("TargetObject not found, create it.");
                 targetObj = new GameObject(objName);
             }
-            if (scriptType != null)
+            if (scriptType != null && targetObj.GetComponent(scriptType) == null)
             {
                 targetObj.AddComponent(scriptType);
             }
         }
 
         [InitializeOnLoadMethod]
-        static void ContinueAddingScriptToObject()
+        static void InitializeOnloadAddingScriptToObject()
         {
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
             var objName = EditorPrefs.GetString("AddScript_ObjName", string.Empty);
             var scriptName = EditorPrefs.GetString("AddScript_ScirptName", string.Empty);
 
             if (string.IsNullOrEmpty(objName) || string.IsNullOrEmpty(scriptName))
             {
-                Executor.SendExecutionResponse(false);
+                return;
             }
             else
             {
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+                EditorPrefs.SetString("AddScript_ObjName", string.Empty);
+                EditorPrefs.SetString("AddScript_ScirptName", string.Empty);
+
                 Type scriptType = Executor.GetClassTypeByName(scriptName);
                 if (scriptType == null)
                 {

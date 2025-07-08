@@ -9,7 +9,6 @@ using UnityEngine;
 namespace T2G.Executor
 {
     [Execution("print_text")]
-
     public class Print_Text_Execution : Execution
     {
         public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
@@ -49,6 +48,7 @@ namespace T2G.Executor
                 {
                     TextPrinter.Instance.PrintText(text, (int)startPos[0], (int)startPos[1]);
                 }
+                await Task.Yield();
                 return (true, null);
             }
         }

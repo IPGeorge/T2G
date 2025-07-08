@@ -50,7 +50,8 @@ namespace T2G
             (@"^spin(?:\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
             (@"^(add|modify)\s+script\s+(?<filepath>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\-\s]+))?\s*$", "add_script"),
             (@"^(print|display|write)\s+(?<text>""[^""]+""|'[^']+'|[\w\s\-_]+)\s+at\s+(?<position>(center|top[- ]?right|bottom[- ]?mid|[\w\-]+|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)))\s*$", "print_text"),
-            (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font")       
+            (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font"),
+            (@"^build\s+(?<shape>circle|square|rectangle)\s+(?<structure>wall)\s+with\s+(?<element>\w+)\s*(?:named|with the name\s+)?(?<name>.+?)(?:\.)?$", "build_structure")
         };
 
         public static int[] TestRegexMatch(string text)

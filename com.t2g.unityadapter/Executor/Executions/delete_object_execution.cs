@@ -52,7 +52,7 @@ namespace T2G
             }
             else
             {
-                gameObj = GameObject.Find(objName);
+                gameObj = GameObject.Find(objName.Trim());
             }
 
             if (gameObj != null)

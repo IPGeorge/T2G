@@ -1,9 +1,6 @@
 #if UNITY_EDITOR
 
-using System;
-using System.IO;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -60,6 +57,7 @@ namespace T2G.Executor
                     default:
                         return (false, null);
                 }
+                await Task.Yield();
                 return (true, null);
             }
         }

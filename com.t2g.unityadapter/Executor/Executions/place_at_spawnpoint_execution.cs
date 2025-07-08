@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 
 using SimpleJSON;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace T2G.Executor
@@ -53,6 +54,7 @@ namespace T2G.Executor
             obj.transform.SetPositionAndRotation(spawnpoint.transform.position, spawnpoint.transform.rotation);
             Executor.SaveActiveScene();
 
+            await Task.Yield();
             return (true, $"{objName} was placed at {spawnpointName}.");
         }
     }

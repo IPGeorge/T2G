@@ -26,6 +26,7 @@ namespace T2G.Executor
     {
         protected static readonly string k_AssetsToImportPoolFileName = "AssetsToImportPool.txt";
         protected static readonly string k_AssetsToInstantiateFileName = "AssetsToInstantiate.txt";
+        protected static readonly string k_AssetsToImportInstructionKey = "ImportPooledAssetInstructionKey";
 
         public Execution() {  }
 
@@ -85,7 +86,6 @@ namespace T2G.Executor
             return JSON.Parse(instruction.Data).AsObject;
         }
 
-
         static protected void PoolAssetsToImport(List<string> assetsToImport, string newObjPrefab = null, string newObjName = null)
         {
             if (assetsToImport.Count > 0)
@@ -126,8 +126,13 @@ namespace T2G.Executor
             await ContentLibrary.ImportAsset(assetPath);
         }
 
-        protected static async Awaitable<bool> ImportPooledAssets()
+        protected static async Awaitable<bool> ImportPooledAssets(string instructionKey = null)
         {
+            if (!string.IsNullOrEmpty(instructionKey))
+            {
+                EditorPrefs.SetString(k_AssetsToImportInstructionKey, instructionKey);
+            }
+
             string poolPath = Path.Combine(Application.persistentDataPath, k_AssetsToImportPoolFileName);
             if (!File.Exists(poolPath))
             {

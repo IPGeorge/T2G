@@ -21,7 +21,7 @@ namespace T2G
 
             _gameDescPath = args[0];
 
-            GenerateGameSepc(2);
+            //GenerateGameSepc(2);
 
             if (!File.Exists(_gameDescPath))
             {

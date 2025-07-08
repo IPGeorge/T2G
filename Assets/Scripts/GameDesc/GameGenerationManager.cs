@@ -90,6 +90,15 @@ namespace T2G
                             inputs.Add($"set {objectName} property {fieldName} to {fieldValue}");
                         }
                     }
+                    if(gameDesc.Spaces[i].Objects[j].Scripts != null)
+                    {
+                        for(int k = 0; k < gameDesc.Spaces[i].Objects[j].Scripts.Length; ++ k)
+                        {
+                            string script = gameDesc.Spaces[i].Objects[j].Scripts[k];
+                            string objName = gameDesc.Spaces[i].Objects[j].Name;
+                            inputs.Add($"add script {script} to {objName}");
+                        }
+                    }
                 }
             }
 

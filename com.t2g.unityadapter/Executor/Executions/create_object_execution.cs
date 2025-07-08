@@ -34,7 +34,6 @@ namespace T2G.Executor
             string targetAssetPath;
             List<string> assetsToImport = new List<string>();
             string prefabToInstantiate = string.Empty;
-            string packageToImport = string.Empty;
             int i;
             for (i = 0; i < assetPaths.Length; ++i)
             {
@@ -53,7 +52,7 @@ namespace T2G.Executor
 
             PoolAssetsToImport(assetsToImport, prefabToInstantiate, objName);
             Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
-            await ImportPooledAssets();
+            await ImportPooledAssets(instruction.Keyword);
             var succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
             Executor.SaveActiveScene();
             var result = (succeeded.result, succeeded.result ? Executor.GetSucceededResponseMessage() : Executor.GetFailedResponseMessage());
@@ -68,6 +67,12 @@ namespace T2G.Executor
         [InitializeOnLoadMethod]
         async static Awaitable CreatePooledObject()  
         {
+            string onLoadInstructionkey = EditorPrefs.GetString(k_AssetsToImportInstructionKey, string.Empty);
+            if(string.Compare("create_object", onLoadInstructionkey) != 0)
+            {
+                return;
+            }
+
             await ImportPooledAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             var created = await InstantiatePooledPrefab();

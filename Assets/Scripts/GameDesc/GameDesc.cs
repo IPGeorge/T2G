@@ -391,7 +391,6 @@ public class UI
     {
         public string Name;
         public string Action;
-
     }
 }
 
@@ -408,7 +407,6 @@ public class Quest
     public string WinCondition;
     public string LoseCondition;
 }
-
 
 [Serializable]
 public class GameDescLite
@@ -439,7 +437,9 @@ public class SpaceObject
     public string Name;
     public string Desc;
     public string[] Properties = null;          //Examples: Name=value, spawnpoint=SpawnPoint1,SpawnPoint2
-    public SetValuePair[] SetValues = null;     //Examples: {"CloudDensity", "0.5"}, {"Date", "20/8/2020"}  
+    public SetValuePair[] SetValues = null;     //Examples: {"CloudDensity", "0.5"}, {"Date", "20/8/2020"}
+    public string[] Scripts = null;             //Examples: DuelGameManager.cs (ContentLibrary),
+                                                //          c:\\MyGames\\DuelGameManager.cs (customer)
 }
 
 [Serializable]
