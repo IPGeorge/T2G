@@ -11,11 +11,11 @@ namespace T2G.Executor
     [Execution("set_rotation")]
     public class set_rotation_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_rotation' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_rotation' was expected.");
             }
 
             string objName = string.Empty;
@@ -38,6 +38,7 @@ namespace T2G.Executor
                         if (jsonObj.HasKey("name"))
                         {
                             objName = jsonObj["name"];
+                            objName = objName.Trim();
                             rotStr = jsonObj["eulerAngles"];
                         }
                     }
@@ -61,12 +62,11 @@ namespace T2G.Executor
                 Vector3 rot = new Vector3(rotArr[0], rotArr[1], rotArr[2]);
                 gameObj.transform.localRotation = Quaternion.Euler(rot);
                 Executor.ForceUpdateSceneView();
-                await Task.Yield();
-                return (true, $"{objName} was rotated to {rotStr}");
+                return (eExecutionResult.Succeeded, $"{objName} was rotated to {rotStr}");
             }
             else
             {
-                return (false, $"Couldn't find {objName}!");
+                return (eExecutionResult.Failed, $"Couldn't find {objName}!");
             }
         }
     }

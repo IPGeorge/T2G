@@ -14,6 +14,7 @@ namespace T2G
 
         void RegisterCommands()
         {
+            _commandsRegistry.Add(CmdHello.CommandKey.ToLower(), typeof(CmdHello));
             _commandsRegistry.Add(CmdCreateProject.CommandKey.ToLower(), typeof(CmdCreateProject));
             _commandsRegistry.Add(CmdInitProject.CommandKey.ToLower(), typeof(CmdInitProject));
             _commandsRegistry.Add(CmdOpenProject.CommandKey.ToLower(), typeof(CmdOpenProject));
@@ -46,21 +47,27 @@ namespace T2G
             return _commandsRegistry.ContainsKey(cmd);
         }
 
-        public async Awaitable<bool> ExecuteCommand(string commandKey, params string[] args)
+        public async Awaitable<(bool succeeded, string response)> ExecuteCommand(string commandKey, params string[] args)
         {
             commandKey = commandKey.ToLower();
             if (!_commandsRegistry.ContainsKey(commandKey))
             {
-                return false;
+                return (false, string.Empty);
             }
             bool waitingForCompletion = true;
             var command = (Command)Activator.CreateInstance(_commandsRegistry[commandKey]);
+            string responseMessage = string.Empty;
             command.OnExecutionCompleted = (result, sender, message) => 
             {
-                ConsoleController.Instance.WriteConsoleMessage(sender, message);
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    responseMessage = message;
+                }
+                
                 waitingForCompletion = false;
             };
-            command.Execute(args);
+            
+            await command.Execute(args);
 
             await Task.Run(async () => 
             { 
@@ -69,7 +76,7 @@ namespace T2G
                     await Task.Delay(100);
                 }
             });
-            return true;
+            return (true, responseMessage);
         }
     }
 }

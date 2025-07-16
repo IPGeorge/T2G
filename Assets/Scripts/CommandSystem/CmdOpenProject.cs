@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using T2G.Communicator;
 using UnityEngine;
 
 namespace T2G
@@ -14,7 +16,7 @@ namespace T2G
         private Process _process;
         private EventHandler _eventHandler;
 
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             string unityEditorPath = GetUnityEditorPath();
             if (string.IsNullOrEmpty(unityEditorPath))
@@ -60,10 +62,11 @@ namespace T2G
             var arguments = $"-projectPath {_projectPathName}";
 
             OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, $"Openning ...");
+            await Task.Yield();
             Thread thread = new Thread(() => StartOpenProjectThread(arguments, unityEditorPath, OnExecutionCompleted));
             thread.Start();
-            Thread delayThread = new Thread(() => DelayAndShowOpendedMessage(OnExecutionCompleted, 5000));
-            delayThread.Start();
+            await WaitforProjectEditorIsOpenedAndConnected();
+            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, $"Project is openned!");
             return true;
         }
 
@@ -91,10 +94,25 @@ namespace T2G
             }
         }
 
-        static void DelayAndShowOpendedMessage(Action<bool, ConsoleController.eSender, string> OnExecutionCompleted, int delayMiniseconds)
+        static async Awaitable<bool> WaitforProjectEditorIsOpenedAndConnected()
         {
-            Thread.Sleep(delayMiniseconds);
-            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, "Project is openned!");
+            return await WaitForConnected();
+        }
+
+        static async Awaitable<bool> WaitForConnected(float delaySeconds = 60.0f)
+        {
+            bool timeout = false;
+            DateTime startDT = DateTime.Now; 
+            while (!CommunicatorClient.Instance.IsConnected)
+            {
+                if((DateTime.Now - startDT).TotalSeconds > delaySeconds)
+                {
+                    timeout = true;
+                    break;
+                }
+                await Task.Delay(1000);
+            }
+            return !timeout;
         }
 
         public override string GetKey()

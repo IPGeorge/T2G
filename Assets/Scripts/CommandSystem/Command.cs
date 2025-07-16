@@ -53,5 +53,5 @@ public abstract class Command
         }
     }
 
-    public abstract bool Execute(params string[] args);
+    public virtual async Awaitable<bool> Execute(params string[] args) { await Task.Yield(); return true; }
 }

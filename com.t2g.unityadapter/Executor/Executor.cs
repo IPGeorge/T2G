@@ -10,6 +10,7 @@ using SimpleJSON;
 using UnityEditor;
 using Unity.EditorCoroutines.Editor;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace T2G.Executor
 {
@@ -53,12 +54,12 @@ namespace T2G.Executor
             _isActive = false;
         }
 
-         public static void SendExecutionResponse(bool? succeeded = null)
+        public static void SendExecutionResponse(bool? succeeded = null)
         {
             if (EditorPrefs.HasKey(Defs.k_InstructionExecutionHasResponseMessage))
             {
                 bool hasResponse = EditorPrefs.GetBool(Defs.k_InstructionExecutionHasResponseMessage);
-                if(succeeded == null)
+                if (succeeded == null)
                 {
                     succeeded = EditorPrefs.GetBool(Defs.k_InstructionExecutionSucceeded, true);
                 }
@@ -66,22 +67,39 @@ namespace T2G.Executor
                 string message = succeeded.Value ?
                     EditorPrefs.GetString(Defs.k_InstructionExecutionResponseSucceeded) :
                     EditorPrefs.GetString(Defs.k_InstructionExecutionResponseFailed);
-
                 SendInstructionExecutionResponse(succeeded.Value, message);
-                ClearResponseForInitializeOnLoad();
             }
             else
             {
-                SendInstructionExecutionResponse(succeeded.Value, succeeded.Value ? "Done!" : "Failed!");
+                if (succeeded == null)
+                {
+                    SendInstructionExecutionResponse(succeeded.Value, "Failed!");
+                }
+                else
+                {
+                    SendInstructionExecutionResponse(succeeded.Value, succeeded.Value ? "Done!" : "Failed!");
+                }
             }
+            ClearResponseForInitializeOnLoad();
         }
 
-        static void SendInstructionExecutionResponse(bool succeeded, string message)
+        static async void SendInstructionExecutionResponse(bool succeeded, string message)
         {
             JSONObject jsonObj = new JSONObject();
             jsonObj.Add("succeeded", succeeded);
             jsonObj.Add("message", message);
+            await WaitForClientConnection();
             CommunicatorServer.Instance.SendMessage(eMessageType.Response, jsonObj.ToString());
+        }
+
+        static async Awaitable WaitForClientConnection()
+        {
+            while (CommunicatorServer.Instance == null || 
+                !CommunicatorServer.Instance.IsActive ||
+                !CommunicatorServer.Instance.IsConnected)
+            {
+                await Task.Delay(100);
+            }
         }
 
         public static void SetResponseForInitializeOnLoad(string messageTrue = "Done!", string messageFalse = "Failed!", bool? succeeded = null)
@@ -155,9 +173,21 @@ namespace T2G.Executor
         {
             if (instruction != null && _executionPool.ContainsKey(instruction.Keyword.ToLower()))
             {
-                var result = await _executionPool[instruction.Keyword].Execute(instruction);
-                SendInstructionExecutionResponse(result.succeeded, result.message); //is executed when InitializeOnload didn't happen
-                return result.succeeded;
+                var execution = _executionPool[instruction.Keyword];
+
+                var result = execution.Execute(instruction);
+                if (result.result == Execution.eExecutionResult.Void)
+                {
+                    result = await execution.ExecuteAsync(instruction);
+                }
+
+                if (result.result != Execution.eExecutionResult.Void)
+                {
+                    bool succeeded = (result.result != Execution.eExecutionResult.Failed);
+                    SendInstructionExecutionResponse(succeeded, result.message);    //is executed when InitializeOnload didn't happen
+                    return succeeded;
+                }
+                return true;
             }
             else
             {

@@ -24,13 +24,28 @@ namespace T2G.Executor
 
     public abstract class Execution
     {
+        public enum eExecutionResult
+        {
+            Failed,
+            Succeeded,
+            Void
+        }
+
         protected static readonly string k_AssetsToImportPoolFileName = "AssetsToImportPool.txt";
         protected static readonly string k_AssetsToInstantiateFileName = "AssetsToInstantiate.txt";
         protected static readonly string k_AssetsToImportInstructionKey = "ImportPooledAssetInstructionKey";
 
         public Execution() {  }
 
-        public abstract Awaitable<(bool succeeded, string message)> Execute(Instruction instruction);
+        public virtual (eExecutionResult result, string message) Execute(Instruction instruction) 
+        { 
+            return (eExecutionResult.Void, string.Empty); 
+        }
+        public virtual async Awaitable<(eExecutionResult result, string message)> ExecuteAsync(Instruction instruction) 
+        { 
+            await Task.Yield(); 
+            return (eExecutionResult.Void, string.Empty); 
+        }
 
         protected string GetAttributeName()
         {
@@ -228,20 +243,18 @@ namespace T2G.Executor
     [Execution("test")]
     public class test_Execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
-            await Task.Delay(1000);
-            return (true, "Ok!");
+            return (eExecutionResult.Succeeded, "Ok!");
         }
     }
 
     [Execution("invalid")]
     public class invalid_Execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
-            await Task.Delay(100);
-            return (true, "Invalid instruction execution!");
+            return (eExecutionResult.Failed, "Invalid instruction execution!");
         }
     }
 

@@ -11,11 +11,11 @@ namespace T2G.Executor
     [Execution("set_position")]
     public class set_position_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_position' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_position' was expected.");
             }
 
             string objName = string.Empty;
@@ -38,6 +38,7 @@ namespace T2G.Executor
                         if (jsonObj.HasKey("name"))
                         {
                             objName = jsonObj["name"];
+                            objName = objName.Trim();
                             positionStr = jsonObj["position"];
                         }
                     }
@@ -61,12 +62,11 @@ namespace T2G.Executor
                 Vector3 position = new Vector3(posArr[0], posArr[1], posArr[2]);
                 gameObj.transform.localPosition = position;
                 Executor.ForceUpdateSceneView();
-                await Task.Yield();
-                return (true, $"{objName} was placed at {positionStr}");
+                return (eExecutionResult.Succeeded, $"{objName} was placed at {positionStr}");
             }
             else
             {
-                return (false, $"Couldn't find {objName}!");
+                return (eExecutionResult.Failed, $"Couldn't find {objName}!");
             }
         }
     }

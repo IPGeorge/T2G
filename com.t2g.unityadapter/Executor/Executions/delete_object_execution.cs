@@ -11,11 +11,11 @@ namespace T2G
     [Execution("delete_object")]
     public class delete_object_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'delete_object' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'delete_object' was expected.");
             }
 
             string objName = string.Empty;
@@ -59,12 +59,11 @@ namespace T2G
             {
                 GameObject.DestroyImmediate(gameObj);
                 Executor.Executor.SaveActiveScene();
-                await Task.Yield();
-                return (true, $"{objName} was deleted.");
+                return (eExecutionResult.Succeeded, $"{objName} was deleted.");
             }
             else
             {
-                return (false, $"Couldn't find and delete {objName}!");
+                return (eExecutionResult.Failed, $"Couldn't find and delete {objName}!");
             }
         }
     }

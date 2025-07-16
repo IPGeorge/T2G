@@ -9582,6 +9582,7 @@ GameObject:
   - component: {fileID: 774841453}
   - component: {fileID: 774841452}
   - component: {fileID: 774841455}
+  - component: {fileID: 774841456}
   m_Layer: 0
   m_Name: Assistant
   m_TagString: Untagged
@@ -9630,6 +9631,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _AssistantDialogsRectTransform: {fileID: 1135340841}
   _GameDescForm: {fileID: 1127374316}
+--- !u!114 &774841456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 774841451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afee1a4787b1988458922b0976015aee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &782031092
 GameObject:
   m_ObjectHideFlags: 0
@@ -31953,7 +31966,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1085976379575407388}
   m_HandleRect: {fileID: 2139212684952562441}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

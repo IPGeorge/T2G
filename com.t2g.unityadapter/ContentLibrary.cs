@@ -32,7 +32,18 @@ namespace T2G
             }
 
             JSONObject jsonObj = JSON.Parse(result).AsObject;
+            if(jsonObj == null)
+            {
+                return null;
+            }
+
             JSONArray resultsArray = jsonObj["results"].AsArray;
+
+            if(resultsArray == null)
+            {
+                return null;
+            }
+
             if (resultsArray.Count > 0)
             {
                 instruction.State = Instruction.EInstructionState.Resolved;
@@ -167,6 +178,12 @@ namespace T2G
             {
                 SettingsT2G.Load();
             }
+
+            if(Application.isPlaying)
+            {
+                return false;
+            }
+
             string packagePath = Path.Combine(SettingsT2G.RecoursePath, packagePathName);
             if (File.Exists(packagePath))
             {

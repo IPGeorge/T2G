@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Threading.Tasks;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -26,7 +27,7 @@ namespace T2G
             public Dictionary<string, string> DependencyMap { get; set; }
         }
 
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             bool result = false;
 
@@ -98,6 +99,7 @@ namespace T2G
 
                 json = JsonConvert.SerializeObject(dependencies, Formatting.Indented);
                 File.WriteAllText(manifestFilePath, json);
+                await Task.Yield();
                 OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.System, $"Succeeded!");
                 result = true;
             }

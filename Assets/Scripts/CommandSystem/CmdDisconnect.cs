@@ -11,10 +11,10 @@ namespace T2G
     {
         public static readonly string CommandKey = "disconnect";
 
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             CommunicatorClient.Instance.Disconnect();
-            Task.Run(async () => { await WaitForDisconnection(); });
+            await Task.Run(async () => { await WaitForDisconnection(); });
             return true;
         }
 

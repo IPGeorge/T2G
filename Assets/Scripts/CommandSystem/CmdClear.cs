@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace T2G
@@ -5,9 +6,11 @@ namespace T2G
     public class CmdClear : Command
     {
         public static readonly string CommandKey = "clear";
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             ConsoleController.Instance.Clear();
+            await Task.Yield();
+            OnExecutionCompleted?.Invoke(true, ConsoleController.eSender.Assistant, "Cleared!");
             return true;
         }
 

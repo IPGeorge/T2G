@@ -45,8 +45,16 @@ namespace T2G
         public async void StartGeneratingGameFromGameDesc(string gameDescText)
         {
             ExecutionResult = eResult.IsRunning;
-
-            GameDescLite gameDesc = JsonUtility.FromJson<GameDescLite>(gameDescText);
+            GameDescLite gameDesc;
+            try
+            {
+                gameDesc = JsonUtility.FromJson<GameDescLite>(gameDescText);
+            }
+            catch(Exception _)
+            {
+                ExecutionResult = eResult.Failed;
+                return;
+            }
 
             List<string> inputs = new List<string>();
             var fullProjectPath = gameDesc.GetFullProjectPath();

@@ -13,17 +13,17 @@ namespace T2G.Executor
     {
         public static object EditorManager { get; private set; }
 
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'create_object' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'create_object' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData ||
                 instruction.State != Instruction.EInstructionState.Resolved)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
             
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
@@ -57,7 +57,7 @@ namespace T2G.Executor
             Executor.SaveActiveScene();
             var result = (succeeded.result, succeeded.result ? Executor.GetSucceededResponseMessage() : Executor.GetFailedResponseMessage());
             Executor.ClearResponseForInitializeOnLoad();
-            return result;
+            return (eExecutionResult.Succeeded, result.Item2);
         }
 
 

@@ -150,7 +150,7 @@ namespace T2G.Communicator
             string json = EditorJsonUtility.ToJson(data);
             string path = Path.Combine(Application.persistentDataPath, k_BackupFileName);
             File.WriteAllText(path, json);
-            Debug.Log("[CommunicatorServer.SaveSendingAndReceivingPools] Pooled messages were saved!");
+            //Debug.Log("[CommunicatorServer.SaveSendingAndReceivingPools] Pooled messages were saved!");
         }
 
         void RestoreSendingAndReceivingPools()

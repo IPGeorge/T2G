@@ -11,16 +11,16 @@ namespace T2G.Executor
     [Execution("print_text")]
     public class Print_Text_Execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'print_text' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'print_text' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
             var jsonObj = GetInstructionJsonData(instruction);
@@ -29,7 +29,7 @@ namespace T2G.Executor
 
             if(string.IsNullOrEmpty(text) || string.IsNullOrEmpty(pos))
             {
-                return (false, null);
+                return (eExecutionResult.Failed, null);
             }
             else
             {
@@ -48,8 +48,7 @@ namespace T2G.Executor
                 {
                     TextPrinter.Instance.PrintText(text, (int)startPos[0], (int)startPos[1]);
                 }
-                await Task.Yield();
-                return (true, null);
+                return (eExecutionResult.Succeeded, null);
             }
         }
     }

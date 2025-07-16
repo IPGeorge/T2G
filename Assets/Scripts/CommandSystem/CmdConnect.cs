@@ -11,7 +11,7 @@ namespace T2G
     {
         public static readonly string CommandKey = "connect";
 
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             float timeoutScale = 1.0f;
             if (args.Length > 0)
@@ -19,7 +19,7 @@ namespace T2G
                 float.TryParse(args[0], out timeoutScale);
             }
             CommunicatorClient.Instance.StartClient();
-            Task.Run(async () => { 
+            await Task.Run(async () => { 
                 bool connected = await CommunicatorClient.Instance.WaitForConnection(timeoutScale);
                 OnExecutionCompleted?.Invoke(true, 
                     ConsoleController.eSender.System, 

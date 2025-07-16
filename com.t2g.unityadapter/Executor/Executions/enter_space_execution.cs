@@ -13,11 +13,13 @@ namespace T2G.Executor
     [Execution("enter_space")]
     public class enter_space_exection : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        bool _isSpaceOpened = false;
+
+        public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'enter_space' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'enter_space' was expected.");
             }
 
             string spaceName = string.Empty;
@@ -41,6 +43,7 @@ namespace T2G.Executor
                         if (jsonObj.HasKey("name"))
                         {
                             spaceName = jsonObj["name"];
+                            spaceName = spaceName.Trim();
                         }
                     }
                     break;
@@ -51,7 +54,7 @@ namespace T2G.Executor
             string space = Path.Combine(Defs.k_SpacesDirectory, spaceName + ".unity");
             if (!Directory.Exists(spacesPath) || string.IsNullOrWhiteSpace(spaceName) || !File.Exists(spaceFile))
             {
-                return (false, $"Space doesn't exist!");
+                return (eExecutionResult.Failed, $"Space doesn't exist!");
             }
 
             var activeScene = EditorSceneManager.GetActiveScene();
@@ -64,15 +67,24 @@ namespace T2G.Executor
                 EditorSceneManager.SaveScene(activeScene);
             }
 
-            bool isOpened = false;
+            _isSpaceOpened = false;
             EditorSceneManager.sceneOpened += (scene, mode) =>
             {
-                isOpened = true;
+                _isSpaceOpened = true;
             };
             EditorSceneManager.OpenScene(space, OpenSceneMode.Single);
+            await WaitForSpaceIsOpened();
 
-            await Task.Run(() => { while (!isOpened) { Task.Yield(); } });
-            return (true, $"Entered {spaceName}.");
+            return (eExecutionResult.Succeeded, $"Entered {spaceName}.");
+        }
+
+
+        async Awaitable WaitForSpaceIsOpened()
+        {
+            while(!_isSpaceOpened)
+            {
+                await Task.Yield();
+            }
         }
     }
 }

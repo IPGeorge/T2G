@@ -8,16 +8,16 @@ namespace T2G.Executor
     [Execution("set_font")]
     public class Set_Font_Execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_font' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_font' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
             var jsonObj = GetInstructionJsonData(instruction);
@@ -26,7 +26,7 @@ namespace T2G.Executor
 
             if (string.IsNullOrEmpty(attrib) || string.IsNullOrEmpty(value))
             {
-                return (false, "Invalid font attribute or attribute value!");
+                return (eExecutionResult.Failed, "Invalid font attribute or attribute value!");
             }
             else
             {
@@ -55,10 +55,9 @@ namespace T2G.Executor
                         }
                         break;
                     default:
-                        return (false, null);
+                        return (eExecutionResult.Failed, null);
                 }
-                await Task.Yield();
-                return (true, null);
+                return (eExecutionResult.Succeeded, null);
             }
         }
     }

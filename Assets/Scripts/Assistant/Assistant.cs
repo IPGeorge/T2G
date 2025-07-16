@@ -89,7 +89,7 @@ namespace T2G
                 {
                     if (prevSuccess)
                     {
-                        response?.Invoke("Done!");
+                         response?.Invoke("Done!");
                     }
                     else
                     {
@@ -124,12 +124,21 @@ namespace T2G
             switch(instruction.ExecutionType)
             {
                 case Instruction.EExecutionType.LocalCmd:
-                    result = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.Data);
+                    {
+                        var cmdResult = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.Data);
+                        result = cmdResult.succeeded;
+                        responseMessage = cmdResult.response;
+                    }
                     break;
                 case Instruction.EExecutionType.EditingOp:
                     if(instruction.State == Instruction.EInstructionState.Raw)
                     {
-                        instruction = await ContentLibrary.ResolveInstruction(instruction);    //find the assets
+                        var newInstruction = await ContentLibrary.ResolveInstruction(instruction);    //find the assets
+                        if(instruction == null)
+                        {
+                            return (false, "Failed to resolve instruction!");
+                        }
+                        instruction = newInstruction;
                     }
                     
                     if (instruction.State == Instruction.EInstructionState.Resolved)

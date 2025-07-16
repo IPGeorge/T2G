@@ -11,16 +11,16 @@ namespace T2G.Executor
     [Execution("set_value")]
     public class set_value_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_value' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_value' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
             GameObject gameObj = Selection.activeGameObject;
@@ -34,7 +34,7 @@ namespace T2G.Executor
                 var targetObj = GameObject.Find(objName);
                 if (targetObj == null)
                 {
-                    return (false, $"{objName } was not found!");
+                    return (eExecutionResult.Failed, $"{objName } was not found!");
                 }
                 else
                 {
@@ -54,8 +54,7 @@ namespace T2G.Executor
                         {
                             if (Executor.SetFieldValue(component, fi, value))
                             {
-                                await Task.Yield();
-                                return (true, null);
+                                return (eExecutionResult.Succeeded, null);
                             }
                             else
                             {
@@ -70,8 +69,7 @@ namespace T2G.Executor
                         {
                             if (Executor.SetPropertyValue(component, pi, value))
                             {
-                                await Task.Yield();
-                                return (true, null);
+                                return (eExecutionResult.Succeeded, null);
                             }
                             else
                             {
@@ -85,13 +83,13 @@ namespace T2G.Executor
                         if(string.Compare(method.Name, "SetSpecificPropertyValue") == 0)
                         {
                             method.Invoke(component, new string[] { property, value });
-                            return (true, null);
+                            return (eExecutionResult.Succeeded, null);
                         }
                     }
                 }
             }
 
-            return (false, $"Failed to set {property} value to be {value}!");
+            return (eExecutionResult.Failed, $"Failed to set {property} value to be {value}!");
         }
     }
 }

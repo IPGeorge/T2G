@@ -10,11 +10,11 @@ namespace T2G.Executor
     [Execution("select_object")]
     public class select_object_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'select_object' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'select_object' was expected.");
             }
 
             string objName = string.Empty;
@@ -38,6 +38,7 @@ namespace T2G.Executor
                         if (jsonObj.HasKey("name"))
                         {
                             objName = jsonObj["name"];
+                            objName = objName.Trim();
                         }
                     }
                     break;
@@ -59,12 +60,11 @@ namespace T2G.Executor
                 Selection.activeGameObject = gameObj;
                 //Selection.SetActiveObjectWithContext(gameObj, null);
                 Executor.ForceUpdateEditorWindows();
-                await Task.Yield();
-                return (true, $"{objName} was selected.");
+                return (eExecutionResult.Succeeded, $"{objName} was selected.");
             }
             else
             {
-                return (false, $"Couldn't find and select {objName}!");
+                return (eExecutionResult.Failed, $"Couldn't find and select {objName}!");
             }
         }
     }

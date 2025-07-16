@@ -15,16 +15,16 @@ namespace T2G.Executor
 
         bool _importingPackage = false;
 
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'build_structure' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'build_structure' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
             var jsonObj = GetInstructionJsonData(instruction);
@@ -38,7 +38,7 @@ namespace T2G.Executor
 
             if(assetPaths.Length <= 0 || string.IsNullOrWhiteSpace(assetPaths[0]))
             {
-                return (false, $"No element was specified for building the structure {objName}");
+                return (eExecutionResult.Failed, $"No element was specified for building the structure {objName}");
             }
 
             var ext1 = Path.GetExtension(assetPaths[0]).ToLower();
@@ -54,7 +54,7 @@ namespace T2G.Executor
             else
             {
                 Debug.LogError($"Wrong extenion {ext1}");
-                return (false, null);
+                return (eExecutionResult.Failed, null);
             }
 
             string prefabFilePath = Path.Combine(Application.dataPath, prefabPath);
@@ -64,7 +64,7 @@ namespace T2G.Executor
                 AssetDatabase.onImportPackageItemsCompleted += (items) => {
                     _importingPackage = false;
                 };
-                ContentLibrary.ImportAsset(assetPaths[0]);
+                await ContentLibrary.ImportAsset(assetPaths[0]);
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
             }
 
@@ -76,10 +76,10 @@ namespace T2G.Executor
             if(prefab == null)
             {
                 Debug.LogError($"prefab '{prefabPath}' is null!");
-                return (false, null);
+                return (eExecutionResult.Failed, null);
             }
-
-            GameObject strcutureObj = new GameObject(objName.Trim());
+            objName = objName.Trim();
+            GameObject strcutureObj = new GameObject(objName);
             strcutureObj.transform.position = Vector3.zero;
             //Executor.PlaceObjectInFrontOfSceneView(strcutureObj);
 
@@ -89,7 +89,7 @@ namespace T2G.Executor
                     {
                         int radius = width / 2;
                         Vector3 vec = Vector3.forward * radius; 
-                        for(int degree = -180; degree <= 180; ++ degree)
+                        for(int degree = -180; degree <= 180; degree += 5)
                         {
                             Quaternion rotation = Quaternion.Euler(0, degree, 0); // Rotate around Y-axis
                             Vector3 rotatedForward = rotation * vec;
@@ -119,7 +119,7 @@ namespace T2G.Executor
             }
 
             Executor.SaveActiveScene();
-            return (true, null);
+            return (eExecutionResult.Succeeded, null);
         }
 
         async Awaitable WhatForImportingPackageCompleted()

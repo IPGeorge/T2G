@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
+using UnityEngine;
 
 namespace T2G
 {
@@ -11,7 +13,7 @@ namespace T2G
         private string _projectPathName;
         private Process _process;
         private EventHandler _eventHandler;
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             string unityEditorPath = GetUnityEditorPath();
             if (string.IsNullOrEmpty(unityEditorPath))
@@ -60,6 +62,7 @@ namespace T2G
                 _process.EnableRaisingEvents = true;
                 _process.Start();
                 _process.WaitForExit();
+                await Task.Yield();
                 return true;
             }
             catch (Exception e)

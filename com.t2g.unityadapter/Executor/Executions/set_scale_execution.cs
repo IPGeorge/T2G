@@ -11,11 +11,11 @@ namespace T2G.Executor
     [Execution("set_scale")]
     public class set_scale_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'set_scale' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_scale' was expected.");
             }
 
             string objName = string.Empty;
@@ -38,6 +38,7 @@ namespace T2G.Executor
                         if (jsonObj.HasKey("name"))
                         {
                             objName = jsonObj["name"];
+                            objName = objName.Trim();
                             scaleStr = jsonObj["scale"];
                         }
                     }
@@ -61,12 +62,11 @@ namespace T2G.Executor
                 Vector3 scale = new Vector3(scaleArr[0], scaleArr[1], scaleArr[2]);
                 gameObj.transform.localScale = scale;
                 Executor.ForceUpdateSceneView();
-                await Task.Yield();
-                return (true, $"{objName} was scaled to {scaleStr}");
+                return (eExecutionResult.Succeeded, $"{objName} was scaled to {scaleStr}");
             }
             else
             {
-                return (false, $"Couldn't find {objName}!");
+                return (eExecutionResult.Failed, $"Couldn't find {objName}!");
             }
         }
     }

@@ -296,7 +296,7 @@ namespace T2G
             }
             else
             {
-                return "Done!";
+                return "Ok Done!";
             }
         }
     }

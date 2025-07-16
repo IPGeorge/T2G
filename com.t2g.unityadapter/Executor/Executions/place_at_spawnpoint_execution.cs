@@ -9,17 +9,17 @@ namespace T2G.Executor
     [Execution("place_at_spawnpoint")]
     public class place_at_spawnpoint_execution : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public override (eExecutionResult, string) Execute(Instruction instruction)
         {
             if (!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'place_at_spawnpoint' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'place_at_spawnpoint' was expected.");
             }
 
             if (instruction.DataType != Instruction.EDataType.JsonData ||
                 instruction.State != Instruction.EInstructionState.Resolved)
             {
-                return (false, "Invalid instruction data!");
+                return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
@@ -30,7 +30,7 @@ namespace T2G.Executor
             GameObject obj = GameObject.Find(objName);
             if(obj == null)
             {
-                return (false, $"Couldn't find object {objName} in current space!");
+                return (eExecutionResult.Failed, $"Couldn't find object {objName} in current space!");
             }
 
             string spawnpointName = null;
@@ -48,14 +48,13 @@ namespace T2G.Executor
 
             if (spawnpoint == null)
             {
-                return (false, $"Couldn't find spawnpoint {spawnpointName} in current space!");
+                return (eExecutionResult.Failed, $"Couldn't find spawnpoint {spawnpointName} in current space!");
             }
 
             obj.transform.SetPositionAndRotation(spawnpoint.transform.position, spawnpoint.transform.rotation);
             Executor.SaveActiveScene();
 
-            await Task.Yield();
-            return (true, $"{objName} was placed at {spawnpointName}.");
+            return (eExecutionResult.Succeeded, $"{objName} was placed at {spawnpointName}.");
         }
     }
 }

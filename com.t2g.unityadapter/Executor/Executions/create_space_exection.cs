@@ -12,11 +12,11 @@ namespace T2G
     [Execution("create_space")]
     public class create_space_exection : Execution
     {
-        public async override Awaitable<(bool succeeded, string message)> Execute(Instruction instruction)
+        public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
             if(!ValidateInstructionKeyword(instruction.Keyword))
             {
-                return (false, "Invalid instruction keyword! 'create_space' was expected.");
+                return (eExecutionResult.Failed, "Invalid instruction keyword! 'create_space' was expected.");
             }
 
             string spacesPath = Path.Combine(Application.dataPath, "Spaces");
@@ -46,6 +46,7 @@ namespace T2G
                         if(jsonObj.HasKey("name"))
                         {
                             spaceName = jsonObj["name"];
+                            spaceName = spaceName.Trim();
                         }
                     }
                     break;
@@ -88,7 +89,7 @@ namespace T2G
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 await Task.Run(() => { while (!isCreated) { Task.Yield(); } });
             }
-            return (true, $"Entered {spaceName}.");
+            return (eExecutionResult.Succeeded, $"Entered {spaceName}.");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace T2G
         public static readonly string CommandKey = "generate";
 
         private string _gameDescPath;
-        public override bool Execute(params string[] args)
+        public override async Awaitable<bool> Execute(params string[] args)
         {
             if (args.Length == 0)
             {
@@ -32,11 +32,13 @@ namespace T2G
             }
 
             string gameDescText = File.ReadAllText(_gameDescPath);
+
             OnExecutionCompleted?.Invoke(true,
                     ConsoleController.eSender.Assistant,
                     $"Game description text {_gameDescPath} was loaded sucessfully! \nStart game generation ...");
 
             GameGenerationManager.Instance.StartGeneratingGameFromGameDesc(gameDescText);
+            await Task.Yield();
 
             return true;
         }
@@ -88,6 +90,8 @@ namespace T2G
                         gameDesc.Spaces[0].Objects[3].Properties = new string[2];
                         gameDesc.Spaces[0].Objects[3].Properties[0] = "position=(0, 2, -3)";
                         gameDesc.Spaces[0].Objects[3].Properties[1] = "rotation=(10, 0, 0)";
+                        gameDesc.Spaces[0].Objects[3].SetValues = new SetValuePair[1];
+                        gameDesc.Spaces[0].Objects[3].SetValues[0] = new SetValuePair() { Field = "TargetName", Values = "Player" };
                         gameDesc.Spaces[0].Objects[4] = new SpaceObject();
                         gameDesc.Spaces[0].Objects[4].Desc = "M4 rifle";
                         gameDesc.Spaces[0].Objects[4].Name = "M4-Rifle";
@@ -96,6 +100,7 @@ namespace T2G
                         gameDesc.Spaces[0].Objects[4].Properties[1] = "rotation=(180, 0, 0)";
                         gameDesc.Spaces[0].Objects[5] = new SpaceObject();
                         gameDesc.Spaces[0].Objects[5].Desc = "G36 gun";
+                        gameDesc.Spaces[0].Objects[4].Name = "G36-Rifle";
                         gameDesc.Spaces[0].Objects[5].Properties = new string[1];
                         gameDesc.Spaces[0].Objects[5].Properties[0] = "position=(2, 1, 3)";
                         string json = JsonUtility.ToJson(gameDesc, true);
