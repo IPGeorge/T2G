@@ -163,7 +163,7 @@ namespace T2G
             _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, _consoleSizes[_consoleSizeIndex]);
             _ExpandButton.interactable = (_consoleSizeIndex < _consoleSizes.Length - 1);
             _ShrinkButton.interactable = (_consoleSizeIndex > 0);
-            SimAssistant.Instance.OnDestopPanelResized(_rectTransform.sizeDelta.y);
+            //SimAssistant.Instance.OnDestopPanelResized(_rectTransform.sizeDelta.y);
         }
 
         public void ExpandConsole()
@@ -286,6 +286,11 @@ namespace T2G
                 WriteConsoleMessage(eSender.Assistant, response);
                 _InputMessage.readOnly = false;
             });
+
+            if(QuestionaireManager.Instance.IsActive)
+            {
+                _InputMessage.readOnly = false;
+            }
 
             //Clear input
             _InputMessage.text = string.Empty;

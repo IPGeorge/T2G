@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace T2G.Executor
 {
-    [Execution("add_script")]
-    public class add_script_execution : Execution
+    [Execution("add_behvior")]
+    public class add_behavior_execution : Execution
     {
         public override (eExecutionResult, string) Execute(Instruction instruction)
         {
@@ -23,52 +23,55 @@ namespace T2G.Executor
             }
 
             var jsonObj = GetInstructionJsonData(instruction);
-            string objName = jsonObj["object"];
-            string scriptPath = jsonObj["path"];
+            string objectName = jsonObj["objectName"];
+            string behaviorName = jsonObj["behaviorName"];
 
-            if(string.IsNullOrEmpty(scriptPath) || !File.Exists(scriptPath))
-            {
-                return (eExecutionResult.Failed, "Invalid target script path!");
-            }
+            return (eExecutionResult.Succeeded, $"{behaviorName} to be continued!");
 
-            string scriptPathFile = Path.GetFileName(scriptPath);
-            string scriptName = Path.GetFileNameWithoutExtension(scriptPathFile);
 
-            if (string.IsNullOrEmpty(objName))
-            {
-                objName = scriptName;
-            }
+            //if (string.IsNullOrEmpty(scriptPath) || !File.Exists(scriptPath))
+            //{
+            //    return (eExecutionResult.Failed, "Invalid target script path!");
+            //}
 
-            Type scriptType = Executor.GetClassTypeByName(scriptName);
+            //string scriptPathFile = Path.GetFileName(scriptPath);
+            //string scriptName = Path.GetFileNameWithoutExtension(scriptPathFile);
 
-            if (scriptType == null)
-            {
-                Executor.SetResponseForInitializeOnLoad($"Script {scriptName} was added.", $"Failed to add script {scriptName}!");
-                EditorPrefs.SetString("AddScript_ObjName", objName);
-                EditorPrefs.SetString("AddScript_ScirptName", scriptName);
+            //if (string.IsNullOrEmpty(objName))
+            //{
+            //    objName = scriptName;
+            //}
 
-                if (ImportCustomerScript(objName, scriptPath))
-                {
-                    return (eExecutionResult.Void, string.Empty);  
-                        //This has a potential bug here when scriptName doesn't match the class name
-                        //In that case, the existing script is imported again, the InitialOnLoadMEthod is not called
-                        //Should avoid it later. 
-                        //The sciptName must match the class name case sensitively
-                }
-                else
-                {
-                    Executor.ClearResponseForInitializeOnLoad();
-                    EditorPrefs.SetString("AddScript_ObjName", string.Empty);
-                    EditorPrefs.SetString("AddScript_ScirptName", string.Empty);
-                    return (eExecutionResult.Failed, $"Invalid script file path or class name. Failed to add script {scriptName}! ");
-                }
-            }
-            else
-            { 
-                AddScriptToObject(objName, scriptType);
-                Executor.ClearResponseForInitializeOnLoad();
-                return (eExecutionResult.Succeeded, $"{scriptName} was added.");
-            }
+            //Type scriptType = Executor.GetClassTypeByName(scriptName);
+
+            //if (scriptType == null)
+            //{
+            //    Executor.SetResponseForInitializeOnLoad($"Script {scriptName} was added.", $"Failed to add script {scriptName}!");
+            //    EditorPrefs.SetString("AddScript_ObjName", objName);
+            //    EditorPrefs.SetString("AddScript_ScirptName", scriptName);
+
+            //    if (ImportCustomerScript(objName, scriptPath))
+            //    {
+            //        return (eExecutionResult.Void, string.Empty);
+            //        //This has a potential bug here when scriptName doesn't match the class name
+            //        //In that case, the existing script is imported again, the InitialOnLoadMEthod is not called
+            //        //Should avoid it later. 
+            //        //The sciptName must match the class name case sensitively
+            //    }
+            //    else
+            //    {
+            //        Executor.ClearResponseForInitializeOnLoad();
+            //        EditorPrefs.SetString("AddScript_ObjName", string.Empty);
+            //        EditorPrefs.SetString("AddScript_ScirptName", string.Empty);
+            //        return (eExecutionResult.Failed, $"Invalid script file path or class name. Failed to add script {scriptName}! ");
+            //    }
+            //}
+            //else
+            //{
+            //    AddScriptToObject(objName, scriptType);
+            //    Executor.ClearResponseForInitializeOnLoad();
+            //    return (eExecutionResult.Succeeded, $"{scriptName} was added.");
+            //}
         }
 
         bool ImportCustomerScript(string objName, string sourceScriptPath)
@@ -79,12 +82,12 @@ namespace T2G.Executor
             var targetPath = Path.Combine(Application.dataPath, "Scripts");
             var targetScriptFilePath = Path.Combine(targetPath, scriptFileName);
 
-            if(File.Exists(targetScriptFilePath))       //No overwrite copy is supported for now.
+            if (File.Exists(targetScriptFilePath))       //No overwrite copy is supported for now.
             {
                 return false;
             }
 
-            if(!Directory.Exists(targetPath))
+            if (!Directory.Exists(targetPath))
             {
                 Directory.CreateDirectory(targetPath);
             }

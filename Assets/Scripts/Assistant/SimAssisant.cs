@@ -8,6 +8,8 @@ namespace T2G
 {
     public class SimAssistant : MonoBehaviour
     {
+/*
+
         [SerializeField] RectTransform _AssistantDialogsRectTransform;
         [SerializeField] GameDescForm _GameDescForm;
 
@@ -299,5 +301,6 @@ namespace T2G
                 return "Ok Done!";
             }
         }
+*/
     }
 }

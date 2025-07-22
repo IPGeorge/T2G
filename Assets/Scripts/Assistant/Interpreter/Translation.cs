@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace T2G
@@ -18,7 +19,7 @@ namespace T2G
         }
     }
 
-    public abstract class Translator
+    public class Translator
     {
         protected static string k_FailedToRetrieveAttribute = "Failed to retrieved instruction attribute key!";
         protected static string k_MissingPath = "Please provide the project path!";
@@ -31,7 +32,17 @@ namespace T2G
          *      instructions: returns the generated raw instructions
          * Returns: true-succeeded; false-failed
          */
-        abstract public (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions);
+        virtual public (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
+        {
+            return (true, string.Empty);
+        }
+
+        public virtual async Awaitable<(bool succeeded, string message, List<Instruction> instructions)> TranslateAsync((string name, string value)[] arguments)
+        {
+            await Task.Yield();
+            return (true, string.Empty, null);
+        }
+
 
         protected string GetAttributeName()
         {
@@ -121,22 +132,33 @@ namespace T2G
 
         protected List<Instruction> _instructionList = new List<Instruction>();
         
-        public virtual (bool succeeded, string message) Translate(string prompt, out Instruction[] instructions)
+        public virtual async Awaitable<(bool succeeded, string message, Instruction[] instructions)> Translate(string prompt)
         {
+            string message = string.Empty;
             _instructionList.Clear();
-            if (ParseInstructionData(prompt, out var key, out var arguments) &&
-                _translatorPool.ContainsKey(key))
+            if (ParseInstructionData(prompt, out var key, out var arguments) && _translatorPool.ContainsKey(key))
             {
                 var translator = _translatorPool[key];
                 var result = translator.Translate(arguments, ref _instructionList);
+                if (_instructionList.Count == 0)
+                {
+                    var resultAsync = await translator.TranslateAsync(arguments);
+                    result.succeeded = resultAsync.succeeded;
+                    result.message = resultAsync.message;
+                    if (resultAsync.instructions != null)
+                    {
+                        _instructionList = resultAsync.instructions;
+                    }
+                }
+
                 if(!result.succeeded)
                 {
-                    instructions = _instructionList.ToArray();
-                    return (false, result.message);
+                    return (false, result.message, _instructionList.ToArray());
                 }
+                message = result.message;
             }
-            instructions = _instructionList.ToArray();
-            return (_instructionList.Count > 0, null);
+
+            return (_instructionList.Count > 0, message, _instructionList.ToArray());
         }
 
         abstract protected bool ParseInstructionData(string prompt, out string key, out (string name, string value)[] arguments);

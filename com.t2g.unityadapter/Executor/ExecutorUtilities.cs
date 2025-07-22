@@ -531,6 +531,15 @@ namespace T2G.Executor
 
             return false;
         }
+
+        public static void DeleteObjectComponent(GameObject gameObj, Type type)
+        {
+            var component = gameObj.GetComponent(type);
+            if (component != null)
+            {
+                Component.DestroyImmediate(component);
+            }
+        }
     }
 }
 #endif

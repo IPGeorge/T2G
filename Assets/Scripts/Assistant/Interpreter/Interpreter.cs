@@ -37,7 +37,7 @@ namespace T2G
             //Register translations
             _translations = new List<(ETranslationMethod method, Translation translator)>();
             _translations.Add((ETranslationMethod.RBP_Translation, new RBP_Translation()));
-            _translations.Add((ETranslationMethod.NLP_Translation, new NLP_Translation()));
+            _translations.Add((ETranslationMethod.NLP_Translation, new GPT_Translation()));
 
             //Create a game description
             _gameDesc = new GameDesc();
@@ -50,10 +50,12 @@ namespace T2G
             string responseMessage = null;
             for (int i = 0; i < _translations.Count; ++i)
             {
-                var result = _translations[i].translator.Translate(prompt, out instructions);
+                var result = await _translations[i].translator.Translate(prompt);
+
                 responseMessage = result.message;
                 if (result.succeeded)
                 {
+                    instructions = result.instructions;
                     break;
                 }
             }

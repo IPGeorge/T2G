@@ -61,53 +61,82 @@ namespace T2G
 
         public async Awaitable ProcessInput(string inputText, Action<string> response)
         {
-            var result = await Interpreter.Instance.InterpretPrompt(inputText);
-            if (result.instructions != null && result.instructions.Length > 0)
+            if (QuestionaireManager.Instance.IsActive)
             {
-                bool prevSuccess = true;
-                int failedCount = 0;
-                bool hasResponseMesasge = false;
-
-                foreach(var instruction in result.instructions)
+                var topic = QuestionaireManager.Instance.AnswerQuestion(inputText, out string prompt);
+                bool isValidPrompt = !string.IsNullOrWhiteSpace(prompt);
+                if (topic.TopicIsOver() && isValidPrompt)
                 {
-                    var procResult = await ProcessInstruction(instruction, prevSuccess);
-                    prevSuccess = procResult.succeeded;
-                    
-                    if (!prevSuccess)
-                    {
-                        failedCount++;
-                    }
+                    await topic.PostTopicProcess(prompt);
+                    var procResult = await ProcessInstruction(topic.Instruction, true);
 
-                    hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                    var hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
                     if (hasResponseMesasge)
                     {
                         response?.Invoke(procResult.responseMessage);
                     }
-                }
-
-                if (!hasResponseMesasge)
-                {
-                    if (prevSuccess)
-                    {
-                         response?.Invoke("Done!");
-                    }
                     else
                     {
-                        response?.Invoke(failedCount == result.instructions.Length ?
-                            "Failed!" :
-                            $"Result: {result.instructions.Length - failedCount} succeeded; {failedCount} failed!");
+                        response?.Invoke("Failed!");
                     }
                 }
             }
             else
             {
-                if (string.IsNullOrEmpty(result.responseMessage))
+                var result = await Interpreter.Instance.InterpretPrompt(inputText);
+                
+                if(QuestionaireManager.Instance.IsActive)
                 {
-                    response?.Invoke("Sorry, I don't understand!");
+                    return;
+                }
+
+                if (result.instructions != null && result.instructions.Length > 0)
+                {
+                    bool prevSuccess = true;
+                    int failedCount = 0;
+                    bool hasResponseMesasge = false;
+
+                    foreach (var instruction in result.instructions)
+                    {
+                        var procResult = await ProcessInstruction(instruction, prevSuccess);
+                        prevSuccess = procResult.succeeded;
+
+                        if (!prevSuccess)
+                        {
+                            failedCount++;
+                        }
+
+                        hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                        if (hasResponseMesasge)
+                        {
+                            response?.Invoke(procResult.responseMessage);
+                        }
+                    }
+
+                    if (!hasResponseMesasge)
+                    {
+                        if (prevSuccess)
+                        {
+                            response?.Invoke("Done!");
+                        }
+                        else
+                        {
+                            response?.Invoke(failedCount == result.instructions.Length ?
+                                "Failed!" :
+                                $"Result: {result.instructions.Length - failedCount} succeeded; {failedCount} failed!");
+                        }
+                    }
                 }
                 else
                 {
-                    response?.Invoke(result.responseMessage);
+                    if (string.IsNullOrEmpty(result.responseMessage))
+                    {
+                        response?.Invoke("Sorry, I don't understand!");
+                    }
+                    else
+                    {
+                        response?.Invoke(result.responseMessage);
+                    }
                 }
             }
         }
