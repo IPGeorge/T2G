@@ -34,11 +34,11 @@ public class CodeGenerator : MonoBehaviour
         return generatedCode;
     }
 
-    public bool GenerateCode(string prompt)
+    public bool GenerateCode(string prompt, string className = null)
     {
         if (Status != EStatus.Busy)
         {
-            StartCoroutine(SendPromptToLocalAPI(prompt));
+            StartCoroutine(SendPromptToLocalAPI(prompt, className));
             return true;
         }
         else
@@ -53,8 +53,15 @@ public class CodeGenerator : MonoBehaviour
         //GenerateCode(testPrompt);   //Comment this line when testing is not needed.
     }
 
-    IEnumerator SendPromptToLocalAPI(string prompt)
+    IEnumerator SendPromptToLocalAPI(string prompt, string className = null)
     {
+        string specificPromoptRequest = "Wrtie only code without explanation.";
+
+        if(className != null)
+        {
+            specificPromoptRequest += $"Use {className} as the class name";
+        }
+
         Status = EStatus.Busy;
         _generatedCode = string.Empty;
 
@@ -63,7 +70,7 @@ public class CodeGenerator : MonoBehaviour
             model = "Nous Hermes 2 Mistral DPO",
             messages = new Message[]
             {
-                new Message { role = "user", content = prompt }
+                new Message { role = "user", content = prompt + specificPromoptRequest }
             },
             max_tokens = 512,
             temperature = 0.2f
@@ -79,7 +86,6 @@ public class CodeGenerator : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Response:\n" + request.downloadHandler.text);
                 string responseMessage = request.downloadHandler.text;
                 JSONObject responseObj = JSON.Parse(responseMessage).AsObject;
                 JSONArray choices = responseObj["choices"].AsArray;

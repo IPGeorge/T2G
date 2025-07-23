@@ -9,10 +9,10 @@ namespace T2G
 {
     public abstract class Topic
     {
-        public string Title;
-        public List<(string question, string defaultAnswer, bool includeInAnswer)> Questions = new List<(string, string, bool)>();
-        public List<string> Answers = new List<string>();
-        public string ResponseMessage;
+        public string Title { get; protected set; }
+        protected List<(string question, string defaultAnswer, bool includeInAnswer)> _questions = new List<(string, string, bool)>();
+        protected List<string> _answers = new List<string>();
+        public string AnswersSummary { get; protected set; } = string.Empty;
 
         protected Instruction _instruction = null;
         public Instruction Instruction => _instruction;
@@ -26,26 +26,26 @@ namespace T2G
             _instruction = instruction;
         }
 
-
         public virtual async Awaitable PostTopicProcess(string prompt) { await Task.Yield(); }
 
         public int CurrentQuestionIndex { get; private set; }
 
         public string GetCurrentQuestion()
         {
-            if (CurrentQuestionIndex >= 0 && CurrentQuestionIndex < Questions.Count)
+            if (CurrentQuestionIndex >= 0 && CurrentQuestionIndex < _questions.Count)
             {
-                return Questions[CurrentQuestionIndex].question;
+                return _questions[CurrentQuestionIndex].question;
             }
             return null;
         }
 
-        public int AnswerQuestion(string answer)    //return -1: end, >= 0: next question index.
+        public bool AnswerQuestion(string answer)
         {
-            if (CurrentQuestionIndex < 0 || CurrentQuestionIndex >= Questions.Count)
+            AnswersSummary = string.Empty;
+            if (CurrentQuestionIndex < 0 || CurrentQuestionIndex >= _questions.Count)
             {
                 CurrentQuestionIndex = -1;
-                return -1;
+                return false;
             }
 
             string answerInLower = answer.ToLower();
@@ -54,37 +54,41 @@ namespace T2G
             {
                 ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Canceled!");
                 CurrentQuestionIndex = -1;
-                return -1;
+                return false;
             }
 
-            var currentQuestion = Questions[CurrentQuestionIndex];
+            var currentQuestion = _questions[CurrentQuestionIndex];
 
-            string answerPrompt = currentQuestion.includeInAnswer ? $"{currentQuestion.question}: " : string.Empty;
+            string resolvedAnswer = currentQuestion.includeInAnswer ? $"{currentQuestion.question}: " : string.Empty;
             if (string.Compare(answerInLower, "skip") == 0 || string.IsNullOrWhiteSpace(answer))
             {
-                answerPrompt += currentQuestion.defaultAnswer;
+                resolvedAnswer += currentQuestion.defaultAnswer;
                 ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, $"Your answer: {currentQuestion.defaultAnswer}");
             }
             else
             {
-                answerPrompt += answer;
+                resolvedAnswer += answer;
                 ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, $"Your answer: {answer}");
             }
 
-            Answers.Add(answerPrompt);
+            _answers.Add(resolvedAnswer);
 
             CurrentQuestionIndex++;
-            if (CurrentQuestionIndex >= Questions.Count)
+            if (CurrentQuestionIndex >= _questions.Count)
             {
+                foreach (var promptAnswer in _answers)
+                {
+                    AnswersSummary += promptAnswer + "\n";
+                }
                 CurrentQuestionIndex = -1;
             }
 
-            return CurrentQuestionIndex;
+            return true;
         }
 
         public bool TopicIsOver()
         {
-            return (Answers.Count == Questions.Count || CurrentQuestionIndex < 0);
+            return (_answers.Count == _questions.Count || CurrentQuestionIndex < 0);
         }
     }
 }

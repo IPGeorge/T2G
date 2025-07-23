@@ -63,21 +63,17 @@ namespace T2G
         {
             if (QuestionaireManager.Instance.IsActive)
             {
-                var topic = QuestionaireManager.Instance.AnswerQuestion(inputText, out string prompt);
-                bool isValidPrompt = !string.IsNullOrWhiteSpace(prompt);
-                if (topic.TopicIsOver() && isValidPrompt)
+                bool answered = QuestionaireManager.Instance.AnswerQuestion(inputText, out Topic completedTopic);
+                if (answered && completedTopic != null && completedTopic.TopicIsOver())
                 {
-                    await topic.PostTopicProcess(prompt);
-                    var procResult = await ProcessInstruction(topic.Instruction, true);
-
-                    var hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
-                    if (hasResponseMesasge)
+                    ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Working on it ...");
+                    string prompt = completedTopic.AnswersSummary;
+                    await completedTopic.PostTopicProcess(prompt);
+                    if(!string.IsNullOrWhiteSpace(completedTopic.Instruction.ResolvedAssetPaths))
                     {
-                        response?.Invoke(procResult.responseMessage);
-                    }
-                    else
-                    {
-                        response?.Invoke("Failed!");
+                        var procResult = await ProcessInstruction(completedTopic.Instruction, true);
+                        var hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                        response?.Invoke(hasResponseMesasge ? procResult.responseMessage : "Failed!");
                     }
                 }
             }

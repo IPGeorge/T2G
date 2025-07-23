@@ -1,5 +1,6 @@
 
 using SimpleJSON;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -17,36 +18,44 @@ namespace T2G
                 ("Please describe the bahavior's functionality.", "cancel", false)
             };
 
-            Questions = new List<(string, string, bool)>(questions);
+            _questions = new List<(string, string, bool)>(questions);
         }
 
-        protected async Awaitable<string> GenerateBehaviorCode(string prompt)
+        protected async Awaitable<string> GenerateBehaviorScript(string prompt)
         {
-            ResponseMessage = string.Empty;
+            string generatedCode = string.Empty;
             bool responseIsReady = false;
             CodeGenerator.Instance.OnCompleted += (result, responseMessage) =>
             {
-                ResponseMessage = responseMessage;
+                if(!string.IsNullOrWhiteSpace(responseMessage))
+                {
+                    generatedCode = responseMessage;
+                }
                 responseIsReady = true;
             };
-            CodeGenerator.Instance.GenerateCode(prompt);
+
+            JSONObject jsonObj = JSON.Parse(_instruction.Data).AsObject;
+
+            CodeGenerator.Instance.GenerateCode(prompt, jsonObj["behaviorName"]);
             while (!responseIsReady)
             {
                 await Task.Delay(1000);
             }
-            return ResponseMessage;
+            return generatedCode;
         }
 
         public override async Awaitable PostTopicProcess(string prompt) 
         {
-            Debug.LogError($"Generated prompot {prompt}");
-            string behaviorCode = await GenerateBehaviorCode(prompt);
-            Debug.LogError($"Generated code {behaviorCode}");
-            if (!string.IsNullOrWhiteSpace(behaviorCode) && _instruction != null)
+            if(string.IsNullOrWhiteSpace(prompt) || _instruction == null)
             {
-                JSONObject jObj = JSON.Parse(_instruction.Data) as JSONObject;
-                jObj.Add("script", behaviorCode);
-                _instruction.Data = jObj.ToString();
+                return;
+            }
+
+            string behaviorScript = await GenerateBehaviorScript(prompt);
+            if (!string.IsNullOrWhiteSpace(behaviorScript))
+            {
+                _instruction.ResolvedAssetPaths = behaviorScript;
+                Debug.LogError($"Generated behavior script {behaviorScript}");
             }
         }
     }

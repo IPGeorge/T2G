@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace T2G.Executor
 {
-    [Execution("add_behvior")]
+    [Execution("add_behavior")]
     public class add_behavior_execution : Execution
     {
         public override (eExecutionResult, string) Execute(Instruction instruction)
@@ -25,53 +25,55 @@ namespace T2G.Executor
             var jsonObj = GetInstructionJsonData(instruction);
             string objectName = jsonObj["objectName"];
             string behaviorName = jsonObj["behaviorName"];
+            string script = instruction.ResolvedAssetPaths;
 
-            return (eExecutionResult.Succeeded, $"{behaviorName} to be continued!");
+            if(string.IsNullOrWhiteSpace(objectName) || 
+                string.IsNullOrWhiteSpace(behaviorName) || 
+                string.IsNullOrWhiteSpace(script))
+            {
+                return (eExecutionResult.Failed, "Object name, behavior name, or script is missing!");
+            }
 
+            string scriptFileName = behaviorName + ".cs";
+            string scriptDirectoryPath = Path.Combine(Application.dataPath, "Scripts");
+            string tmpScriptFilePath = Path.Combine(Application.persistentDataPath, scriptFileName);
 
-            //if (string.IsNullOrEmpty(scriptPath) || !File.Exists(scriptPath))
-            //{
-            //    return (eExecutionResult.Failed, "Invalid target script path!");
-            //}
+            if(!Directory.Exists(scriptDirectoryPath))
+            {
+                Directory.CreateDirectory(scriptDirectoryPath);
+            }
 
-            //string scriptPathFile = Path.GetFileName(scriptPath);
-            //string scriptName = Path.GetFileNameWithoutExtension(scriptPathFile);
+            Type scriptType = Executor.GetClassTypeByName(behaviorName);
 
-            //if (string.IsNullOrEmpty(objName))
-            //{
-            //    objName = scriptName;
-            //}
+            if (scriptType == null)
+            {
+                File.WriteAllText(tmpScriptFilePath, script);
+                Executor.SetResponseForInitializeOnLoad($"Script {behaviorName} was added.", $"Failed to add script {behaviorName}!");
+                EditorPrefs.SetString("AddScript_ObjName", objectName);
+                EditorPrefs.SetString("AddScript_ScirptName", behaviorName);
 
-            //Type scriptType = Executor.GetClassTypeByName(scriptName);
-
-            //if (scriptType == null)
-            //{
-            //    Executor.SetResponseForInitializeOnLoad($"Script {scriptName} was added.", $"Failed to add script {scriptName}!");
-            //    EditorPrefs.SetString("AddScript_ObjName", objName);
-            //    EditorPrefs.SetString("AddScript_ScirptName", scriptName);
-
-            //    if (ImportCustomerScript(objName, scriptPath))
-            //    {
-            //        return (eExecutionResult.Void, string.Empty);
-            //        //This has a potential bug here when scriptName doesn't match the class name
-            //        //In that case, the existing script is imported again, the InitialOnLoadMEthod is not called
-            //        //Should avoid it later. 
-            //        //The sciptName must match the class name case sensitively
-            //    }
-            //    else
-            //    {
-            //        Executor.ClearResponseForInitializeOnLoad();
-            //        EditorPrefs.SetString("AddScript_ObjName", string.Empty);
-            //        EditorPrefs.SetString("AddScript_ScirptName", string.Empty);
-            //        return (eExecutionResult.Failed, $"Invalid script file path or class name. Failed to add script {scriptName}! ");
-            //    }
-            //}
-            //else
-            //{
-            //    AddScriptToObject(objName, scriptType);
-            //    Executor.ClearResponseForInitializeOnLoad();
-            //    return (eExecutionResult.Succeeded, $"{scriptName} was added.");
-            //}
+                if (ImportCustomerScript(objectName, tmpScriptFilePath))
+                {
+                    return (eExecutionResult.Void, string.Empty);
+                    //This has a potential bug here when scriptName doesn't match the class name
+                    //In that case, the existing script is imported again, the InitialOnLoadMEthod is not called
+                    //Should avoid it later. 
+                    //The sciptName must match the class name case sensitively
+                }
+                else
+                {
+                    Executor.ClearResponseForInitializeOnLoad();
+                    EditorPrefs.SetString("AddScript_ObjName", string.Empty);
+                    EditorPrefs.SetString("AddScript_ScirptName", string.Empty);
+                    return (eExecutionResult.Failed, $"Invalid script file path or class name. Failed to add script {behaviorName}! ");
+                }
+            }
+            else
+            {
+                AddScriptToObject(objectName, scriptType);
+                Executor.ClearResponseForInitializeOnLoad();
+                return (eExecutionResult.Succeeded, $"{behaviorName} was added.");
+            }
         }
 
         bool ImportCustomerScript(string objName, string sourceScriptPath)

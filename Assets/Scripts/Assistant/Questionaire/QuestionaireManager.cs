@@ -75,32 +75,24 @@ namespace T2G
         }
 
 
-        public Topic AnswerQuestion(string answer, out string prompt)
+        public bool AnswerQuestion(string answer, out Topic completedTopic)
         {
-            prompt = string.Empty;
-            if (_currentTopic == null)
-            {
-                return null;        //No topic is available
-            }
-
-            Topic topic = _currentTopic;
-            if(_currentTopic.AnswerQuestion(answer) < 0)
+            bool result = false;
+            completedTopic = null;
+            if (_currentTopic != null && _currentTopic.AnswerQuestion(answer))
             {
                 if (_topicsStack.Count > 0)
                 {
-                    foreach(var answerPrompt in _currentTopic.Answers)
-                    {
-                        prompt += answerPrompt + "\n";
-                    }
-                    _currentTopic = _topicsStack.Pop();
+                    completedTopic = _currentTopic;
+                    _currentTopic = _topicsStack.Pop();  //Go to the next question
                 }
                 else
                 {
                     _currentTopic = null;
                 }
+                result = true;
             }
-
-            return topic;          //Continue with the next question
+            return result;
         }
     }
 }
