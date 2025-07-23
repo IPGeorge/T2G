@@ -48,7 +48,7 @@ namespace T2G.Executor
             if (scriptType == null)
             {
                 File.WriteAllText(tmpScriptFilePath, script);
-                Executor.SetResponseForInitializeOnLoad($"Script {behaviorName} was added.", $"Failed to add script {behaviorName}!");
+                Executor.SetResponseForInitializeOnLoad($"Behavior {behaviorName} was added.", $"Failed to add script {behaviorName}!");
                 EditorPrefs.SetString("AddScript_ObjName", objectName);
                 EditorPrefs.SetString("AddScript_ScirptName", behaviorName);
 
@@ -72,7 +72,7 @@ namespace T2G.Executor
             {
                 AddScriptToObject(objectName, scriptType);
                 Executor.ClearResponseForInitializeOnLoad();
-                return (eExecutionResult.Succeeded, $"{behaviorName} was added.");
+                return (eExecutionResult.Succeeded, $"Behavior {behaviorName} was added.");
             }
         }
 

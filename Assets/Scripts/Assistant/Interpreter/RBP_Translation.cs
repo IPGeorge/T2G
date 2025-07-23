@@ -55,10 +55,39 @@ namespace T2G
             (@"^(print|display|write)\s+(?<text>""[^""]+""|'[^']+'|[\w\s\-_]+)\s+at\s+(?<position>(center|top[- ]?right|bottom[- ]?mid|[\w\-]+|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)))\s*$", "print_text"),
             (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font"),
             (@"^build\s+(?<shape>circle|square|rectangle)\s+(?<structure>wall)\s+with\s+(?<element>\w+)\s*(?:named|with the name\s+)?(?<name>.+?)(?:\.)?$", "build_structure")
+
+            //Attach to 
+            //Set local position
+            //Set local rotation
+            //Set local scale
+            //Set mass 
+            //Set gravity
+            //Duplicate object name1 to name2
+
         };
+
+        static int _bestMatchScore;
+        static int _bestMatchIndex;
+        static Match _bestMatch;
+
+        static void UpdateBestMatch(Match match, int index)
+        {
+            int score = match.Groups.Cast<Group>().Count(g => g.Success && g.Name != "0");
+
+            if (score > _bestMatchScore)
+            {
+                _bestMatchScore = score;
+                _bestMatchIndex = index;
+                _bestMatch = match;
+            }
+        }
 
         public static int[] TestRegexMatch(string text)
         {
+            _bestMatchIndex = -1;
+            _bestMatchScore = -1;
+            _bestMatch = null;
+
             List<int> matchIndices = new List<int>();
             for(int i = 0; i < _rules.Length; ++i)
             {
@@ -66,6 +95,7 @@ namespace T2G
                 var match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
                 if(match.Success)
                 {
+                    UpdateBestMatch(match, i);
                     matchIndices.Add(i);
                 }
             }
@@ -74,26 +104,37 @@ namespace T2G
 
         protected override bool ParseInstructionData(string prompt, out string key, out (string name, string value)[] arguments)
         {
+            _bestMatchIndex = -1;
+            _bestMatchScore = -1;
+            _bestMatch = null;
+
             List<(string, string)> args = new List<(string, string)>();
+
             for(int i = 0; i < _rules.Length; ++i)  //TODO: consider using multi-thread for betterr performance
             {
                 var pattern = _rules[i].pattern;
                 var match = Regex.Match(prompt, pattern, RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    key = _rules[i].key;
-                    for(int j = 0; j < match.Groups.Count; ++j)
-                    {
-                        string groupName = match.Groups[j].Name;
-                        if(!string.IsNullOrEmpty(groupName) && !int.TryParse(groupName, out var value))
-                        {
-                            args.Add((match.Groups[j].Name, match.Groups[j].Value));
-                        }
-                    }
-                    arguments = args.ToArray();
-                    return true;
+                    UpdateBestMatch(match, i);
                 }
             }
+
+            if(_bestMatch != null)
+            {
+                key = _rules[_bestMatchIndex].key;
+                for (int j = 0; j < _bestMatch.Groups.Count; ++j)
+                {
+                    string groupName = _bestMatch.Groups[j].Name;
+                    if (!string.IsNullOrEmpty(groupName) && !int.TryParse(groupName, out var value))
+                    {
+                        args.Add((_bestMatch.Groups[j].Name, _bestMatch.Groups[j].Value));
+                    }
+                }
+                arguments = args.ToArray();
+                return true;
+            }
+
             key = string.Empty;
             arguments = null;
             return false;
