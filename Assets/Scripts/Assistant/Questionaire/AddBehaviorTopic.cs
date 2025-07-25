@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace T2G
 {
-
     public class AddBehaviorTopic : Topic
     {
         public AddBehaviorTopic(Instruction instruction) : base (instruction)
