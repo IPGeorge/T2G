@@ -55,11 +55,11 @@ public class CodeGenerator : MonoBehaviour
 
     IEnumerator SendPromptToLocalAPI(string prompt, string className = null)
     {
-        string specificPromoptRequest = "Wrtie only code without explanation.";
+        string specificPromoptRequest = "You are an AI coding assistant specialized in Unity C# development. Return only code in a MonoBehaviour script without explanation.";
 
         if(className != null)
         {
-            specificPromoptRequest += $"Use {className} as the class name";
+            specificPromoptRequest += $"Use {className} as the MonoBehaviour class name";
         }
 
         Status = EStatus.Busy;

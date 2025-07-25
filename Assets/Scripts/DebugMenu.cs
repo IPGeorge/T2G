@@ -62,12 +62,12 @@ public class DebugMenu : MonoBehaviour
         File.WriteAllLines(path, _regexMatchTestData);
     }
 
-    string GetIndexStringList(int[] indices)
+    string GetIndexStringList((int, int)[] indices)
     {
         StringBuilder sb = new StringBuilder();
-        foreach(int index in indices)
+        foreach((int index, int score) foundMatch in indices)
         {
-            sb.Append($"{index},");
+            sb.Append($"({foundMatch.index},{foundMatch.score}), ");
         }
         string str = sb.ToString();
         return str.Substring(0, str.Length - 1);

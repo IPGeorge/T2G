@@ -232,6 +232,7 @@ namespace T2G
                 await Task.Delay(100);
                 waitTimeOut -= 0.1f;
             }
+            QuestionaireManager.Instance.Clear();
             return (false, "Time out!");
         }
     }

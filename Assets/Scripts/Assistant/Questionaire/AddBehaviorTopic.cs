@@ -55,7 +55,6 @@ namespace T2G
             if (!string.IsNullOrWhiteSpace(behaviorScript))
             {
                 _instruction.ResolvedAssetPaths = behaviorScript;
-                Debug.LogError($"Generated behavior script {behaviorScript}");
             }
         }
     }

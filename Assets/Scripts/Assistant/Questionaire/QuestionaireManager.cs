@@ -43,7 +43,7 @@ namespace T2G
                 _console = ConsoleController.Instance;
             }
 
-            _topicsStack.Push(topic);
+            _topicsStack.Push(_currentTopic);
             _currentTopic = topic;
             ShowTitleHint();
             ShowCurrentQuestion();
@@ -81,18 +81,32 @@ namespace T2G
             completedTopic = null;
             if (_currentTopic != null && _currentTopic.AnswerQuestion(answer))
             {
-                if (_topicsStack.Count > 0)
+                if(_currentTopic.TopicIsOver())
                 {
                     completedTopic = _currentTopic;
-                    _currentTopic = _topicsStack.Pop();  //Go to the next question
-                }
-                else
-                {
-                    _currentTopic = null;
+                    if (_topicsStack.Count > 0)
+                    {
+                        _currentTopic = _topicsStack.Pop();  //Go to the next question
+                    }
+                    else
+                    {
+                        _currentTopic = null;
+                    }
                 }
                 result = true;
             }
+            else
+            {
+                _topicsStack.Clear();
+                _currentTopic = null;
+            }
             return result;
+        }
+
+        public void Clear()
+        {
+            _topicsStack.Clear();
+            _currentTopic = null;
         }
     }
 }

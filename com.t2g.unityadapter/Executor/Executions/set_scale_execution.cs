@@ -60,7 +60,9 @@ namespace T2G.Executor
             {
                 float[] scaleArr = Executor.ParseFloat3(scaleStr);
                 Vector3 scale = new Vector3(scaleArr[0], scaleArr[1], scaleArr[2]);
+
                 gameObj.transform.localScale = scale;
+                
                 Executor.ForceUpdateSceneView();
                 return (eExecutionResult.Succeeded, $"{objName} was scaled to {scaleStr}");
             }
