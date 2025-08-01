@@ -50,7 +50,7 @@ namespace T2G
             (@"^(?:\w+\s+)?save(?:\.)?\s*$", "save_space"),
             (@"^spin(?:\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?))?(?:\s+(?<speed>[+-]?\d+(?:\.\d+)?))?$", "spin_object"),
             (@"^add\s+script\s+(?<filepath>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\-\s]+))?\s*$", "add_script"),
-            (@"^(add|modify)\s+(behavior|behaviour)\s+(?<name>[^\s]+)\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\- ]+)\s*$", "add_behavior"),
+            (@"^(add|modify)\s+(behavior|behaviour|component)\s+(?<name>[^\s]+)\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\- ]+)\s*$", "add_behavior"),
             (@"^remove\s+(behavior|behaviour|script)\s+(?<name>[^\s]+)\s+from\s+(?<object>""[^""]+""|'[^']+'|[\w\- ]+)\s*$", "remove_behavior"),
             (@"^(print|display|write)\s+(?<text>""[^""]+""|'[^']+'|[\w\s\-_]+)\s+at\s+(?<position>(center|top[- ]?right|bottom[- ]?mid|[\w\-]+|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)))\s*$", "print_text"),
             (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font"),
