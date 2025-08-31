@@ -24,18 +24,18 @@ namespace T2G
             var attribValue = GetParamFromArguments(arguments, "value");
             if (string.IsNullOrEmpty(attribName) || string.IsNullOrEmpty(attribValue))
             {
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.Add("attrib", attribName);          //size, color, bold, itallic, etc.
-                jsonObj.Add("value", attribValue);          //24, (red or #FF0000), true/false, true/false 
-                instruction.Data = jsonObj.ToString();
-                instructions.Add(instruction);
-                instruction.DataType = Instruction.EDataType.JsonData;
-                instruction.Data = jsonObj.ToString();
-                instructions.Add(instruction);
-                return (true, null);
+                return (false, "Invalid font attribute or value!");
             }
 
-            return (false, "Invalid font attribute or value!");
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.Add("attrib", attribName);          //size, color, bold, itallic, etc.
+            jsonObj.Add("value", attribValue);          //24, (red or #FF0000), true/false, true/false 
+            instruction.Data = jsonObj.ToString();
+            instructions.Add(instruction);
+            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.Data = jsonObj.ToString();
+            instructions.Add(instruction);
+            return (true, null);
         }
     }
 }

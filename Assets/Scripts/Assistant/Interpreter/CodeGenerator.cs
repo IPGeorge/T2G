@@ -7,7 +7,6 @@ using SimpleJSON;
 public class CodeGenerator : MonoBehaviour
 {
     private const string apiUrl = "http://localhost:4891/v1/chat/completions";
-    private const string testPrompt = "Write only a C# Unity script that moves a GameObject with WASD input. No explanation.";
 
     public Action<bool, string> OnCompleted = null;
     static public CodeGenerator Instance { get; private set; }
@@ -50,8 +49,10 @@ public class CodeGenerator : MonoBehaviour
     private void Start()
     {
         Instance = this;
-        //GenerateCode(testPrompt);   //Comment this line when testing is not needed.
-    }
+
+    //string testPrompt = "Write only a C# Unity script that moves a GameObject with WASD input. No explanation.";
+    //GenerateCode(testPrompt);   //Comment this line when testing is not needed.
+}
 
     IEnumerator SendPromptToLocalAPI(string prompt, string className = null)
     {

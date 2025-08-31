@@ -52,14 +52,13 @@ namespace T2G
             (@"^add\s+script\s+(?<filepath>[a-zA-Z]:[\\/][^\s]+(?:[\\/][^\s]+)*)?(?:\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\-\s]+))?\s*$", "add_script"),
             (@"^(add|modify)\s+(behavior|behaviour|component)\s+(?<name>[^\s]+)\s+to\s+(?<object>""[^""]+""|'[^']+'|[\w\- ]+)\s*$", "add_behavior"),
             (@"^remove\s+(behavior|behaviour|script)\s+(?<name>[^\s]+)\s+from\s+(?<object>""[^""]+""|'[^']+'|[\w\- ]+)\s*$", "remove_behavior"),
-            (@"^(print|display|write)\s+(?<text>""[^""]+""|'[^']+'|[\w\s\-_]+)\s+at\s+(?<position>(center|top[- ]?right|bottom[- ]?mid|[\w\-]+|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\)))\s*$", "print_text"),
+            (@"^(print|display|write)\s+(?<text>(""[^""]+"")|('[^']+')|([\w\-_]+(?:\s+[\w\-_]+)*))\s+at\s+(?<position>center|top[-\s]?(left|mid|right)|bottom[-\s]?(left|mid|right)|\(\s*-?\d+(?:\.\d+)?\s*,\s*-?\d+(?:\.\d+)?\s*\))\s*$", "print_text"),
             (@"^font\s+(?<attrib>\w+)\s+(?<value>-?\d+(?:\.\d+)?|#[0-9a-fA-F]{3,6}|\w+)\s*$", "set_font"),
             (@"^build\s+(?<shape>circle|square|rectangle)\s+(?<structure>wall)\s+with\s+(?<element>\w+)\s*(?:named|with the name\s+)?(?<name>.+?)(?:\.)?$", "build_structure"),
             (@"^attach\s+(?<source>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+to\s+(?<target>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*$", "attach_to"),
             (@"^detach\s+(?<source>""[^""]+""|'[^']+'|[\w\-\s]+?)\s+from\s+(?<target>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*$", "detach_from"),
             (@"^(make|create)\s+prefab\s+from\s+(?<name>""[^""]+""|'[^']+'|[\w\-\s]+?)\s*$", "make_prefab")
 
-            //Spawner spawnsprefabs
             //Duplicate object name1 to name2
             //Set mass 
             //Set gravity
@@ -73,7 +72,7 @@ namespace T2G
         {
             int score = match.Groups.Cast<Group>().Count(g => g.Success && g.Name != "0");
 
-            if (score > _bestMatchScore)
+            if (_bestMatch == null || score > _bestMatchScore)
             {
                 _bestMatchScore = score;
                 _bestMatchIndex = index;

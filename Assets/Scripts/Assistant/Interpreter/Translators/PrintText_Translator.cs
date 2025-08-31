@@ -15,7 +15,7 @@ namespace T2G
             }
            
             var text = GetParamFromArguments(arguments, "text", string.Empty);
-            var pos = GetParamFromArguments(arguments, "pos", string.Empty);
+            var pos = GetParamFromArguments(arguments, "position", string.Empty);
 
             if(string.IsNullOrEmpty(text))
             {

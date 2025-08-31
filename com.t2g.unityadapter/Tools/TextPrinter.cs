@@ -8,7 +8,6 @@ namespace T2G
     public class TextPrinter : MonoBehaviour
     {
         static TextPrinter _instance = null;
-
         public static TextPrinter Instance
         {
             get
@@ -27,9 +26,43 @@ namespace T2G
             }
         }
 
+        [SerializeField] List<string> Texts = new List<string>();
+        [SerializeField] List<GUIStyle> GUIStyles = new List<GUIStyle>();
+        [SerializeField] List<Rect> Rects = new List<Rect>();
+
         GUIStyle _guiStyle = new GUIStyle();
         Vector2 _margin = Vector2.zero;
         Dictionary<string, (Rect, GUIStyle)> _screenTexts = new Dictionary<string, (Rect, GUIStyle)>();
+
+
+        void UpdateSerialized(string text, GUIStyle style, Rect rect)
+        {
+            if (_screenTexts.ContainsKey(text))
+            {
+                for (int i = 0; i < Texts.Count; ++i)
+                {
+                    if (string.Compare(Texts[i], text) == 0)
+                    {
+                        Texts.RemoveAt(i);
+                        GUIStyles.RemoveAt(i);
+                        Rects.RemoveAt(i);
+                    }
+                }
+            }
+
+            Texts.Add(text);
+            GUIStyles.Add(style);
+            Rects.Add(rect);
+        }
+
+        private void Start()
+        {
+            _screenTexts.Clear();
+            for (int i = 0; i < Texts.Count; ++i)
+            {
+                _screenTexts[Texts[i]] = (Rects[i], GUIStyles[i]);
+            }
+        }
 
         public void PrintText(string text, int x, int y, GUIStyle guiStyle = null)
         {
@@ -37,6 +70,7 @@ namespace T2G
             style.alignment = TextAnchor.UpperLeft;
             var size = style.CalcSize(new GUIContent(text));
             Rect rect = new Rect(x, y, size.x, size.y);
+            UpdateSerialized(text, style, rect);
             _screenTexts[text] = (rect, style);
         }
 
@@ -45,7 +79,8 @@ namespace T2G
             var style = guiStyle ?? new GUIStyle(_guiStyle);
             style.alignment = aligement;
             Rect rect = new Rect(_margin.x, _margin.y, Screen.width - _margin.x * 2, Screen.height - _margin.y * 2);
-            _screenTexts[text] = (rect, guiStyle ?? new GUIStyle(_guiStyle));
+            UpdateSerialized(text, style, rect);
+            _screenTexts[text] = (rect, style);
         }
 
         public void PrintText(string text, string aligement, GUIStyle guiStyle = null)
@@ -108,7 +143,7 @@ namespace T2G
                 case "color":
                     if (ColorUtility.TryParseHtmlString((string)value, out var color))
                     {
-                        _guiStyle.normal.textColor = color;
+                        _guiStyle.normal.textColor = color; 
                     }
                     break;
                 case "bold":

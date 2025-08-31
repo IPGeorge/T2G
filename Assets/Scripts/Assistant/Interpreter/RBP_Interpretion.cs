@@ -6,31 +6,13 @@ using System;
 
 namespace T2G
 {
-
-    /* 
-     * operations:
-    //The object in front of view is current default selected 
-    //What is the object name?
-    //Set -options (wear glasses)
-    //set daytime - weather
-    //set object scale (sx, sy, sz)
-    //place|move object at|to (x, y, z)
-    //move object further/closer for 10 units
-    //Move actor to left/right for 10 units 
-    //Rotate actor (drx, dry, drz)
-    //play
-    //stop
-    */
-
-
+/*
     public partial class Interpreter
     {
         private static List<(string, Func<Match, string[]> handler)> _rules = null;
 
         static void InitializeRules()
         {
-
-
             _rules = new List<(string, Func<Match, string[]>)>
         {
             (@"(?i)^\s*(please\s+)?(add|place|create)\s+(?<x>(a|an|\d+))?\s*(enemy|enemies)$\s*", GenInstructions_AddEnemy),
@@ -44,19 +26,17 @@ namespace T2G
                 //(enemy|enemies)$\s*: end with "enemy" or "enemies" followed by no or some spaces is accepted.. 
             (@"(?i)^\s*(please\s+)?(set|change)\s+(move speed)\s+(?<x>\d+)\s*", GenInstructions_SetMoveSpeed),  //units
             (@"(?i)^\s*(please\s+)?(set|change)\s+(turn speed)\s+(?<x>\d+)\s*", GenInstructions_SetTurnSpeed),  //degrees
-/*
-            (@"(?i)^\s*move\s+(forward)?\s*", GenInstructions_View_MoveForward),
-            (@"(?i)^\s*move\s+(backward)?\s*", GenInstructions_View_MoveBackward),
-            (@"(?i)^\s*move\s+(left)?\s*", GenInstructions_View_MoveLeft),
-            (@"(?i)^\s*move\s+(right)?\s*", GenInstructions_View_MoveRight),
-            (@"(?i)^\s*move\s+(up)?\s*", GenInstructions_View_MoveUp),
-            (@"(?i)^\s*move\s+(down)?\s*", GenInstructions_View_MoveDown),
-            (@"(?i)^\s*(turn|rotate)\s+(left|counterclockwise)?\s*", GenInstructions_View_TurnLeft),
-            (@"(?i)^\s*(turn|rotate)\s+(right|clockwise)?\s*", GenInstructions_View_TurnRight),
-            (@"(?i)^\s*(go|move)\s+(to)?\s+\.*\s*$", GenInstructions_View_GoToObject),
-            (@"(?i)^\s*(go|move)\s+to\s+\(?\s*(?<x>-?\d+(\.\d+)?\s*,\s*?<y>-?\d+(\.\d+)?\s*,\s*?<z>-?d+(\.\d+)?\)?\s*$", GenInstructions_View_GoToPosition),
-*/
 
+            //(@"(?i)^\s*move\s+(forward)?\s*", GenInstructions_View_MoveForward),
+            //(@"(?i)^\s*move\s+(backward)?\s*", GenInstructions_View_MoveBackward),
+            //(@"(?i)^\s*move\s+(left)?\s*", GenInstructions_View_MoveLeft),
+            //(@"(?i)^\s*move\s+(right)?\s*", GenInstructions_View_MoveRight),
+            //(@"(?i)^\s*move\s+(up)?\s*", GenInstructions_View_MoveUp),
+            //(@"(?i)^\s*move\s+(down)?\s*", GenInstructions_View_MoveDown),
+            //(@"(?i)^\s*(turn|rotate)\s+(left|counterclockwise)?\s*", GenInstructions_View_TurnLeft),
+            //(@"(?i)^\s*(turn|rotate)\s+(right|clockwise)?\s*", GenInstructions_View_TurnRight),
+            //(@"(?i)^\s*(go|move)\s+(to)?\s+\.*\s*$", GenInstructions_View_GoToObject),
+            //(@"(?i)^\s*(go|move)\s+to\s+\(?\s*(?<x>-?\d+(\.\d+)?\s*,\s*?<y>-?\d+(\.\d+)?\s*,\s*?<z>-?d+(\.\d+)?\)?\s*$", GenInstructions_View_GoToPosition),
         };
         }
 
@@ -132,4 +112,5 @@ namespace T2G
         }
 
     }
+*/
 }
