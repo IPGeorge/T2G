@@ -19,7 +19,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = attributeName;
+            instruction.Action = attributeName;
             var attribName = GetParamFromArguments(arguments, "attrib");
             var attribValue = GetParamFromArguments(arguments, "value");
             if (string.IsNullOrEmpty(attribName) || string.IsNullOrEmpty(attribValue))

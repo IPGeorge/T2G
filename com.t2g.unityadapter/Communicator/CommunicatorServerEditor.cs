@@ -175,6 +175,11 @@ namespace T2G.Communicator
             EditorGUILayout.Toggle("Client is connected: ", _server.IsConnected);
             EditorGUI.EndDisabledGroup();
 
+            if (GUILayout.Button("Clear"))
+            {
+                _text = string.Empty;
+            }
+
             _scroll = EditorGUILayout.BeginScrollView(_scroll);
             _text = EditorGUILayout.TextArea(_text, GUILayout.ExpandHeight(true));
             EditorGUILayout.EndScrollView();

@@ -12,7 +12,7 @@ namespace T2G
     {
         public override (eExecutionResult, string) Execute(Instruction instruction)
         {
-            if (!ValidateInstructionKeyword(instruction.Keyword))
+            if (!ValidateInstructionKeyword(instruction.Action))
             {
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'delete_object' was expected.");
             }

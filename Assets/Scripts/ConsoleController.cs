@@ -280,20 +280,18 @@ namespace T2G
                 _inputHistory.RemoveRange(0, _maxInputHistorySize / 10);
             }
 
+            //Clear input
+            _InputMessage.text = string.Empty;
+
             _InputMessage.readOnly = true;
             await Assistant.Instance.ProcessInput(inputText, (response)=> 
             {
-                WriteConsoleMessage(eSender.Assistant, response);
+                if (!string.IsNullOrWhiteSpace(response))
+                {
+                    WriteConsoleMessage(eSender.Assistant, response);
+                }
                 _InputMessage.readOnly = false;
             });
-
-            if(QuestionaireManager.Instance.IsActive)
-            {
-                _InputMessage.readOnly = false;
-            }
-
-            //Clear input
-            _InputMessage.text = string.Empty;
         }
 
         [SerializeField]

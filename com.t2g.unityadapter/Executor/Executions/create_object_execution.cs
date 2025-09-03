@@ -15,7 +15,7 @@ namespace T2G.Executor
 
         public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
-            if (!ValidateInstructionKeyword(instruction.Keyword))
+            if (!ValidateInstructionKeyword(instruction.Action))
             {
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'create_object' was expected.");
             }
@@ -52,7 +52,7 @@ namespace T2G.Executor
 
             PoolAssetsToImport(assetsToImport, prefabToInstantiate, objName);
             Executor.SetResponseForInitializeOnLoad($"{objName} was created.", $"Failed to create {objName}!");
-            await ImportPooledAssets(instruction.Keyword);
+            await ImportPooledAssets(instruction.Action);
             var succeeded = await InstantiatePooledPrefab(objName, prefabToInstantiate);
             Executor.SaveActiveScene();
             var result = (succeeded.result, succeeded.result ? Executor.GetSucceededResponseMessage() : Executor.GetFailedResponseMessage());

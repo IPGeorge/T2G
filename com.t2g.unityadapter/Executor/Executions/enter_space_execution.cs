@@ -17,7 +17,7 @@ namespace T2G.Executor
 
         public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
-            if (!ValidateInstructionKeyword(instruction.Keyword))
+            if (!ValidateInstructionKeyword(instruction.Action))
             {
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'enter_space' was expected.");
             }

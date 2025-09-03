@@ -14,8 +14,6 @@ namespace T2G
             EditingOp,           //Send to the engine for execution
             GameDesc             //GameDesc data into instructions to create a project
         }
-        public EExecutionType ExecutionType = EExecutionType.Void;
-        public bool RequiresPreviousSuccess = false;    //Indicates if it depends on previous success.
 
         public enum EInstructionState
         {
@@ -24,9 +22,6 @@ namespace T2G
             Resolved,
             MissingResource
         }
-        public EInstructionState State = EInstructionState.Empty;
-
-        public string Keyword = string.Empty;
         public enum EDataType
         {
             Empty,
@@ -34,6 +29,11 @@ namespace T2G
             MultipleParameters,
             JsonData
         }
+
+        public EExecutionType ExecutionType = EExecutionType.Void;
+        public bool RequiresPreviousSuccess = false;    //Indicates if it depends on previous success.
+        public EInstructionState State = EInstructionState.Empty;
+        public string Action = string.Empty;
         public EDataType DataType = EDataType.SingleParameter;
         public string Data = string.Empty;       //JSON data
         public string ResolvedAssetPaths = string.Empty; 

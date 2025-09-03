@@ -67,8 +67,8 @@ namespace T2G
                 if (answered && completedTopic != null && completedTopic.TopicIsOver())
                 {
                     ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Working on it ...");
-                    string prompt = completedTopic.AnswersSummary;
-                    await completedTopic.PostTopicProcess(prompt);
+                    string answer = completedTopic.AnswersSummary;
+                    await completedTopic.PostTopicProcess(answer);
                     if(!string.IsNullOrWhiteSpace(completedTopic.Instruction.ResolvedAssetPaths))
                     {
                         var procResult = await ProcessInstruction(completedTopic.Instruction, true);
@@ -83,6 +83,7 @@ namespace T2G
                 
                 if(QuestionaireManager.Instance.IsActive)
                 {
+                    response?.Invoke(null);
                     return;
                 }
 
@@ -95,17 +96,19 @@ namespace T2G
                     foreach (var instruction in result.instructions)
                     {
                         var procResult = await ProcessInstruction(instruction, prevSuccess);
-                        prevSuccess = procResult.succeeded;
 
-                        if (!prevSuccess)
+                        prevSuccess = procResult.succeeded;
+                        if (prevSuccess)
+                        {
+                            hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                            if (hasResponseMesasge)
+                            {
+                                response?.Invoke(procResult.responseMessage);
+                            }
+                        }
+                        else
                         {
                             failedCount++;
-                        }
-
-                        hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
-                        if (hasResponseMesasge)
-                        {
-                            response?.Invoke(procResult.responseMessage);
                         }
                     }
 
@@ -150,7 +153,7 @@ namespace T2G
             {
                 case Instruction.EExecutionType.LocalCmd:
                     {
-                        var cmdResult = await CommandSystem.Instance.ExecuteCommand(instruction.Keyword, instruction.Data);
+                        var cmdResult = await CommandSystem.Instance.ExecuteCommand(instruction.Action, instruction.Data);
                         result = cmdResult.succeeded;
                         responseMessage = cmdResult.response;
                     }

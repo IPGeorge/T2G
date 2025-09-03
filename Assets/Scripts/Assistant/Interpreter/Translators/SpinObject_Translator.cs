@@ -19,7 +19,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Raw;
-            instruction.Keyword = "import_script";
+            instruction.Action = "import_script";
             instruction.DataType = Instruction.EDataType.Empty;
             instruction.Data = "spin controller";
             instructions.Add(instruction);
@@ -27,7 +27,7 @@ namespace T2G
             instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = "add_script";
+            instruction.Action = "add_script";
             instruction.RequiresPreviousSuccess = true;
             instruction.DataType = Instruction.EDataType.JsonData;
             string name = GetParamFromArguments(arguments, "name", string.Empty);
@@ -43,7 +43,7 @@ namespace T2G
                 instruction = new Instruction();
                 instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
-                instruction.Keyword = "spin_object";
+                instruction.Action = "spin_object";
                 instruction.DataType = Instruction.EDataType.JsonData;
                 JSONObject jsonValues = new JSONObject();
                 jsonObj.Add("name", name);

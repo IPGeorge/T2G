@@ -21,7 +21,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = attributeName;
+            instruction.Action = attributeName;
             instruction.DataType = Instruction.EDataType.JsonData;
             _scriptFilePath = GetParamFromArguments(arguments, "filepath");
             string objectName = GetParamFromArguments(arguments, "object", string.Empty);

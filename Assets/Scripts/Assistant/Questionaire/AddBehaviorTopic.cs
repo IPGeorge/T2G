@@ -13,9 +13,11 @@ namespace T2G
         {
             Title = "Okay, let's add the behavior";
 
-            (string question, string defaultAnswer, bool includeInAnswer)[] questions = new (string, string, bool)[] {
-                ("Please describe the bahavior's functionality.", "cancel", false)
-            };
+            (string question, string defaultAnswer, bool includeInAnswer)[] questions = 
+                new (string, string, bool)[] 
+                {
+                    ("Please describe the bahavior's functionality.", "cancel", false)
+                };
 
             _questions = new List<(string, string, bool)>(questions);
         }

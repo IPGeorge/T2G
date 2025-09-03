@@ -21,7 +21,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = CmdGenerateGame.CommandKey;
+            instruction.Action = CmdGenerateGame.CommandKey;
             instruction.DataType = Instruction.EDataType.SingleParameter;
             instruction.Data = GetParamFromArguments(arguments, "path");
             instructions.Add(instruction);

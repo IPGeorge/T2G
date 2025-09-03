@@ -158,7 +158,7 @@ namespace T2G
                 message = result.message;
             }
 
-            return (_instructionList.Count > 0, message, _instructionList.ToArray());
+            return (true, message, _instructionList.ToArray());
         }
 
         abstract protected bool ParseInstructionData(string prompt, out string key, out (string name, string value)[] arguments);

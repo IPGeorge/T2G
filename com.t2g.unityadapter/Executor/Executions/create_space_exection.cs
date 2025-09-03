@@ -14,7 +14,7 @@ namespace T2G
     {
         public async override Awaitable<(eExecutionResult, string)> ExecuteAsync(Instruction instruction)
         {
-            if(!ValidateInstructionKeyword(instruction.Keyword))
+            if(!ValidateInstructionKeyword(instruction.Action))
             {
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'create_space' was expected.");
             }

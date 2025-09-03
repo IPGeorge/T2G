@@ -159,7 +159,7 @@ namespace T2G.Executor
             else
             {
                 instruction = new Instruction();
-                instruction.Keyword = "invalid";
+                instruction.Action = "invalid";
                 instruction.ExecutionType = Instruction.EExecutionType.Void;
                 instruction.DataType = Instruction.EDataType.Empty;
                 instruction.Data = string.Empty;
@@ -171,9 +171,9 @@ namespace T2G.Executor
 
         public async Awaitable<bool> Execute(Instruction instruction)
         {
-            if (instruction != null && _executionPool.ContainsKey(instruction.Keyword.ToLower()))
+            if (instruction != null && _executionPool.ContainsKey(instruction.Action.ToLower()))
             {
-                var execution = _executionPool[instruction.Keyword];
+                var execution = _executionPool[instruction.Action];
 
                 var result = execution.Execute(instruction);
                 if (result.result == Execution.eExecutionResult.Void)
@@ -191,7 +191,7 @@ namespace T2G.Executor
             }
             else
             {
-                SendInstructionExecutionResponse(false, $"Invalid instruction key: {instruction.Keyword.ToLower()}");
+                SendInstructionExecutionResponse(false, $"Invalid instruction key: {instruction.Action.ToLower()}");
                 return false;
             }
         }

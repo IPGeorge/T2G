@@ -356,12 +356,12 @@ namespace T2G.Communicator
                             case eMessageType.Instruction:
                                 {
                                     JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
-                                    string keyword = jsonObj["Keyword"];
-                                    comm.OnLogMessage?.Invoke("Instruction:" + keyword + 
+                                    string action = jsonObj["Action"];
+                                    comm.OnLogMessage?.Invoke("Instruction:" + action + 
                                         "\n    Data:" + jsonObj["Data"] + 
                                         "\n    AssetPaths:" + jsonObj["ResolvedAssetPaths"]);
                                     Instruction instruction = new Instruction();
-                                    instruction.Keyword = keyword;
+                                    instruction.Action = action;
                                     instruction.DataType = (Instruction.EDataType)jsonObj["DataType"].AsInt;
                                     instruction.Data = jsonObj["Data"];
                                     instruction.ResolvedAssetPaths = jsonObj["ResolvedAssetPaths"];

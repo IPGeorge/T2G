@@ -25,7 +25,7 @@ namespace T2G
                 instruction = new Instruction();
                 instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
-                instruction.Keyword = attributeName;
+                instruction.Action = attributeName;
                 instruction.DataType = Instruction.EDataType.SingleParameter;
                 instruction.Data = filePath; 
                 instructions.Add(instruction);

@@ -11,7 +11,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = CmdDisconnect.CommandKey;
+            instruction.Action = CmdDisconnect.CommandKey;
             instruction.DataType = Instruction.EDataType.Empty;
             instruction.Data = string.Empty;
             instructions.Add(instruction);

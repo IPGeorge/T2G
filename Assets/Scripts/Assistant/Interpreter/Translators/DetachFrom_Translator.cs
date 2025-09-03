@@ -20,7 +20,7 @@ namespace T2G
             Instruction instruction = new Instruction();
             instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
-            instruction.Keyword = attributeName;
+            instruction.Action = attributeName;
             instruction.DataType = Instruction.EDataType.JsonData;
             string sourceName = GetParamFromArguments(arguments, "source");
             string targetName = GetParamFromArguments(arguments, "target").Trim();

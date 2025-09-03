@@ -13,7 +13,7 @@ namespace T2G.Executor
     {
         public override (eExecutionResult, string) Execute(Instruction instruction)
         {
-            if (!ValidateInstructionKeyword(instruction.Keyword))
+            if (!ValidateInstructionKeyword(instruction.Action))
             {
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_rotation' was expected.");
             }
