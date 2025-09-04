@@ -111,12 +111,12 @@ namespace T2G
                 new Message { role = "system", content =
                     "You are a compiler that converts natural language into STRICT JSON instructions.\n" +
                     "Always return valid JSON following this schema:\n" +
-                    "{ \"ExecutionType\": int, \"State\": int, \"Keyword\": string, \"DataType\": int, " +
-                    "\"Data\": {\"name\": string, \"type\": string}, \"ResolvedAssetPaths\": string }" },
+                    "{ \"Type\": int, \"State\": int, \"Keyword\": string, \"DataType\": int, " +
+                    "\"Data\": {\"name\": string, \"type\": string}, \"Assets\": string }" },
                 new Message { role = "user", content = "create a cylinder named Tower" },
                 new Message { role = "assistant", content =
-                    "{\"ExecutionType\":2,\"State\":1,\"Keyword\":\"create_object\",\"DataType\":3," +
-                    "\"Data\":{\"name\":\"Tower\",\"type\":\"cylinder\"},\"ResolvedAssetPaths\":\"\"}" },
+                    "{\"Type\":2,\"State\":1,\"Keyword\":\"create_object\",\"DataType\":3," +
+                    "\"Data\":{\"name\":\"Tower\",\"type\":\"cylinder\"},\"Assets\":\"\"}" },
                 new Message { role = "user",  content = "prompt"}
             };
 

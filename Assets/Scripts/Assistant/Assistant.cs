@@ -98,17 +98,14 @@ namespace T2G
                         var procResult = await ProcessInstruction(instruction, prevSuccess);
 
                         prevSuccess = procResult.succeeded;
-                        if (prevSuccess)
-                        {
-                            hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
-                            if (hasResponseMesasge)
-                            {
-                                response?.Invoke(procResult.responseMessage);
-                            }
-                        }
-                        else
+                        hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
+                        if (!prevSuccess)
                         {
                             failedCount++;
+                        }
+                        if (hasResponseMesasge)
+                        {
+                            response?.Invoke(procResult.responseMessage);
                         }
                     }
 
@@ -162,7 +159,7 @@ namespace T2G
                     if(instruction.State == Instruction.EInstructionState.Raw)
                     {
                         var newInstruction = await ContentLibrary.ResolveInstruction(instruction);    //find the assets
-                        if(instruction == null)
+                        if(newInstruction == null)
                         {
                             return (false, "Failed to resolve instruction!");
                         }

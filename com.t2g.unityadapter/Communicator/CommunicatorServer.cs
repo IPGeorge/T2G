@@ -354,19 +354,18 @@ namespace T2G.Communicator
                                 }
                                 break;
                             case eMessageType.Instruction:
-                                {
-                                    JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
+                                {                                    JSONObject jsonObj = JSON.Parse(receivedMessage.Message.ToString()).AsObject;
                                     string action = jsonObj["Action"];
                                     comm.OnLogMessage?.Invoke("Instruction:" + action + 
                                         "\n    Data:" + jsonObj["Data"] + 
-                                        "\n    AssetPaths:" + jsonObj["ResolvedAssetPaths"]);
+                                        "\n    AssetPaths:" + jsonObj["Assets"]);
                                     Instruction instruction = new Instruction();
                                     instruction.Action = action;
                                     instruction.DataType = (Instruction.EDataType)jsonObj["DataType"].AsInt;
                                     instruction.Data = jsonObj["Data"];
-                                    instruction.Assets = jsonObj["ResolvedAssetPaths"];
+                                    instruction.Assets = jsonObj["Assets"];
                                     instruction.RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
-                                    instruction.Type = (Instruction.EExecutionType)jsonObj["ExecutionType"].AsInt;
+                                    instruction.Type = (Instruction.EExecutionType)jsonObj["Type"].AsInt;
                                     instruction.State = (Instruction.EInstructionState)jsonObj["State"].AsInt;
                                     Executor.Executor.Instance.EnqueueInstruction(instruction);
                                 }
