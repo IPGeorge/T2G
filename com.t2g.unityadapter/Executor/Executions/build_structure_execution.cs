@@ -33,7 +33,7 @@ namespace T2G.Executor
             string structure = jsonObj["structure"];
             int width = jsonObj["width"].AsInt;
             int height = jsonObj["height"].AsInt;
-            string[] assetPaths = instruction.ResolvedAssetPaths.Split(',');
+            string[] assetPaths = instruction.Assets.Split(',');
             int i, j;
 
             if(assetPaths.Length <= 0 || string.IsNullOrWhiteSpace(assetPaths[0]))

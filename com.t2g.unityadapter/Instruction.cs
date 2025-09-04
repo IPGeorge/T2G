@@ -30,32 +30,32 @@ namespace T2G
             JsonData
         }
 
-        public EExecutionType ExecutionType = EExecutionType.Void;
+        public EExecutionType Type = EExecutionType.Void;
         public bool RequiresPreviousSuccess = false;    //Indicates if it depends on previous success.
         public EInstructionState State = EInstructionState.Empty;
         public string Action = string.Empty;
         public EDataType DataType = EDataType.SingleParameter;
-        public string Data = string.Empty;       //JSON data
-        public string ResolvedAssetPaths = string.Empty; 
+        public string Data = string.Empty;       
+        public string Assets = string.Empty; 
 
         public Instruction()
         {
-            ExecutionType = EExecutionType.Void;
+            Type = EExecutionType.Void;
             RequiresPreviousSuccess = false;
             State = EInstructionState.Empty;
             DataType = EDataType.SingleParameter;
             Data = string.Empty;
-            ResolvedAssetPaths = string.Empty;
+            Assets = string.Empty;
         }
 
         public Instruction(JSONObject jsonObj)
         {
-            ExecutionType = (EExecutionType)jsonObj["ExecutionType"].AsInt;
+            Type = (EExecutionType)jsonObj["Type"].AsInt;
             RequiresPreviousSuccess = jsonObj["RequiresPreviousSuccess"].AsBool;
             State = (EInstructionState)jsonObj["State"].AsInt;
             DataType = (EDataType)jsonObj["DataType"].AsInt;
             Data = jsonObj["Data"];
-            ResolvedAssetPaths = jsonObj["ResolvedAssetPaths"];
+            Assets = jsonObj["Assets"];
         }
     }
 }

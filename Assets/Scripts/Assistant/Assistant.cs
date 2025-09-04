@@ -69,7 +69,7 @@ namespace T2G
                     ConsoleController.Instance.WriteConsoleMessage(ConsoleController.eSender.Assistant, "Working on it ...");
                     string answer = completedTopic.AnswersSummary;
                     await completedTopic.PostTopicProcess(answer);
-                    if(!string.IsNullOrWhiteSpace(completedTopic.Instruction.ResolvedAssetPaths))
+                    if(!string.IsNullOrWhiteSpace(completedTopic.Instruction.Assets))
                     {
                         var procResult = await ProcessInstruction(completedTopic.Instruction, true);
                         var hasResponseMesasge = !string.IsNullOrEmpty(procResult.responseMessage);
@@ -149,7 +149,7 @@ namespace T2G
             }
 
             string responseMessage = string.Empty;
-            switch(instruction.ExecutionType)
+            switch(instruction.Type)
             {
                 case Instruction.EExecutionType.LocalCmd:
                     {

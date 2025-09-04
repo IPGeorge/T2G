@@ -28,7 +28,7 @@ namespace T2G.Executor
             
             JSONObject jsonObjData = JSON.Parse(instruction.Data).AsObject;
             string objName = jsonObjData["name"];
-            string[] assetPaths = instruction.ResolvedAssetPaths.Split(',');
+            string[] assetPaths = instruction.Assets.Split(',');
                 //Source: Relative path to the Resource Path; Target: The game project path "/Assets"            
                 //example "/Prefabs/Primitives/cube.prefab"
             string targetAssetPath;

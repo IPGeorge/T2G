@@ -25,7 +25,7 @@ namespace T2G
             if (!string.IsNullOrEmpty(property) && !string.IsNullOrEmpty(value))
             {
                 instruction = new Instruction();
-                instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
+                instruction.Type = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
                 instruction.Action = "set_value";
                 instruction.DataType = Instruction.EDataType.JsonData;

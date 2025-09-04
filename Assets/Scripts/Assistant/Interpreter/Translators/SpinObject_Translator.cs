@@ -17,7 +17,7 @@ namespace T2G
             }
 
             Instruction instruction = new Instruction();
-            instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
+            instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Raw;
             instruction.Action = "import_script";
             instruction.DataType = Instruction.EDataType.Empty;
@@ -25,7 +25,7 @@ namespace T2G
             instructions.Add(instruction);
 
             instruction = new Instruction();
-            instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
+            instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = "add_script";
             instruction.RequiresPreviousSuccess = true;
@@ -41,7 +41,7 @@ namespace T2G
             if (!string.IsNullOrEmpty(speedStr))
             {
                 instruction = new Instruction();
-                instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
+                instruction.Type = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
                 instruction.Action = "spin_object";
                 instruction.DataType = Instruction.EDataType.JsonData;

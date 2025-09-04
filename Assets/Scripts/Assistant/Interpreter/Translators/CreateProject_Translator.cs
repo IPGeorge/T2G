@@ -8,7 +8,7 @@ namespace T2G
         public override (bool succeeded, string message) Translate((string name, string value)[] arguments, ref List<Instruction> instructions)
         {
             Instruction instruction = new Instruction();
-            instruction.ExecutionType = Instruction.EExecutionType.LocalCmd;
+            instruction.Type = Instruction.EExecutionType.LocalCmd;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = CmdCreateProject.CommandKey;
             instruction.DataType = Instruction.EDataType.SingleParameter;

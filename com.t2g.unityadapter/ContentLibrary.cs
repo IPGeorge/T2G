@@ -47,7 +47,7 @@ namespace T2G
             if (resultsArray.Count > 0)
             {
                 instruction.State = Instruction.EInstructionState.Resolved;
-                instruction.ResolvedAssetPaths = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
+                instruction.Assets = resultsArray[0];  //Simply use the first found. Ramdomly pick is possible. 
             }
            
             return instruction;

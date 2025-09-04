@@ -152,7 +152,7 @@ namespace T2G.Executor
         public void EnqueueInstruction(Instruction instruction)
         {
             if (instruction != null &&
-                instruction.ExecutionType == Instruction.EExecutionType.EditingOp)
+                instruction.Type == Instruction.EExecutionType.EditingOp)
             {
                 _instructionQueue.Enqueue(instruction);
             }
@@ -160,7 +160,7 @@ namespace T2G.Executor
             {
                 instruction = new Instruction();
                 instruction.Action = "invalid";
-                instruction.ExecutionType = Instruction.EExecutionType.Void;
+                instruction.Type = Instruction.EExecutionType.Void;
                 instruction.DataType = Instruction.EDataType.Empty;
                 instruction.Data = string.Empty;
                 instruction.RequiresPreviousSuccess = false;

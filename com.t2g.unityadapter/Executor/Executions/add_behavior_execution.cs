@@ -25,7 +25,7 @@ namespace T2G.Executor
             var jsonObj = GetInstructionJsonData(instruction);
             string objectName = jsonObj["objectName"];
             string behaviorName = jsonObj["behaviorName"];
-            string script = instruction.ResolvedAssetPaths;
+            string script = instruction.Assets;
 
             if(string.IsNullOrWhiteSpace(objectName) || 
                 string.IsNullOrWhiteSpace(behaviorName) || 

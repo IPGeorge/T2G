@@ -55,7 +55,7 @@ namespace T2G
             string behaviorScript = await GenerateBehaviorScript(prompt);
             if (!string.IsNullOrWhiteSpace(behaviorScript))
             {
-                _instruction.ResolvedAssetPaths = behaviorScript;
+                _instruction.Assets = behaviorScript;
             }
         }
     }

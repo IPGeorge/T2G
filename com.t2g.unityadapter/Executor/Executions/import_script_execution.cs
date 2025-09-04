@@ -25,8 +25,8 @@ namespace T2G.Executor
                 return (eExecutionResult.Failed, "Invalid instruction data!");
             }
 
-            bool result = await ContentLibrary.ImportAsset(instruction.ResolvedAssetPaths);
-            var scriptName = Path.GetFileName(instruction.ResolvedAssetPaths);
+            bool result = await ContentLibrary.ImportAsset(instruction.Assets);
+            var scriptName = Path.GetFileName(instruction.Assets);
             if (result)
             {
                 return (eExecutionResult.Succeeded, $"{scriptName} was imported.");

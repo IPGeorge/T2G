@@ -17,7 +17,7 @@ namespace T2G
 
             instructions.Clear();
             Instruction instruction = new Instruction();
-            instruction.ExecutionType = Instruction.EExecutionType.EditingOp;
+            instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Raw;
             instruction.Action = attributeName;
             instruction.DataType = Instruction.EDataType.JsonData;
