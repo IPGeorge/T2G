@@ -28,7 +28,7 @@ namespace T2G
                 instruction.Type = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
                 instruction.Action = "set_value";
-                instruction.DataType = Instruction.EDataType.JsonData;
+                instruction.DataType = Instruction.EDataType.Json;
                 JSONObject jsonValues = new JSONObject();
                 jsonValues.Add("objName", objName);
                 jsonValues.Add("property", property);

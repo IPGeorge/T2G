@@ -79,7 +79,7 @@ namespace T2G
             }
             else
             {
-                var result = await Interpreter.Instance.InterpretPrompt(inputText);
+                var result = await Interpreter.Instance.Interpret(inputText);
                 
                 if(QuestionaireManager.Instance.IsActive)
                 {

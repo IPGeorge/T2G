@@ -20,7 +20,7 @@ namespace T2G
             instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Raw;
             instruction.Action = attributeName;
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             
             string shape = GetParamFromArguments(arguments, "shape");
             string structure = GetParamFromArguments(arguments, "structure");

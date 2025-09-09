@@ -16,7 +16,7 @@ namespace T2G.Executor
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'place_at_spawnpoint' was expected.");
             }
 
-            if (instruction.DataType != Instruction.EDataType.JsonData ||
+            if (instruction.DataType != Instruction.EDataType.Json ||
                 instruction.State != Instruction.EInstructionState.Resolved)
             {
                 return (eExecutionResult.Failed, "Invalid instruction data!");

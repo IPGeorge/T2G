@@ -17,7 +17,7 @@ namespace T2G.Executor
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'add_script' was expected.");
             }
 
-            if (instruction.DataType != Instruction.EDataType.JsonData)
+            if (instruction.DataType != Instruction.EDataType.Empty)
             {
                 return (eExecutionResult.Failed, "Invalid instruction data!");
             }

@@ -32,7 +32,7 @@ namespace T2G
                         }
                     }
                     break;
-                case Instruction.EDataType.JsonData:
+                case Instruction.EDataType.Json:
                     {
                         JSONObject jsonObj = JSON.Parse(instruction.Data).AsObject;
                         if (jsonObj.HasKey("name"))

@@ -29,7 +29,7 @@ namespace T2G
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = "add_script";
             instruction.RequiresPreviousSuccess = true;
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             string name = GetParamFromArguments(arguments, "name", string.Empty);
             JSONObject jsonObj = new JSONObject();
             jsonObj.Add("name", name);
@@ -44,7 +44,7 @@ namespace T2G
                 instruction.Type = Instruction.EExecutionType.EditingOp;
                 instruction.State = Instruction.EInstructionState.Resolved;
                 instruction.Action = "spin_object";
-                instruction.DataType = Instruction.EDataType.JsonData;
+                instruction.DataType = Instruction.EDataType.Json;
                 JSONObject jsonValues = new JSONObject();
                 jsonObj.Add("name", name);
                 jsonObj.Add("scriptName", "SpinController");

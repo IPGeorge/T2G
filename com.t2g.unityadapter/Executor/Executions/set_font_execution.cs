@@ -15,7 +15,7 @@ namespace T2G.Executor
                 return (eExecutionResult.Failed, "Invalid instruction keyword! 'set_font' was expected.");
             }
 
-            if (instruction.DataType != Instruction.EDataType.JsonData)
+            if (instruction.DataType != Instruction.EDataType.Json)
             {
                 return (eExecutionResult.Failed, "Invalid instruction data!");
             }

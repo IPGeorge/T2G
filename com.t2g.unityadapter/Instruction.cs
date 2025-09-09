@@ -17,7 +17,7 @@ namespace T2G
 
         public enum EInstructionState
         {
-            Empty,
+            Init,
             Raw,
             Resolved,
             MissingResource
@@ -27,12 +27,12 @@ namespace T2G
             Empty,
             SingleParameter,
             MultipleParameters,
-            JsonData
+            Json
         }
 
         public EExecutionType Type = EExecutionType.Void;
         public bool RequiresPreviousSuccess = false;    //Indicates if it depends on previous success.
-        public EInstructionState State = EInstructionState.Empty;
+        public EInstructionState State = EInstructionState.Init;
         public string Action = string.Empty;
         public EDataType DataType = EDataType.SingleParameter;
         public string Data = string.Empty;       
@@ -42,7 +42,7 @@ namespace T2G
         {
             Type = EExecutionType.Void;
             RequiresPreviousSuccess = false;
-            State = EInstructionState.Empty;
+            State = EInstructionState.Init;
             DataType = EDataType.SingleParameter;
             Data = string.Empty;
             Assets = string.Empty;

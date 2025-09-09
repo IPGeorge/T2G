@@ -164,7 +164,7 @@ namespace T2G.Executor
                 instruction.DataType = Instruction.EDataType.Empty;
                 instruction.Data = string.Empty;
                 instruction.RequiresPreviousSuccess = false;
-                instruction.State = Instruction.EInstructionState.Empty;
+                instruction.State = Instruction.EInstructionState.Init;
                 _instructionQueue.Enqueue(instruction);
             }
         }

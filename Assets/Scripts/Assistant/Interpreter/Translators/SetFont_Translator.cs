@@ -32,7 +32,7 @@ namespace T2G
             jsonObj.Add("value", attribValue);          //24, (red or #FF0000), true/false, true/false 
             instruction.Data = jsonObj.ToString();
             instructions.Add(instruction);
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             instruction.Data = jsonObj.ToString();
             instructions.Add(instruction);
             return (true, null);

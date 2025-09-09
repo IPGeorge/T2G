@@ -93,7 +93,7 @@ namespace T2G.Executor
 
         protected JSONObject GetInstructionJsonData(Instruction instruction)
         {
-            if (instruction.DataType != Instruction.EDataType.JsonData)
+            if (instruction.DataType != Instruction.EDataType.Json)
             {
                 return null;
             }

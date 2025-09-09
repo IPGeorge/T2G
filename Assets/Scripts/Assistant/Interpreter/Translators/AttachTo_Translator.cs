@@ -21,7 +21,7 @@ namespace T2G
             instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = attributeName;
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             string sourceName = GetParamFromArguments(arguments, "source");
             string targetName = GetParamFromArguments(arguments, "target").Trim();
             JSONObject jsonObj = new JSONObject();

@@ -21,7 +21,7 @@ namespace T2G
             instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = attributeName;
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             string objName = GetParamFromArguments(arguments, "objectName");
             string spawnpointNames = GetParamFromArguments(arguments, "spawnpointNames");
             if(string.IsNullOrEmpty(objName) || string.IsNullOrEmpty(spawnpointNames))
@@ -32,7 +32,7 @@ namespace T2G
             jsonObj.Add("objectName", objName);
             jsonObj.Add("spawnpointNames", spawnpointNames);
             instruction.Data = jsonObj.ToString();
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             instructions.Add(instruction);
             return (true, null);
         }

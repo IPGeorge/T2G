@@ -21,7 +21,7 @@ namespace T2G
             instruction.Type = Instruction.EExecutionType.EditingOp;
             instruction.State = Instruction.EInstructionState.Resolved;
             instruction.Action = attribute.InstructionKey;
-            instruction.DataType = Instruction.EDataType.JsonData;
+            instruction.DataType = Instruction.EDataType.Json;
             string name = GetParamFromArguments(arguments, "name");
             string rotation = GetParamFromArguments(arguments, "eulerAngles");
             if (string.IsNullOrEmpty(name))

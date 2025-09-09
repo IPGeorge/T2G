@@ -18,7 +18,7 @@ namespace T2G
 
             Instruction instruction = new Instruction();
             instruction.Type = Instruction.EExecutionType.LocalCmd;
-            instruction.State = Instruction.EInstructionState.Empty;
+            instruction.State = Instruction.EInstructionState.Init;
             instruction.Action = attribute.InstructionKey;
             instruction.DataType = Instruction.EDataType.Empty;
             instruction.Data = string.Empty;

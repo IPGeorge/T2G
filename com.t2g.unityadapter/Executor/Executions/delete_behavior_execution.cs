@@ -20,7 +20,7 @@ namespace T2G
             string behaviorName = string.Empty;
             string objName = string.Empty;
 
-            if (instruction.DataType == Instruction.EDataType.JsonData)
+            if (instruction.DataType == Instruction.EDataType.Json)
             {
                 JSONObject jsonObj = JSON.Parse(instruction.Data).AsObject;
                 if (jsonObj.HasKey("behaviorName"))
