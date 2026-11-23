@@ -1,0 +1,518 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+
+namespace T2G.Assistant
+{
+    public partial class Assistant : MonoBehaviour
+    {
+        static public Assistant Instance { get; private set; } = null;
+
+
+        [Header("UI Settings")]
+        [SerializeField] private Settings _settings;
+        public Settings Settings => _settings;
+        public string PersistentDataPath { get; private set; }
+
+        private ChatBotUI _chatBot;
+        private Translation _tanslation;
+        private Resolution _resolution;
+
+        public CommunicatorClient Communicator { get; private set; }
+
+        private List<InstructionBase> _instructions = new List<InstructionBase>();
+        private Dictionary<string, string> _instructionLocalGlobalIdMap = new Dictionary<string, string>();
+        private bool _completed;
+        private StringBuilder _sb = new StringBuilder();
+
+        public ProjectContext GameProject { get; private set; } = null;
+        public GameDescManager GameDescManager { get; private set; } = null;
+
+        private void Awake()
+        {
+            PersistentDataPath = Application.persistentDataPath;
+            Instance = this;
+            _tanslation = Translation.Instance;
+            _resolution = Resolution.Instance;
+
+            DontDestroyOnLoad(gameObject);
+        }
+
+        private void Start()
+        {
+            _chatBot = ChatBotUI.Instance;
+            GameDescManager = GameDescManager.Instance;
+            Init();
+        }
+
+        private async void Update()
+        {
+            if (ExponentialBackoffFocusRestorer.NeedFocus &&
+                !ExponentialBackoffFocusRestorer.IsRestoringFocus &&
+                !ExponentialBackoffFocusRestorer.IsFocusedWindow())
+            {
+                await ExponentialBackoffFocusRestorer.RestoreFocusWithExponentialBackoff();
+            }
+
+            Communicator?.UpdateClient();
+        }
+
+        private void OnDestroy()
+        {
+            if (Communicator != null && Communicator.IsConnected)
+            {
+                Communicator.Disconnect();
+            }
+
+            Uninit();
+        }
+
+        private async void Init()
+        {
+            Communicator = CommunicatorClient.Instance;
+            Communicator.OnConnectedToServer += OnConnectedToServer;
+            Communicator.OnFailedToConnectToServer += OnFailedToConnectToServer;
+            Communicator.OnDisconnecting += OnDisconnecting;
+            Communicator.OnDisconnected += OnDisconnectedFromServer;
+            Communicator.OnSentMessage += OnSentMessage;
+            Communicator.OnReceivedMessage += OnReceivedMessage;
+            Communicator.OnError += OnError;
+            await Communicator.StartClient();
+            CommunicatorClient.Instance.ShakeHand = false;
+            ExponentialBackoffFocusRestorer.Initialize();
+        }
+
+        void Uninit()
+        {
+            Communicator.OnConnectedToServer -= OnConnectedToServer;
+            Communicator.OnFailedToConnectToServer -= OnFailedToConnectToServer;
+            Communicator.OnDisconnecting -= OnDisconnecting;
+            Communicator.OnDisconnected -= OnDisconnectedFromServer;
+            Communicator.OnSentMessage -= OnSentMessage;
+            Communicator.OnReceivedMessage -= OnReceivedMessage;
+            Communicator.OnError -= OnError;
+            CommunicatorClient.Instance.ShakeHand = false;
+        }
+
+        #region Communicator event handlers
+        private void OnConnectedToServer()
+        {
+            Debug.Log("[Assistant] Connected to the server successfully.");
+
+            //Send settings
+            SettingsLite liteSettings = _settings.CloneToSettingsLite();
+            string settingsJson = JsonConvert.SerializeObject(liteSettings);
+            CommunicatorClient.Instance.SendMessage(CommunicatorBase.eMessageType.Settings, settingsJson);
+        }
+
+        private void OnFailedToConnectToServer()
+        {
+            Debug.Log("[Assistant] Failed to connected to the server!");
+        }
+
+        private void OnDisconnecting()
+        {
+            Debug.Log("[Assistant] Disconnecting ...");
+        }
+
+        private void OnDisconnectedFromServer()
+        {
+            Debug.Log("[Assistant] Disconnected!");
+        }
+
+        private void OnSentMessage(CommunicatorBase.eMessageType type, string message)
+        {
+            Debug.Log($"[Assistant] Sent message: {message}");
+        }
+
+        private void OnReceivedMessage(CommunicatorBase.eMessageType type, string message)
+        {
+            if (type == CommunicatorBase.eMessageType.ProjectInfo)
+            {
+                var pi = JsonConvert.DeserializeObject<ProjectInfo>(message);
+                if (pi != null && !string.IsNullOrEmpty(pi.ProjectName))
+                {
+                    if (GameDescManager.CurrentGameDesc != null &&
+                        !string.IsNullOrEmpty(GameDescManager.CurrentGameDesc.ProjectName))
+                    {
+                        GameDescManager.SaveGameDesc();
+                    }
+                    OpenOrCreateProjectContext(pi);
+                    GameDescManager.Instance.SetCurrentSpaceByName(pi.CurrentSpace, true);
+                    GameDescManager.Instance.SaveGameDesc();
+                }
+                Communicator.RemoveMessageFromReceiveBuffer();
+                CommunicatorClient.Instance.ShakeHand = true;
+            }
+        }
+
+        private void OnError(string errorMesasge)
+        {
+            Debug.LogError($"[Assistant] Error: {errorMesasge}");
+        }
+
+        #endregion Communicator event handlers
+
+        async Awaitable<Response> WaitForResponse(Instruction instruction)
+        {
+            Response response;
+
+            do {
+                int timeoutMiniSeconds = 3080000;
+                int waitInterval = 100;
+                while (Communicator.IsReceiveBufferEmpty ||
+                    Communicator.GetNextReceivedMessageType() != CommunicatorBase.eMessageType.Response)
+                {
+                    await Task.Delay(waitInterval);
+
+                    timeoutMiniSeconds -= waitInterval;
+                    if (timeoutMiniSeconds < 0)
+                    {
+                        return new Response(
+                            instruction?.id,
+                            false,
+                            "Timeout waiting for the response!");
+                    }
+                }
+                Communicator.RetriveMessageFromReceiveBuffer(out var responseData);
+                response = JsonConvert.DeserializeObject<Response>(responseData.Message.ToString());
+            } while (instruction != null && !string.Equals(instruction.id, response.InstructionId, StringComparison.OrdinalIgnoreCase));
+            return response;
+        }
+
+
+        void InsertAdditionalInstructions(int i, List<InstructionBase> additionalInstructions)
+        {
+            if (i < _instructions.Count - 1)
+            {
+                _instructions.InsertRange(i + 1, additionalInstructions);
+            }
+            else
+            {
+                _instructions.AddRange(additionalInstructions);
+            }
+        }
+
+        void InsertAdditionalInstructions(int i, List<Instruction> additionalInstructions)
+        {
+            if (i < _instructions.Count - 1)
+            {
+                _instructions.InsertRange(i + 1, additionalInstructions);
+            }
+            else
+            {
+                _instructions.AddRange(additionalInstructions);
+            }
+        }
+
+        async Awaitable<bool> ProcessInstruction(int i)
+        {
+            var instructionBase = _instructions[i];
+
+            if (instructionBase.type == InstructionType.Sequence)
+            {
+                InstructionSequence instructionSequence = instructionBase as InstructionSequence;
+                ExponentialBackoffFocusRestorer.NeedFocus = true;
+                _sb.AppendLine($"Enqueuing {instructionSequence.instructions.Count} instructions.");
+
+                List<Instruction> instructions = new List<Instruction>();
+                int cnt = 0;
+                foreach(var instruction in instructionSequence.instructions)
+                {
+                    var inst = instruction as Instruction;
+                    ++cnt;
+                    if(inst != null)    //TODO: currently doesn't support sub-sequence. Can consider improve it later.
+                    {
+                        instructions.Add(inst);
+                        _sb.AppendLine($"  {cnt} - {instruction.desc}.");
+                    }
+                    else
+                    {
+                        _sb.AppendLine($"  {cnt} - null.");
+                    }
+                }
+
+                InsertAdditionalInstructions(i, PrepareAdditionalInstructions(instructions));
+                _sb.AppendLine($" Total queued instructions: {_instructions.Count - 1}");
+                await Task.Delay(100);
+
+                _completed = true;
+            }
+            else
+            {
+                var instruction = instructionBase as Instruction;
+                if (instruction.type == InstructionType.Local)
+                {
+                    var result = await LocalExecution.Instance.Execute(instruction);
+                    _completed = result.succeeded;
+
+                    if (!string.IsNullOrWhiteSpace(result.message))
+                    {
+                        _sb.AppendLine(result.message);
+                    }
+
+                    if (result.additionalInstructions != null && result.additionalInstructions.Count > 0)
+                    {
+                        InsertAdditionalInstructions(i, PrepareAdditionalInstructions(result.additionalInstructions));
+                    }
+                }
+                else
+                {
+                    // Validate the instruction before execution
+                    // (moved from initial translation to avoid failing when objects haven't been created yet)
+                    var validateResult = InstructionValidator.Validate(instruction, _instructionLocalGlobalIdMap);
+                    if (!validateResult.IsValid)
+                    {
+                        _completed = false;
+                        _sb.AppendLine(string.Join("\n", validateResult.Errors));
+                        return _completed;
+                    }
+
+                    if (instruction.state == InstructionState.Raw)
+                    {
+                        instruction = await _resolution.Resolve(instruction);  //The returned instruction must be either raw or resolved
+                    }
+
+                    ExponentialBackoffFocusRestorer.NeedFocus = true;
+
+                    if (instruction.state == InstructionState.Resolved)
+                    {
+                        Communicator.EmptyReceiveBuffer();
+                        string jsonInstruction = JsonConvert.SerializeObject(instruction);
+                        Communicator.SendMessage(CommunicatorBase.eMessageType.Instruction, jsonInstruction);
+
+                        var response = await WaitForResponse(instruction);
+
+                        GameDescManager.Apply(instruction, response);
+
+                        _completed = response.Succeeded;
+                        _sb.AppendLine(response.Message);
+                    }
+                    else
+                    {
+                        _completed = false;
+                        _sb.AppendLine($"Failed to resolve the '{instruction.action}' instruction!");
+                    }
+                }
+            }
+
+            return _completed;
+        }
+
+        /// <summary>
+        /// Assigns a globally unique id to a translated instruction and records
+        /// the local -> global mapping used to resolve dependsOn references.
+        /// Instructions without an id always receive a fresh one.
+        /// </summary>
+        private string RegisterInstructionId(string localId)
+        {
+            if (string.IsNullOrWhiteSpace(localId))
+                return InstructionIdGenerator.Instance.NextId();
+
+            string globalId;
+            if (_instructionLocalGlobalIdMap.TryGetValue(localId, out globalId))
+                return globalId;
+
+            globalId = InstructionIdGenerator.Instance.NextId();
+            _instructionLocalGlobalIdMap.Add(localId, globalId);
+            return globalId;
+        }
+
+        /// <summary>
+        /// Assigns ids to instructions produced by a local executor and orders
+        /// them before they are inserted into the pending queue. These
+        /// instructions bypass translation, so they have no ids yet.
+        /// </summary>
+        private List<Instruction> PrepareAdditionalInstructions(List<Instruction> instructions)
+        {
+            List<Instruction> prepared = new List<Instruction>(instructions.Count);
+
+            foreach (var instruction in instructions)
+            {
+                if (instruction == null)
+                    continue;
+
+                instruction.id = RegisterInstructionId(instruction.id);
+                prepared.Add(instruction);
+            }
+
+            return OrderInstructions(prepared);
+        }
+
+
+        /// <summary>
+        /// Orders an already validated batch. Deferred instructions (cycles)
+        /// are appended in their original order so callers can still execute
+        /// or retry them.
+        /// </summary>
+        private List<Instruction> OrderInstructions(List<Instruction> instructions)
+        {
+            if (instructions == null || instructions.Count <= 1)
+                return instructions;
+
+            var plan = InstructionPlanner.BuildPlan(instructions);
+
+            foreach (var diagnostic in plan.Diagnostics)
+            {
+                Debug.LogWarning($"[InstructionPlanner] {diagnostic}");
+            }
+
+            Debug.Log(
+                $"[InstructionPlanner] Planned {instructions.Count} instruction(s) " +
+                $"-> [{string.Join(", ", plan.Ordered.ConvertAll(item => item.id))}]" +
+                (plan.HasDeferred
+                    ? $" | deferred [{string.Join(", ", plan.Deferred.ConvertAll(item => item.id))}]"
+                    : string.Empty) +
+                $" | edges: {plan.Edges.Count}");
+
+            var ordered = new List<Instruction>(
+                plan.Ordered.Count + plan.Deferred.Count);
+
+            ordered.AddRange(plan.Ordered);
+            ordered.AddRange(plan.Deferred);
+            return ordered;
+        }
+
+        /// <summary>
+        /// Orders the pending instruction list in place. Lists containing
+        /// non-Instruction entries (for example InstructionSequence) are left
+        /// untouched.
+        /// </summary>
+        private void OrderPendingInstructions()
+        {
+            if (_instructions == null || _instructions.Count <= 1)
+                return;
+
+            foreach (var instruction in _instructions)
+            {
+                if (!(instruction is Instruction))
+                    return;
+            }
+
+            var batch = new List<Instruction>(_instructions.Count);
+
+            foreach (var instruction in _instructions)
+                batch.Add((Instruction)instruction);
+
+            var ordered = OrderInstructions(batch);
+
+            _instructions.Clear();
+            foreach (var instruction in ordered)
+                _instructions.Add(instruction);
+        }
+
+        public async Awaitable<(bool succeeded, string response)> ProcessEnteredIntent(string intent)
+        {
+            var translateResult = await _tanslation.Translate(intent.Trim());
+
+            switch(translateResult.responsType)
+            {
+                case TranslationResponseType.Clarification:
+                case TranslationResponseType.Conversation:
+                    return (true, translateResult.message); 
+                case TranslationResponseType.Instruction:
+                    if(translateResult.instructions != null && translateResult.instructions.Count > 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        return (false, "Sorry, I don't understand!");
+                    }
+                case TranslationResponseType.Error:
+                default:
+                    return (false, "Sorry, I don't understand!");
+            }
+
+            var translatedInstructions = translateResult.instructions;
+
+            _instructionLocalGlobalIdMap.Clear();
+            _instructions.Clear();
+            foreach (var translatedInstruction in translatedInstructions)
+            {
+                translatedInstruction.id = RegisterInstructionId(translatedInstruction.id);
+
+                var normailizedInstruction = InstructionNormalizer.Normalize(translatedInstruction);
+                _instructions.Add(normailizedInstruction);
+            }
+
+            OrderPendingInstructions();
+
+            _completed = true;
+
+            if (_instructions.Count == 0)
+            {
+                return (_completed, "No more instructions to execute!");
+            }
+
+            _sb.Clear();
+
+            for (int i = 0; i < _instructions.Count && _completed; ++i)
+            {
+                Debug.Log($"Processing instruction {i}: {_instructions[i].desc} ...");
+                _completed = await ProcessInstruction(i);
+                _chatBot?.UpdateLastBotMessage(_sb.ToString());
+                await Task.Delay(100);
+            }
+
+            TranslationLogger.Append(new TranslationRecord()
+            {
+                prompt = intent,
+                success = _completed,
+                instructionList = _instructions
+            });
+
+            return (_completed, _sb.ToString());
+        }
+
+        public void SaveCurrentProject()
+        {
+            if (GameProject != null)
+            {
+                GameProject.Save();
+                GameDescManager.SaveGameDesc(GameProject.ProjectName);
+                Debug.Log($"Current GameProject {GameProject} is saved!");
+            }
+            else
+            {
+                Debug.Log("Current GameProject is null!");
+            }
+        }
+
+        public void CreateNewProjectContext(string projectName, string projectPath)
+        {
+            SaveCurrentProject();
+            GameProject = new ProjectContext() { ProjectName = projectName, ProjectPath = projectPath, Genre = "", Engine = "Unity" };
+            GameDescManager.CreateGameDescProject(projectName);
+            SaveCurrentProject();
+        }
+
+        public bool OpenOrCreateProjectContext(ProjectInfo projectInfo)
+        {
+            if (string.IsNullOrEmpty(projectInfo.ProjectName))
+            {
+                return false;
+            }
+
+            SaveCurrentProject();
+            GameProject = ProjectContext.LoadOrCreate(projectInfo);
+            GameProject.CurrentSpace = projectInfo.CurrentSpace;
+
+            if (GameProject == null || string.IsNullOrWhiteSpace(GameProject.ProjectName))
+            {
+                return false;
+            }
+            GameDescManager.OpenOrCreateGameDesc(projectInfo.ProjectName, projectInfo.Title);
+            return true;
+        }
+
+        public int FindSavedProjectIndex(string projectName)
+        {
+            var prjList = ProjectContext.GetProjectList();
+            return prjList.FindIndex(item => string.Equals(item, projectName, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+}

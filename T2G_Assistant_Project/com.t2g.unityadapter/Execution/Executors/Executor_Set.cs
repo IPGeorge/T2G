@@ -1,0 +1,52 @@
+
+#if UNITY_EDITOR
+
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+
+namespace T2G
+{
+    [Executor(Actions.set_property)]
+
+    public class Executor_Set : ExecutorBase
+    {
+        public override async Task<(bool succeeded, 
+            string message,
+            List<Response.Result> results, 
+            List<Instruction> additionalInstructions)> Execute(Instruction instruction)
+        {
+            string objName = instruction.parameters.GetString("Name");
+
+            var obj = Utils.FindObjectByName(objName);
+            if (obj == null)
+            {
+                return (false, $"Couldn't find {objName}!", null, null);
+            }
+
+            string propertyName = instruction.parameters.GetString("Property");
+            string value = instruction.parameters.GetString("Value");
+
+            if(string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(value))
+            {
+                return (false, $"Invalid property name {propertyName} for setting the value {value}!", null, null);
+            }
+
+            var isRolesOrTAgs = T2G.Utils.IsRolesOrTagsProperty(propertyName);
+            if (isRolesOrTAgs.isRoles ||  isRolesOrTAgs.isTags)
+            {
+                return (true, $"{objName}'s {propertyName} was set to {value}.", null, null);
+            }
+
+            bool succeeded = GameObjectPropertySetter.SetProperty(obj, propertyName, value, out var resultMessage);
+            if (succeeded)
+            {
+                Utils.UpdateEditorViews();
+                await Task.Delay(100);
+            }
+            return (succeeded, resultMessage, null, null);
+        }
+    }
+}
+
+#endif
