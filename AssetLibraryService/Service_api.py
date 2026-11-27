@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from asset_search_engine import AssetSearchEngine
+from build_assets_db import AssetSearchEngine
 
 app = Flask(__name__)
 engine = AssetSearchEngine()  # Load existing assets
