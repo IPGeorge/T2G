@@ -362,6 +362,7 @@ namespace T2G.Assistant
         private void ApplyChanges()
         {
             chatBotUI?.SaveSettings(editingSettings);
+            Translation.Instance.RegisterTranslators();
         }
     }
 

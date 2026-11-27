@@ -41,11 +41,13 @@ namespace T2G.Assistant
             if(string.IsNullOrWhiteSpace(Assistant.Instance.Settings.OpenAIAPIKey))
             {
                 _llmTranslator = new LLMTranslator();
+                _openAITranslator = null;
                 _translators.Add(_llmTranslator);
             }
             else
             {
                 _openAITranslator = new OpenAITranslator();
+                _llmTranslator = null;
                 _translators.Add(_openAITranslator);
             }
 
